@@ -47,6 +47,15 @@ dependencies:
   google_fonts: ^6.2.1
   media_kit: ^1.1.11
   media_kit_libs_audio: ^1.0.5
+  html: ^0.15.4
+  freeze: ^1.0.0
+  freezed_annotation: ^2.4.4
+  http: ^1.2.2
+  drift: ^2.20.0
+  collection: ^1.18.0
+  piped_client: ^0.1.1
+  flutter_broadcasts: ^0.4.0
+  audio_session: ^0.1.21
 
 dev_dependencies:
   flutter_test:
