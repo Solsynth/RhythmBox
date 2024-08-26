@@ -56,6 +56,15 @@ dependencies:
   piped_client: ^0.1.1
   flutter_broadcasts: ^0.4.0
   audio_session: ^0.1.21
+  shared_preferences: ^2.3.2
+  audio_service: ^0.18.15
+  smtc_windows: ^0.1.3
+  win32_registry: ^1.1.4
+  uuid: ^4.4.2
+  device_info_plus: ^10.1.2
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  dio: ^5.6.0
 
 dev_dependencies:
   flutter_test:

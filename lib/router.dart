@@ -14,17 +14,17 @@ final router = GoRouter(routes: [
         builder: (context, state) => const ExploreScreen(),
       ),
       GoRoute(
-        path: "/playlist/:id",
-        name: "playlistView",
-        builder: (context, state) => PlaylistViewScreen(
-          playlistId: state.pathParameters['id']!,
-        ),
-      ),
-      GoRoute(
         path: "/settings",
         name: "settings",
         builder: (context, state) => const SettingsScreen(),
       ),
     ],
+  ),
+  GoRoute(
+    path: "/playlist/:id",
+    name: "playlistView",
+    builder: (context, state) => PlaylistViewScreen(
+      playlistId: state.pathParameters['id']!,
+    ),
   ),
 ]);

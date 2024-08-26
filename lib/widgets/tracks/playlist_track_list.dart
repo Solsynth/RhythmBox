@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -65,6 +66,10 @@ class _PlaylistTrackListState extends State<PlaylistTrackList> {
               item?.artists!.map((x) => x.name!).join(', ') ??
                   'Please stand by...',
             ),
+            onTap: () {
+              if (item == null) return;
+              Get.find<AudioPlayerProvider>().load([item], autoPlay: true);
+            },
           );
         },
       ),

@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/router.dart';
+import 'package:rhythm_box/services/server/active_sourced_track.dart';
+import 'package:rhythm_box/services/server/routes/playback.dart';
+import 'package:rhythm_box/services/server/server.dart';
+import 'package:rhythm_box/services/server/sourced_track.dart';
 import 'package:rhythm_box/translations.dart';
 
 void main() {
+  MediaKit.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -42,5 +50,10 @@ class MyApp extends StatelessWidget {
 
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
+    Get.lazyPut(() => AudioPlayerProvider());
+    Get.lazyPut(() => ActiveSourcedTrackProvider());
+    Get.lazyPut(() => SourcedTrackProvider());
+    Get.lazyPut(() => ServerPlaybackRoutesProvider());
+    Get.lazyPut(() => PlaybackServerProvider());
   }
 }
