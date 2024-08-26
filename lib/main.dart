@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/router.dart';
 import 'package:rhythm_box/translations.dart';
 
@@ -40,5 +40,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  void _initializeProviders(BuildContext context) async {}
+  void _initializeProviders(BuildContext context) async {
+    Get.lazyPut(() => SpotifyProvider());
+  }
 }
