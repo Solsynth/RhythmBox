@@ -11,6 +11,8 @@ import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
 class PlaybackServerProvider extends GetxController {
+  final int port = Random().nextInt(17500) + 5000;
+
   HttpServer? _server;
   Router? _router;
 
@@ -25,8 +27,6 @@ class PlaybackServerProvider extends GetxController {
     if (kDebugMode) {
       pipeline.addMiddleware(logRequests());
     }
-
-    final port = Random().nextInt(17500) + 5000;
 
     RhythmMedia.serverPort = port;
 

@@ -1,10 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:rhythm_box/services/audio_player/state.dart';
 import 'package:rhythm_box/services/local_track.dart';
-import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
+import 'package:rhythm_box/services/server/sourced_track.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,10 +21,49 @@ class AudioPlayerProvider extends GetxController {
     collections: [],
   ));
 
-  AudioPlayerProvider() {
+  List<StreamSubscription<Object>>? _subscriptions;
+
+  @override
+  void onInit() {
     SharedPreferences.getInstance().then((ins) {
       _prefs = ins;
+      _syncSavedState();
     });
+
+    _subscriptions = [
+      audioPlayer.playingStream.listen((playing) async {
+        state.value = state.value.copyWith(playing: playing);
+      }),
+      audioPlayer.loopModeStream.listen((loopMode) async {
+        state.value = state.value.copyWith(loopMode: loopMode);
+      }),
+      audioPlayer.shuffledStream.listen((shuffled) async {
+        state.value = state.value.copyWith(shuffled: shuffled);
+      }),
+      audioPlayer.playlistStream.listen((playlist) async {
+        state.value = state.value.copyWith(playlist: playlist);
+      }),
+    ];
+
+    state.value = AudioPlayerState(
+      loopMode: audioPlayer.loopMode,
+      playing: audioPlayer.isPlaying,
+      playlist: audioPlayer.playlist,
+      shuffled: audioPlayer.isShuffled,
+      collections: [],
+    );
+
+    super.onInit();
+  }
+
+  @override
+  void dispose() {
+    if (_subscriptions != null) {
+      for (final subscription in _subscriptions!) {
+        subscription.cancel();
+      }
+    }
+    super.dispose();
   }
 
   Future<void> _syncSavedState() async {
@@ -33,6 +73,29 @@ class AudioPlayerProvider extends GetxController {
     // TODO Serilize and deserilize this state
 
     // TODO Sync saved playlist
+  }
+
+  Future<void> addCollections(List<String> collectionIds) async {
+    state.value = state.value.copyWith(collections: [
+      ...state.value.collections,
+      ...collectionIds,
+    ]);
+  }
+
+  Future<void> addCollection(String collectionId) async {
+    await addCollections([collectionId]);
+  }
+
+  Future<void> removeCollections(List<String> collectionIds) async {
+    state.value = state.value.copyWith(
+      collections: state.value.collections
+          .where((element) => !collectionIds.contains(element))
+          .toList(),
+    );
+  }
+
+  Future<void> removeCollection(String collectionId) async {
+    await removeCollections([collectionId]);
   }
 
   Future<void> load(
@@ -46,10 +109,13 @@ class AudioPlayerProvider extends GetxController {
     // because of timeout
     final intendedActiveTrack = medias.elementAt(initialIndex);
     if (intendedActiveTrack.track is! LocalTrack) {
-      await SourcedTrack.fetchFromTrack(track: intendedActiveTrack.track);
+      await Get.find<SourcedTrackProvider>()
+          .fetch(RhythmMedia(intendedActiveTrack.track));
     }
 
     if (medias.isEmpty) return;
+
+    await removeCollections(state.value.collections);
 
     await audioPlayer.openPlaylist(
       medias.map((s) => s as Media).toList(),

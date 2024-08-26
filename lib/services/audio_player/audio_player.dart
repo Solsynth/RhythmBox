@@ -1,10 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:flutter/foundation.dart';
 import 'package:rhythm_box/platform.dart';
 import 'package:rhythm_box/services/local_track.dart';
+import 'package:rhythm_box/services/server/server.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/audio_player/custom_player.dart';
 import 'dart:async';
@@ -20,7 +22,7 @@ part 'audio_player_impl.dart';
 class RhythmMedia extends mk.Media {
   final Track track;
 
-  static int serverPort = 0;
+  static int get serverPort => Get.find<PlaybackServerProvider>().port;
 
   RhythmMedia(
     this.track, {

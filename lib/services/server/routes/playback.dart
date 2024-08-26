@@ -58,8 +58,8 @@ class ServerPlaybackRoutesProvider {
         },
         headers: res.headers.map,
       );
-    } catch (e) {
-      log('[PlaybackSever] Error: $e');
+    } catch (e, stackTrace) {
+      log('[PlaybackSever] Error: $e; Trace:\n $stackTrace');
       return Response.internalServerError();
     }
   }
