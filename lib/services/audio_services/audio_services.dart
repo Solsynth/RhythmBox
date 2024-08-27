@@ -48,11 +48,11 @@ class AudioServices with WidgetsBindingObserver {
       duration: track is SourcedTrack
           ? track.sourceInfo.duration
           : Duration(milliseconds: track.durationMs ?? 0),
-      artUri: Uri.parse(
-        (track.album?.images).asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
-        ),
-      ),
+      artUri: track.album?.images != null
+          ? Uri.parse(
+              (track.album?.images).asUrlString()!,
+            )
+          : null,
       playable: true,
     ));
   }

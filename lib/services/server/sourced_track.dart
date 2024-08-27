@@ -4,6 +4,7 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/local_track.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
+import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:spotify/spotify.dart';
 
 class SourcedTrackProvider extends GetxController {
@@ -17,6 +18,7 @@ class SourcedTrackProvider extends GetxController {
     }
 
     final AudioPlayerProvider playback = Get.find();
+    final QueryingTrackInfoProvider query = Get.find();
 
     ever(playback.state.value.tracks.obs, (List<Track> tracks) {
       if (tracks.isEmpty || tracks.none((element) => element.id == track.id)) {
@@ -24,7 +26,9 @@ class SourcedTrackProvider extends GetxController {
       }
     });
 
+    query.isQueryingTrackInfo.value = true;
     sourcedTrack.value = await SourcedTrack.fetchFromTrack(track: track);
+    query.isQueryingTrackInfo.value = false;
 
     return sourcedTrack.value;
   }

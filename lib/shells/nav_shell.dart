@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rhythm_box/widgets/player/bottom_player.dart';
 
 class Destination {
   const Destination(this.title, this.page, this.icon);
@@ -30,19 +31,30 @@ class _NavShellState extends State<NavShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: false,
-        currentIndex: _focusDestination,
-        items: _allDestinations
-            .map((x) => BottomNavigationBarItem(
-                  icon: Icon(x.icon),
-                  label: x.title,
-                ))
-            .toList(),
-        onTap: (value) {
-          GoRouter.of(context).goNamed(_allDestinations[value].page);
-          setState(() => _focusDestination = value);
-        },
+      bottomNavigationBar: Material(
+        elevation: 2,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const BottomPlayer(),
+            const Divider(height: 0.3, thickness: 0.3),
+            BottomNavigationBar(
+              elevation: 0,
+              showUnselectedLabels: false,
+              currentIndex: _focusDestination,
+              items: _allDestinations
+                  .map((x) => BottomNavigationBarItem(
+                        icon: Icon(x.icon),
+                        label: x.title,
+                      ))
+                  .toList(),
+              onTap: (value) {
+                GoRouter.of(context).goNamed(_allDestinations[value].page);
+                setState(() => _focusDestination = value);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

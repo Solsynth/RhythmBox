@@ -9,6 +9,7 @@ import 'package:rhythm_box/services/server/routes/playback.dart';
 import 'package:rhythm_box/services/server/server.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
 import 'package:rhythm_box/translations.dart';
+import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 void main() {
   MediaKit.ensureInitialized();
@@ -51,9 +52,11 @@ class MyApp extends StatelessWidget {
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
     Get.lazyPut(() => ActiveSourcedTrackProvider());
-    Get.lazyPut(() => SourcedTrackProvider());
 
     Get.put(AudioPlayerProvider());
+    Get.put(QueryingTrackInfoProvider());
+    Get.put(SourcedTrackProvider());
+
     Get.put(ServerPlaybackRoutesProvider());
     Get.put(PlaybackServerProvider());
   }

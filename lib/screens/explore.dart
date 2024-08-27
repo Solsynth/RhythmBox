@@ -22,7 +22,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
   Future<void> _pullPlaylist() async {
     _featuredPlaylist =
-        (await _spotify.api.playlists.featured.all(10)).toList();
+        (await _spotify.api.playlists.featured.getPage(20)).items!.toList();
     setState(() => _isLoading = false);
   }
 
@@ -48,7 +48,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               final item = _featuredPlaylist?[idx];
               return ListTile(
                 leading: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
                   child: item != null
                       ? AutoCacheImage(
                           item.images!.first.url!,

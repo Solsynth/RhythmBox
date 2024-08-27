@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:get/get.dart';
@@ -13,6 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AudioPlayerProvider extends GetxController {
   late final SharedPreferences _prefs;
 
+  RxBool isPlaying = false.obs;
+
   Rx<AudioPlayerState> state = Rx(AudioPlayerState(
     playing: false,
     shuffled: false,
@@ -25,33 +28,44 @@ class AudioPlayerProvider extends GetxController {
 
   @override
   void onInit() {
-    SharedPreferences.getInstance().then((ins) {
+    SharedPreferences.getInstance().then((ins) async {
       _prefs = ins;
-      _syncSavedState();
+      final res = await _readSavedState();
+      if (res != null) {
+        state.value = res;
+      } else {
+        state.value = AudioPlayerState(
+          loopMode: audioPlayer.loopMode,
+          playing: audioPlayer.isPlaying,
+          playlist: audioPlayer.playlist,
+          shuffled: audioPlayer.isShuffled,
+          collections: [],
+        );
+      }
     });
 
     _subscriptions = [
       audioPlayer.playingStream.listen((playing) async {
         state.value = state.value.copyWith(playing: playing);
+        await _updateSavedState();
       }),
       audioPlayer.loopModeStream.listen((loopMode) async {
         state.value = state.value.copyWith(loopMode: loopMode);
+        await _updateSavedState();
       }),
       audioPlayer.shuffledStream.listen((shuffled) async {
         state.value = state.value.copyWith(shuffled: shuffled);
+        await _updateSavedState();
       }),
       audioPlayer.playlistStream.listen((playlist) async {
         state.value = state.value.copyWith(playlist: playlist);
+        await _updateSavedState();
       }),
     ];
 
-    state.value = AudioPlayerState(
-      loopMode: audioPlayer.loopMode,
-      playing: audioPlayer.isPlaying,
-      playlist: audioPlayer.playlist,
-      shuffled: audioPlayer.isShuffled,
-      collections: [],
-    );
+    audioPlayer.playingStream.listen((playing) {
+      isPlaying.value = playing;
+    });
 
     super.onInit();
   }
@@ -66,13 +80,16 @@ class AudioPlayerProvider extends GetxController {
     super.dispose();
   }
 
-  Future<void> _syncSavedState() async {
-    final data = _prefs.getBool("player_state");
-    if (data == null) return;
+  Future<AudioPlayerState?> _readSavedState() async {
+    final data = _prefs.getString("player_state");
+    if (data == null) return null;
 
-    // TODO Serilize and deserilize this state
+    return AudioPlayerState.fromJson(jsonDecode(data));
+  }
 
-    // TODO Sync saved playlist
+  Future<void> _updateSavedState() async {
+    final out = jsonEncode(state.value.toJson());
+    await _prefs.setString("player_state", out);
   }
 
   Future<void> addCollections(List<String> collectionIds) async {
@@ -80,6 +97,8 @@ class AudioPlayerProvider extends GetxController {
       ...state.value.collections,
       ...collectionIds,
     ]);
+
+    await _updateSavedState();
   }
 
   Future<void> addCollection(String collectionId) async {
@@ -92,6 +111,8 @@ class AudioPlayerProvider extends GetxController {
           .where((element) => !collectionIds.contains(element))
           .toList(),
     );
+
+    await _updateSavedState();
   }
 
   Future<void> removeCollection(String collectionId) async {

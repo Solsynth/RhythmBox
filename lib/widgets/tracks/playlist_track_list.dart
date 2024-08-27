@@ -5,6 +5,7 @@ import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:rhythm_box/services/artist.dart';
 
 class PlaylistTrackList extends StatefulWidget {
   final String playlistId;
@@ -46,7 +47,7 @@ class _PlaylistTrackListState extends State<PlaylistTrackList> {
           final item = _tracks?[idx];
           return ListTile(
             leading: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(16)),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
               child: item != null
                   ? AutoCacheImage(
                       item.album!.images!.first.url!,
@@ -63,8 +64,7 @@ class _PlaylistTrackListState extends State<PlaylistTrackList> {
             ),
             title: Text(item?.name ?? 'Loading...'),
             subtitle: Text(
-              item?.artists!.map((x) => x.name!).join(', ') ??
-                  'Please stand by...',
+              item?.artists?.asString() ?? 'Please stand by...',
             ),
             onTap: () {
               if (item == null) return;
