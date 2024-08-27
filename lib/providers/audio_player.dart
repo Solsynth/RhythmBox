@@ -311,6 +311,15 @@ class AudioPlayerProvider extends GetxController {
         newIndex > state.value.tracks.length - 1 ||
         oldIndex > state.value.tracks.length - 1) return;
 
+    final item = state.value.playlist.medias.removeAt(oldIndex);
+
+    state.value = state.value.copyWith(
+      playlist: state.value.playlist.copyWith(
+        medias: state.value.playlist.medias
+          ..insert(oldIndex < newIndex ? newIndex - 1 : 0, item),
+      ),
+    );
+
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }
 

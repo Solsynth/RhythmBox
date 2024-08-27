@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/screens/player/queue.dart';
 import 'package:rhythm_box/services/artist.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
@@ -39,19 +41,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   bool get _isPlaying => _playback.isPlaying.value;
   bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
+  PlaylistMode get _loopMode => _playback.state.value.loopMode;
 
   double _bufferProgress = 0;
 
   Duration _durationCurrent = Duration.zero;
   Duration _durationTotal = Duration.zero;
-
-  void _updateDurationCurrent(Duration dur) {
-    setState(() => _durationCurrent = dur);
-  }
-
-  void _updateDurationTotal(Duration dur) {
-    setState(() => _durationTotal = dur);
-  }
 
   List<StreamSubscription>? _subscriptions;
 
@@ -199,6 +194,26 @@ class _PlayerScreenState extends State<PlayerScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  StreamBuilder<bool>(
+                    stream: audioPlayer.shuffledStream,
+                    builder: (context, snapshot) {
+                      final shuffled = snapshot.data ?? false;
+                      return IconButton(
+                        icon: Icon(
+                          shuffled ? Icons.shuffle_on_outlined : Icons.shuffle,
+                        ),
+                        onPressed: _isFetchingActiveTrack
+                            ? null
+                            : () {
+                                if (shuffled) {
+                                  audioPlayer.setShuffle(false);
+                                } else {
+                                  audioPlayer.setShuffle(true);
+                                }
+                              },
+                      );
+                    },
+                  ),
                   IconButton(
                     icon: const Icon(Icons.skip_previous),
                     onPressed: _isFetchingActiveTrack
@@ -233,8 +248,65 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     onPressed:
                         _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
                   ),
+                  Obx(
+                    () => IconButton(
+                      icon: Icon(
+                        _loopMode == PlaylistMode.none
+                            ? Icons.repeat
+                            : _loopMode == PlaylistMode.loop
+                                ? Icons.repeat_on_outlined
+                                : Icons.repeat_one_on_outlined,
+                      ),
+                      onPressed: _isFetchingActiveTrack
+                          ? null
+                          : () async {
+                              await audioPlayer.setLoopMode(
+                                switch (_loopMode) {
+                                  PlaylistMode.loop => PlaylistMode.single,
+                                  PlaylistMode.single => PlaylistMode.none,
+                                  PlaylistMode.none => PlaylistMode.loop,
+                                },
+                              );
+                            },
+                    ),
+                  ),
                 ],
-              )
+              ),
+              const Gap(20),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.queue_music),
+                      label: const Text('Queue'),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => const PlayerQueuePopup(),
+                        );
+                      },
+                    ),
+                  ),
+                  const Gap(4),
+                  Expanded(
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.lyrics),
+                      label: const Text('Lyrics'),
+                      onPressed: () {},
+                    ),
+                  ),
+                  const Gap(4),
+                  Expanded(
+                    child: TextButton.icon(
+                      icon: const Icon(Icons.merge),
+                      label: const Text('Sources'),
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ).marginAll(24),
