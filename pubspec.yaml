@@ -66,6 +66,16 @@ dependencies:
   shelf_router: ^1.1.4
   dio: ^5.6.0
   json_annotation: ^4.9.0
+  drift_flutter: ^0.2.0
+  encrypt: ^5.0.3
+  flutter_secure_storage: ^9.2.2
+  window_manager: ^0.4.2
+  lrc: ^1.0.2
+  json_serializable: ^6.8.0
+  path: ^1.9.0
+  path_provider: ^2.1.4
+  sqlite3: ^2.4.6
+  sqlite3_flutter_libs: ^0.5.24
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +87,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  drift_dev: ^2.20.1
+  build_runner: ^2.4.12
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

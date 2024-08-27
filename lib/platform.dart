@@ -8,6 +8,9 @@ abstract class PlatformInfo {
 
   static bool get isLinux => !kIsWeb && Platform.isLinux;
 
+  static bool get isInFlatpak =>
+      kIsWeb ? false : Platform.environment["FLATPAK_ID"] != null;
+
   static bool get isWindows => !kIsWeb && Platform.isWindows;
 
   static bool get isMacOS => !kIsWeb && Platform.isMacOS;
