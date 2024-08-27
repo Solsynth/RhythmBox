@@ -27,9 +27,9 @@ class AudioServices with WidgetsBindingObserver {
                       : 'dev.solsynth.rhythmBox',
                   androidNotificationChannelName: 'RhythmBox',
                   androidNotificationOngoing: false,
-                  androidNotificationIcon: "drawable/ic_launcher_monochrome",
+                  androidNotificationIcon: 'drawable/ic_launcher_monochrome',
                   androidStopForegroundOnPause: false,
-                  androidNotificationChannelDescription: "RhythmBox Music",
+                  androidNotificationChannelDescription: 'RhythmBox Music',
                 ),
               )
             : null;
@@ -42,9 +42,9 @@ class AudioServices with WidgetsBindingObserver {
     await smtc?.addTrack(track);
     mobile?.addItem(MediaItem(
       id: track.id!,
-      album: track.album?.name ?? "",
+      album: track.album?.name ?? '',
       title: track.name!,
-      artist: (track.artists)?.asString() ?? "",
+      artist: (track.artists)?.asString() ?? '',
       duration: track is SourcedTrack
           ? track.sourceInfo.duration
           : Duration(milliseconds: track.durationMs ?? 0),

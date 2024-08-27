@@ -104,7 +104,7 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                                   "${NumberFormat.compactCurrency(symbol: '', decimalDigits: 2).format(_playlist!.followers!.total!)} saves",
                                 ),
                                 Text(
-                                  "#${_playlist!.id}",
+                                  '#${_playlist!.id}',
                                   style: GoogleFonts.robotoMono(fontSize: 10),
                                 ),
                               ],

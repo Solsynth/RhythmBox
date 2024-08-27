@@ -9,7 +9,7 @@ class ISOLanguageName {
 
   @override
   String toString() {
-    return "$name ($nativeName)";
+    return '$name ($nativeName)';
   }
 }
 
@@ -41,9 +41,9 @@ abstract class LanguageLocals {
     //   name: "Amharic",
     //   nativeName: "አማርኛ",
     // ),
-    "ar": const ISOLanguageName(
-      name: "Arabic",
-      nativeName: "العربية",
+    'ar': const ISOLanguageName(
+      name: 'Arabic',
+      nativeName: 'العربية',
     ),
     // "an": const ISOLanguageName(
     //   name: "Aragonese",
@@ -81,17 +81,17 @@ abstract class LanguageLocals {
     //   name: "Bashkir",
     //   nativeName: "башҡорт теле",
     // ),
-    "eu": const ISOLanguageName(
-      name: "Basque",
-      nativeName: "Euskara",
+    'eu': const ISOLanguageName(
+      name: 'Basque',
+      nativeName: 'Euskara',
     ),
     // "be": const ISOLanguageName(
     //   name: "Belarusian",
     //   nativeName: "Беларуская",
     // ),
-    "bn": const ISOLanguageName(
-      name: "Bengali",
-      nativeName: "বাংলা",
+    'bn': const ISOLanguageName(
+      name: 'Bengali',
+      nativeName: 'বাংলা',
     ),
     // "bh": const ISOLanguageName(
     //   name: "Bihari",
@@ -117,9 +117,9 @@ abstract class LanguageLocals {
     //   name: "Burmese",
     //   nativeName: "ဗမာစာ",
     // ),
-    "ca": const ISOLanguageName(
-      name: "Catalan",
-      nativeName: "Català",
+    'ca': const ISOLanguageName(
+      name: 'Catalan',
+      nativeName: 'Català',
     ),
     // "ch": const ISOLanguageName(
     //   name: "Chamorro",
@@ -133,9 +133,9 @@ abstract class LanguageLocals {
     //   name: "Chichewa",
     //   nativeName: "chiCheŵa",
     // ),
-    "zh": const ISOLanguageName(
-      name: "Simplified Chinese",
-      nativeName: "简体中文",
+    'zh': const ISOLanguageName(
+      name: 'Simplified Chinese',
+      nativeName: '简体中文',
     ),
     // "cv": const ISOLanguageName(
     //   name: "Chuvash",
@@ -157,9 +157,9 @@ abstract class LanguageLocals {
     //   name: "Croatian",
     //   nativeName: "hrvatski",
     // ),
-    "cs": const ISOLanguageName(
-      name: "Czech",
-      nativeName: "česky, čeština",
+    'cs': const ISOLanguageName(
+      name: 'Czech',
+      nativeName: 'česky, čeština',
     ),
     // "da": const ISOLanguageName(
     //   name: "Danish",
@@ -169,13 +169,13 @@ abstract class LanguageLocals {
     //   name: "Maldivian;",
     //   nativeName: "ދިވެހި",
     // ),
-    "nl": const ISOLanguageName(
-      name: "Dutch",
-      nativeName: "Nederlands",
+    'nl': const ISOLanguageName(
+      name: 'Dutch',
+      nativeName: 'Nederlands',
     ),
-    "en": const ISOLanguageName(
-      name: "English",
-      nativeName: "English",
+    'en': const ISOLanguageName(
+      name: 'English',
+      nativeName: 'English',
     ),
     // "eo": const ISOLanguageName(
     //   name: "Esperanto",
@@ -197,13 +197,13 @@ abstract class LanguageLocals {
     //   name: "Fijian",
     //   nativeName: "vosa Vakaviti",
     // ),
-    "fi": const ISOLanguageName(
-      name: "Finnish",
-      nativeName: "suomi",
+    'fi': const ISOLanguageName(
+      name: 'Finnish',
+      nativeName: 'suomi',
     ),
-    "fr": const ISOLanguageName(
-      name: "French",
-      nativeName: "français",
+    'fr': const ISOLanguageName(
+      name: 'French',
+      nativeName: 'français',
     ),
     // "ff": const ISOLanguageName(
     //   name: "Fula; Fulah; Pulaar; Pular",
@@ -213,13 +213,13 @@ abstract class LanguageLocals {
     //   name: "Galician",
     //   nativeName: "Galego",
     // ),
-    "ka": const ISOLanguageName(
-      name: "Georgian",
-      nativeName: "ქართული",
+    'ka': const ISOLanguageName(
+      name: 'Georgian',
+      nativeName: 'ქართული',
     ),
-    "de": const ISOLanguageName(
-      name: "German",
-      nativeName: "Deutsch",
+    'de': const ISOLanguageName(
+      name: 'German',
+      nativeName: 'Deutsch',
     ),
     // "el": const ISOLanguageName(
     //   name: "Greek, Modern",
@@ -249,9 +249,9 @@ abstract class LanguageLocals {
     //   name: "Herero",
     //   nativeName: "Otjiherero",
     // ),
-    "hi": const ISOLanguageName(
-      name: "Hindi",
-      nativeName: "हिन्दी, हिंदी",
+    'hi': const ISOLanguageName(
+      name: 'Hindi',
+      nativeName: 'हिन्दी, हिंदी',
     ),
     // "ho": const ISOLanguageName(
     //   name: "Hiri Motu",
@@ -265,9 +265,9 @@ abstract class LanguageLocals {
     //   name: "Interlingua",
     //   nativeName: "Interlingua",
     // ),
-    "id": const ISOLanguageName(
-      name: "Indonesian",
-      nativeName: "Bahasa Indonesia",
+    'id': const ISOLanguageName(
+      name: 'Indonesian',
+      nativeName: 'Bahasa Indonesia',
     ),
     // "ie": const ISOLanguageName(
     //   name: "Interlingue",
@@ -293,17 +293,17 @@ abstract class LanguageLocals {
     //   name: "Icelandic",
     //   nativeName: "Íslenska",
     // ),
-    "it": const ISOLanguageName(
-      name: "Italian",
-      nativeName: "Italiano",
+    'it': const ISOLanguageName(
+      name: 'Italian',
+      nativeName: 'Italiano',
     ),
     // "iu": const ISOLanguageName(
     //   name: "Inuktitut",
     //   nativeName: "ᐃᓄᒃᑎᑐᑦ",
     // ),
-    "ja": const ISOLanguageName(
-      name: "Japanese",
-      nativeName: "日本語",
+    'ja': const ISOLanguageName(
+      name: 'Japanese',
+      nativeName: '日本語',
     ),
     // "jv": const ISOLanguageName(
     //   name: "Javanese",
@@ -353,9 +353,9 @@ abstract class LanguageLocals {
     //   name: "Kongo",
     //   nativeName: "KiKongo",
     // ),
-    "ko": const ISOLanguageName(
-      name: "Korean",
-      nativeName: "한국어 (韓國語), 조선말 (朝鮮語)",
+    'ko': const ISOLanguageName(
+      name: 'Korean',
+      nativeName: '한국어 (韓國語), 조선말 (朝鮮語)',
     ),
     // "ku": const ISOLanguageName(
     //   name: "Kurdish",
@@ -457,9 +457,9 @@ abstract class LanguageLocals {
     //   name: "North Ndebele",
     //   nativeName: "isiNdebele",
     // ),
-    "ne": const ISOLanguageName(
-      name: "Nepali",
-      nativeName: "नेपाली",
+    'ne': const ISOLanguageName(
+      name: 'Nepali',
+      nativeName: 'नेपाली',
     ),
     // "ng": const ISOLanguageName(
     //   name: "Ndonga",
@@ -513,21 +513,21 @@ abstract class LanguageLocals {
     //   name: "Pāli",
     //   nativeName: "पाऴि",
     // ),
-    "fa": const ISOLanguageName(
-      name: "Persian",
-      nativeName: "فارسی",
+    'fa': const ISOLanguageName(
+      name: 'Persian',
+      nativeName: 'فارسی',
     ),
-    "pl": const ISOLanguageName(
-      name: "Polish",
-      nativeName: "polski",
+    'pl': const ISOLanguageName(
+      name: 'Polish',
+      nativeName: 'polski',
     ),
     // "ps": const ISOLanguageName(
     //   name: "Pashto, Pushto",
     //   nativeName: "پښتو",
     // ),
-    "pt": const ISOLanguageName(
-      name: "Portuguese",
-      nativeName: "Português",
+    'pt': const ISOLanguageName(
+      name: 'Portuguese',
+      nativeName: 'Português',
     ),
     // "qu": const ISOLanguageName(
     //   name: "Quechua",
@@ -545,9 +545,9 @@ abstract class LanguageLocals {
     //   name: "Romanian, Moldavian, Moldovan",
     //   nativeName: "română",
     // ),
-    "ru": const ISOLanguageName(
-      name: "Russian",
-      nativeName: "русский язык",
+    'ru': const ISOLanguageName(
+      name: 'Russian',
+      nativeName: 'русский язык',
     ),
     // "sa": const ISOLanguageName(
     //   name: "Sanskrit (Saṁskṛta)",
@@ -605,9 +605,9 @@ abstract class LanguageLocals {
     //   name: "Southern Sotho",
     //   nativeName: "Sesotho",
     // ),
-    "es": const ISOLanguageName(
-      name: "Spanish",
-      nativeName: "español",
+    'es': const ISOLanguageName(
+      name: 'Spanish',
+      nativeName: 'español',
     ),
     // "su": const ISOLanguageName(
     //   name: "Sundanese",
@@ -637,9 +637,9 @@ abstract class LanguageLocals {
     //   name: "Tajik",
     //   nativeName: "тоҷикӣ, toğikī, تاجیکی‎",
     // ),
-    "th": const ISOLanguageName(
-      name: "Thai",
-      nativeName: "ไทย",
+    'th': const ISOLanguageName(
+      name: 'Thai',
+      nativeName: 'ไทย',
     ),
     // "ti": const ISOLanguageName(
     //   name: "Tigrinya",
@@ -665,9 +665,9 @@ abstract class LanguageLocals {
     //   name: "Tonga (Tonga Islands)",
     //   nativeName: "faka Tonga",
     // ),
-    "tr": const ISOLanguageName(
-      name: "Turkish",
-      nativeName: "Türkçe",
+    'tr': const ISOLanguageName(
+      name: 'Turkish',
+      nativeName: 'Türkçe',
     ),
     // "ts": const ISOLanguageName(
     //   name: "Tsonga",
@@ -689,9 +689,9 @@ abstract class LanguageLocals {
     //   name: "Uighur, Uyghur",
     //   nativeName: "Uyƣurqə, ئۇيغۇرچە‎",
     // ),
-    "uk": const ISOLanguageName(
-      name: "Ukrainian",
-      nativeName: "українська",
+    'uk': const ISOLanguageName(
+      name: 'Ukrainian',
+      nativeName: 'українська',
     ),
     // "ur": const ISOLanguageName(
     //   name: "Urdu",
@@ -705,9 +705,9 @@ abstract class LanguageLocals {
     //   name: "Venda",
     //   nativeName: "Tshivenḓa",
     // ),
-    "vi": const ISOLanguageName(
-      name: "Vietnamese",
-      nativeName: "Tiếng Việt",
+    'vi': const ISOLanguageName(
+      name: 'Vietnamese',
+      nativeName: 'Tiếng Việt',
     ),
     // "vo": const ISOLanguageName(
     //   name: "Volapük",
@@ -751,7 +751,7 @@ abstract class LanguageLocals {
     if (isoLangs.containsKey(key)) {
       return isoLangs[key]!;
     } else {
-      throw Exception("Language key incorrect");
+      throw Exception('Language key incorrect');
     }
   }
 }

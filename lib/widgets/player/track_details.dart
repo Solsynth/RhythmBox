@@ -23,7 +23,7 @@ class PlayerTrackDetails extends StatelessWidget {
               const SizedBox(height: 4),
               InkWell(
                 child: Text(
-                  playback.state.value.activeTrack?.name ?? "Not playing",
+                  playback.state.value.activeTrack?.name ?? 'Not playing',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium!.copyWith(
@@ -36,7 +36,7 @@ class PlayerTrackDetails extends StatelessWidget {
               ),
               Text(
                 playback.state.value.activeTrack?.artists?.asString() ??
-                    "No author",
+                    'No author',
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodySmall!.copyWith(color: color),
               )

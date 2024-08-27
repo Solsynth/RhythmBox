@@ -19,14 +19,14 @@ class CustomPlayer extends Player {
 
   bool _shuffled;
   int _androidAudioSessionId = 0;
-  String _packageName = "";
+  String _packageName = '';
   AndroidAudioManager? _androidAudioManager;
 
   CustomPlayer({super.configuration})
       : _playerStateStream = StreamController.broadcast(),
         _shuffleStream = StreamController.broadcast(),
         _shuffled = false {
-    nativePlayer.setProperty("network-timeout", "120");
+    nativePlayer.setProperty('network-timeout', '120');
 
     _subscriptions = [
       stream.buffering.listen((event) {
@@ -63,10 +63,10 @@ class CustomPlayer extends Player {
         notifyAudioSessionUpdate(true);
 
         await nativePlayer.setProperty(
-          "audiotrack-session-id",
+          'audiotrack-session-id',
           _androidAudioSessionId.toString(),
         );
-        await nativePlayer.setProperty("ao", "audiotrack,opensles,");
+        await nativePlayer.setProperty('ao', 'audiotrack,opensles,');
       });
     }
   }
@@ -76,11 +76,11 @@ class CustomPlayer extends Player {
       sendBroadcast(
         BroadcastMessage(
           name: active
-              ? "android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION"
-              : "android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION",
+              ? 'android.media.action.OPEN_AUDIO_EFFECT_CONTROL_SESSION'
+              : 'android.media.action.CLOSE_AUDIO_EFFECT_CONTROL_SESSION',
           data: {
-            "android.media.extra.AUDIO_SESSION": _androidAudioSessionId,
-            "android.media.extra.PACKAGE_NAME": _packageName
+            'android.media.extra.AUDIO_SESSION': _androidAudioSessionId,
+            'android.media.extra.PACKAGE_NAME': _packageName
           },
         ),
       );

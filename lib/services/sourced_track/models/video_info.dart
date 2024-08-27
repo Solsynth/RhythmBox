@@ -87,7 +87,7 @@ class YoutubeVideoInfo {
       dislikes: 0,
       views: searchItem.views,
       channelName: searchItem.uploaderName,
-      channelId: searchItem.uploaderUrl ?? "",
+      channelId: searchItem.uploaderUrl ?? '',
       publishedAt: searchItem.uploadedDate != null
           ? DateTime.tryParse(searchItem.uploadedDate!) ?? DateTime(2003, 9, 9)
           : DateTime(2003, 9, 9),

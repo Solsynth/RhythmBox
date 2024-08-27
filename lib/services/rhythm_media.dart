@@ -27,7 +27,7 @@ class RhythmMedia extends mk.Media {
               : "http://${PlatformInfo.isWindows ? "localhost" : InternetAddress.anyIPv4.address}:$serverPort/stream/${track.id}",
           extras: {
             ...?extras,
-            "track": switch (track) {
+            'track': switch (track) {
               LocalTrack() => track.toJson(),
               SourcedTrack() => track.toJson(),
               _ => track.toJson(),
@@ -43,14 +43,14 @@ class RhythmMedia extends mk.Media {
       LocalTrack() => super.uri,
       _ =>
         "http://${PlatformInfo.isWindows ? "localhost" : InternetAddress.anyIPv4.address}:"
-            "$serverPort/stream/${track.id}",
+            '$serverPort/stream/${track.id}',
     };
   }
 
   factory RhythmMedia.fromMedia(mk.Media media) {
-    final track = media.uri.startsWith("http")
-        ? Track.fromJson(media.extras?["track"])
-        : LocalTrack.fromJson(media.extras?["track"]);
+    final track = media.uri.startsWith('http')
+        ? Track.fromJson(media.extras?['track'])
+        : LocalTrack.fromJson(media.extras?['track']);
     return RhythmMedia(
       track,
       extras: media.extras,
@@ -80,12 +80,12 @@ abstract class AudioPlayerInterface {
   AudioPlayerInterface()
       : _mkPlayer = CustomPlayer(
           configuration: const mk.PlayerConfiguration(
-            title: "Rhythm",
+            title: 'Rhythm',
             logLevel: kDebugMode ? mk.MPVLogLevel.info : mk.MPVLogLevel.error,
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {
-      log("[Playback] Error: $event");
+      log('[Playback] Error: $event');
     });
   }
 

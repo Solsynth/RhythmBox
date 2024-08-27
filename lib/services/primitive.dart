@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 
 abstract class PrimitiveUtils {
   static bool containsTextInBracket(String matcher, String text) {
-    final allMatches = RegExp(r"(?<=\().+?(?=\))").allMatches(matcher);
+    final allMatches = RegExp(r'(?<=\().+?(?=\))').allMatches(matcher);
     if (allMatches.isEmpty) return false;
     return allMatches
         .map((e) => e.group(0))
@@ -19,13 +19,13 @@ abstract class PrimitiveUtils {
 
   static String toReadableNumber(double num) {
     if (num > 999 && num < 99999) {
-      return "${(num / 1000).toStringAsFixed(0)}K";
+      return '${(num / 1000).toStringAsFixed(0)}K';
     } else if (num > 99999 && num < 999999) {
-      return "${(num / 1000).toStringAsFixed(0)}K";
+      return '${(num / 1000).toStringAsFixed(0)}K';
     } else if (num > 999999 && num < 999999999) {
-      return "${(num / 1000000).toStringAsFixed(0)}M";
+      return '${(num / 1000000).toStringAsFixed(0)}M';
     } else if (num > 999999999) {
-      return "${(num / 1000000000).toStringAsFixed(0)}B";
+      return '${(num / 1000000000).toStringAsFixed(0)}B';
     } else {
       return num.toStringAsFixed(0);
     }

@@ -20,7 +20,7 @@ abstract class ServiceUtils {
 
   static String clearArtistsOfTitle(String title, List<String> artists) {
     return title
-        .replaceAll(RegExp(artists.join("|"), caseSensitive: false), "")
+        .replaceAll(RegExp(artists.join('|'), caseSensitive: false), '')
         .trim();
   }
 
@@ -29,13 +29,13 @@ abstract class ServiceUtils {
     List<String> artists = const [],
     bool onlyCleanArtist = false,
   }) {
-    final match = RegExp(r"(?<=\().+?(?=\))").firstMatch(title)?.group(0);
+    final match = RegExp(r'(?<=\().+?(?=\))').firstMatch(title)?.group(0);
     final artistInBracket =
         artists.any((artist) => match?.contains(artist) ?? false);
 
     if (artistInBracket) {
       title = title.replaceAll(
-        RegExp(" *\\([^)]*\\) *"),
+        RegExp(' *\\([^)]*\\) *'),
         '',
       );
     }
@@ -47,9 +47,9 @@ abstract class ServiceUtils {
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
         .toLowerCase()
-        .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
-        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
-        .replaceAll(RegExp(r"\s+"), ' ')
+        .replaceAll(RegExp(r'\s*\[[^\]]*]'), ' ')
+        .replaceAll(RegExp(r'\sfeat\.|\sft\.'), ' ')
+        .replaceAll(RegExp(r'\s+'), ' ')
         .trim();
   }
 
@@ -60,18 +60,18 @@ abstract class ServiceUtils {
     Document document = parser.parse(response.body);
     String? lyrics = document.querySelector('div.lyrics')?.text.trim();
     if (lyrics == null) {
-      lyrics = "";
+      lyrics = '';
       document
-          .querySelectorAll("div[class^=\"Lyrics__Container\"]")
+          .querySelectorAll('div[class^="Lyrics__Container"]')
           .forEach((element) {
         if (element.text.trim().isNotEmpty) {
-          final snippet = element.innerHtml.replaceAll("<br>", "\n").replaceAll(
-                RegExp("<(?!\\s*br\\s*\\/?)[^>]+>", caseSensitive: false),
-                "",
+          final snippet = element.innerHtml.replaceAll('<br>', '\n').replaceAll(
+                RegExp('<(?!\\s*br\\s*\\/?)[^>]+>', caseSensitive: false),
+                '',
               );
-          final el = document.createElement("textarea");
+          final el = document.createElement('textarea');
           el.innerHtml = snippet;
-          lyrics = "$lyrics${el.text.trim()}\n\n";
+          lyrics = '$lyrics${el.text.trim()}\n\n';
         }
       });
     }
@@ -143,16 +143,16 @@ abstract class ServiceUtils {
 
   static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
     if (album == null || album.releaseDate == null) {
-      return DateTime.parse("1975-01-01");
+      return DateTime.parse('1975-01-01');
     }
 
     switch (album.releaseDatePrecision ?? DatePrecision.year) {
       case DatePrecision.day:
         return DateTime.parse(album.releaseDate!);
       case DatePrecision.month:
-        return DateTime.parse("${album.releaseDate}-01");
+        return DateTime.parse('${album.releaseDate}-01');
       case DatePrecision.year:
-        return DateTime.parse("${album.releaseDate}-01-01");
+        return DateTime.parse('${album.releaseDate}-01-01');
     }
   }
 
@@ -162,9 +162,9 @@ abstract class ServiceUtils {
       ..sort((a, b) {
         switch (sortBy) {
           case SortBy.ascending:
-            return a.name?.compareTo(b.name ?? "") ?? 0;
+            return a.name?.compareTo(b.name ?? '') ?? 0;
           case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
+            return b.name?.compareTo(a.name ?? '') ?? 0;
           case SortBy.newest:
             final aDate = parseSpotifyAlbumDate(a.album);
             final bDate = parseSpotifyAlbumDate(b.album);
@@ -177,10 +177,10 @@ abstract class ServiceUtils {
             return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
           case SortBy.artist:
             return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
+                    ?.compareTo(b.artists?.first.name ?? '') ??
                 0;
           case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
+            return a.album?.name?.compareTo(b.album?.name ?? '') ?? 0;
           default:
             return 0;
         }

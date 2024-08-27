@@ -31,11 +31,11 @@ class ServerPlaybackRoutesProvider {
         options: Options(
           headers: {
             ...request.headers,
-            "User-Agent":
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-            "host": Uri.parse(sourcedTrack.url).host,
-            "Cache-Control": "max-age=0",
-            "Connection": "keep-alive",
+            'User-Agent':
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+            'host': Uri.parse(sourcedTrack.url).host,
+            'Cache-Control': 'max-age=0',
+            'Connection': 'keep-alive',
           },
           responseType: ResponseType.stream,
           validateStatus: (status) => status! < 500,
@@ -54,7 +54,7 @@ class ServerPlaybackRoutesProvider {
         res.statusCode!,
         body: audioStream,
         context: {
-          "shelf.io.buffer_output": false,
+          'shelf.io.buffer_output': false,
         },
         headers: res.headers.map,
       );

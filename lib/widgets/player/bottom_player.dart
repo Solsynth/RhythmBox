@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
@@ -102,69 +103,77 @@ class _BottomPlayerState extends State<BottomPlayer>
       axis: Axis.vertical,
       axisAlignment: -1,
       child: Obx(
-        () => Column(
-          children: [
-            if (_durationCurrent != Duration.zero)
-              TweenAnimationBuilder<double>(
-                tween: Tween(
-                  begin: 0,
-                  end: _durationCurrent.inMilliseconds /
-                      max(_durationTotal.inMilliseconds, 1),
-                ),
-                duration: const Duration(milliseconds: 100),
-                builder: (context, value, _) => LinearProgressIndicator(
-                  minHeight: 3,
-                  value: value,
-                ),
-              ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  child: _albumArt != null
-                      ? AutoCacheImage(_albumArt!, width: 64, height: 64)
-                      : Container(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .surfaceContainerHigh,
-                          width: 64,
-                          height: 64,
-                          child: const Center(child: Icon(Icons.image)),
-                        ),
-                ),
-                const Gap(12),
-                Expanded(
-                  child: PlayerTrackDetails(
-                    track: _playback.state.value.activeTrack,
+        () => GestureDetector(
+          child: Column(
+            children: [
+              if (_durationCurrent != Duration.zero)
+                TweenAnimationBuilder<double>(
+                  tween: Tween(
+                    begin: 0,
+                    end: _durationCurrent.inMilliseconds /
+                        max(_durationTotal.inMilliseconds, 1),
+                  ),
+                  duration: const Duration(milliseconds: 100),
+                  builder: (context, value, _) => LinearProgressIndicator(
+                    minHeight: 3,
+                    value: value,
                   ),
                 ),
-                const Gap(12),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: _isFetchingActiveTrack
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                              ),
-                            )
-                          : Icon(
-                              !_isPlaying ? Icons.play_arrow : Icons.pause,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    child: Hero(
+                      tag: const Key('current-active-track-album-art'),
+                      child: _albumArt != null
+                          ? AutoCacheImage(_albumArt!, width: 64, height: 64)
+                          : Container(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHigh,
+                              width: 64,
+                              height: 64,
+                              child: const Center(child: Icon(Icons.image)),
                             ),
-                      onPressed:
-                          _isFetchingActiveTrack ? null : _togglePlayState,
                     ),
-                  ],
-                ),
-                const Gap(12),
-              ],
-            ).paddingSymmetric(horizontal: 12, vertical: 8),
-          ],
+                  ),
+                  const Gap(12),
+                  Expanded(
+                    child: PlayerTrackDetails(
+                      track: _playback.state.value.activeTrack,
+                    ),
+                  ),
+                  const Gap(12),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: _isFetchingActiveTrack
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                ),
+                              )
+                            : Icon(
+                                !_isPlaying ? Icons.play_arrow : Icons.pause,
+                              ),
+                        onPressed:
+                            _isFetchingActiveTrack ? null : _togglePlayState,
+                      ),
+                    ],
+                  ),
+                  const Gap(12),
+                ],
+              ).paddingSymmetric(horizontal: 12, vertical: 8),
+            ],
+          ),
+          onTap: () {
+            GoRouter.of(context).pushNamed('player');
+          },
         ),
       ),
     );

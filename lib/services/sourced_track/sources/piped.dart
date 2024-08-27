@@ -97,8 +97,8 @@ class PipedSourcedTrack extends SourcedTrack {
       info: PipedSourceInfo(
         id: item.id,
         artist: item.channelName,
-        artistUrl: "https://www.youtube.com/${item.channelId}",
-        pageUrl: "https://www.youtube.com/watch?v=${item.id}",
+        artistUrl: 'https://www.youtube.com/${item.channelId}',
+        pageUrl: 'https://www.youtube.com/watch?v=${item.id}',
         thumbnail: item.thumbnailUrl,
         title: item.title,
         duration: item.duration,
@@ -118,7 +118,7 @@ class PipedSourcedTrack extends SourcedTrack {
     // TODO Allow user search with normal youtube video (`youtube`)
     const searchMode = SearchMode.youtubeMusic;
     // TODO Follow user preferences
-    const audioSource = "youtube";
+    const audioSource = 'youtube';
 
     final query = SourcedTrack.getSearchTerm(track);
 
@@ -131,7 +131,7 @@ class PipedSourcedTrack extends SourcedTrack {
 
     // when falling back to piped API make sure to use the YouTube mode
     const isYouTubeMusic =
-        audioSource != "piped" ? false : searchMode == SearchMode.youtubeMusic;
+        audioSource != 'piped' ? false : searchMode == SearchMode.youtubeMusic;
 
     if (isYouTubeMusic) {
       final artists = (track.artists ?? [])

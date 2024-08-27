@@ -81,7 +81,7 @@ class AudioPlayerProvider extends GetxController {
   }
 
   Future<AudioPlayerState?> _readSavedState() async {
-    final data = _prefs.getString("player_state");
+    final data = _prefs.getString('player_state');
     if (data == null) return null;
 
     return AudioPlayerState.fromJson(jsonDecode(data));
@@ -89,7 +89,7 @@ class AudioPlayerProvider extends GetxController {
 
   Future<void> _updateSavedState() async {
     final out = jsonEncode(state.value.toJson());
-    await _prefs.setString("player_state", out);
+    await _prefs.setString('player_state', out);
   }
 
   Future<void> addCollections(List<String> collectionIds) async {

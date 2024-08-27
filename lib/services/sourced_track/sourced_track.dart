@@ -41,18 +41,18 @@ abstract class SourcedTrack extends Track {
 
   static SourcedTrack fromJson(Map<String, dynamic> json) {
     // TODO Follow user preferences
-    const audioSource = "youtube";
+    const audioSource = 'youtube';
 
     final sourceInfo = SourceInfo.fromJson(json);
     final source = SourceMap.fromJson(json);
     final track = Track.fromJson(json);
-    final siblings = (json["siblings"] as List)
+    final siblings = (json['siblings'] as List)
         .map((sibling) => SourceInfo.fromJson(sibling))
         .toList()
         .cast<SourceInfo>();
 
     return switch (audioSource) {
-      "piped" => PipedSourcedTrack(
+      'piped' => PipedSourcedTrack(
           source: source,
           siblings: siblings,
           sourceInfo: sourceInfo,
@@ -87,11 +87,11 @@ abstract class SourcedTrack extends Track {
     required Track track,
   }) async {
     // TODO Follow user preferences
-    const audioSource = "youtube";
+    const audioSource = 'youtube';
 
     try {
       return switch (audioSource) {
-        "piped" => await PipedSourcedTrack.fetchFromTrack(track: track),
+        'piped' => await PipedSourcedTrack.fetchFromTrack(track: track),
         _ => await YoutubeSourcedTrack.fetchFromTrack(track: track),
       };
     } on TrackNotFoundError catch (_) {
@@ -111,10 +111,10 @@ abstract class SourcedTrack extends Track {
     required Track track,
   }) {
     // TODO Follow user preferences
-    const audioSource = "youtube";
+    const audioSource = 'youtube';
 
     return switch (audioSource) {
-      "piped" => PipedSourcedTrack.fetchSiblings(track: track),
+      'piped' => PipedSourcedTrack.fetchSiblings(track: track),
       _ => YoutubeSourcedTrack.fetchSiblings(track: track),
     };
   }

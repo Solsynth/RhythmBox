@@ -31,9 +31,9 @@ class PlaybackServerProvider extends GetxController {
     RhythmMedia.serverPort = port;
 
     _router = Router();
-    _router!.get("/ping", (Request request) => Response.ok("pong"));
+    _router!.get('/ping', (Request request) => Response.ok('pong'));
     _router!.get(
-      "/stream/<trackId>",
+      '/stream/<trackId>',
       Get.find<ServerPlaybackRoutesProvider>().getStreamTrackId,
     );
 

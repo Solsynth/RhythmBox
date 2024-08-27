@@ -15,7 +15,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 final youtubeClient = YoutubeExplode();
 final officialMusicRegex = RegExp(
-  r"official\s(video|audio|music\svideo|lyric\svideo|visualizer)",
+  r'official\s(video|audio|music\svideo|lyric\svideo|visualizer)',
   caseSensitive: false,
 );
 
@@ -62,11 +62,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   static SourceMap toSourceMap(StreamManifest manifest) {
     var m4a = manifest.audioOnly
-        .where((audio) => audio.codec.mimeType == "audio/mp4")
+        .where((audio) => audio.codec.mimeType == 'audio/mp4')
         .sortByBitrate();
 
     var weba = manifest.audioOnly
-        .where((audio) => audio.codec.mimeType == "audio/webm")
+        .where((audio) => audio.codec.mimeType == 'audio/webm')
         .sortByBitrate();
 
     m4a = m4a.isEmpty ? weba.toList() : m4a;
@@ -96,7 +96,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
       final manifest =
           await youtubeClient.videos.streamsClient.getManifest(item.id).timeout(
                 const Duration(seconds: 5),
-                onTimeout: () => throw ClientException("Timeout"),
+                onTimeout: () => throw ClientException('Timeout'),
               );
       sourceMap = toSourceMap(manifest);
     }
@@ -105,8 +105,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
       info: YoutubeSourceInfo(
         id: item.id,
         artist: item.channelName,
-        artistUrl: "https://www.youtube.com/channel/${item.channelId}",
-        pageUrl: "https://www.youtube.com/watch?v=${item.id}",
+        artistUrl: 'https://www.youtube.com/channel/${item.channelId}',
+        pageUrl: 'https://www.youtube.com/watch?v=${item.id}',
         thumbnail: item.thumbnailUrl,
         title: item.title,
         duration: item.duration,
@@ -179,7 +179,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required Track track,
   }) async {
     final links = await SongLinkService.links(track.id!);
-    final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
+    final ytLink = links.firstWhereOrNull((link) => link.platform == 'youtube');
 
     if (ytLink?.url != null
         // allows to fetch siblings more results for already sourced track
@@ -203,7 +203,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final searchResults = await youtubeClient.search.search(
-      "$query - Topic",
+      '$query - Topic',
       filter: TypeFilters.video,
     );
 
@@ -240,7 +240,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
         .getManifest(newSourceInfo.id)
         .timeout(
           const Duration(seconds: 5),
-          onTimeout: () => throw ClientException("Timeout"),
+          onTimeout: () => throw ClientException('Timeout'),
         );
 
     // TODO Save to cache here

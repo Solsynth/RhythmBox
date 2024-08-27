@@ -1,6 +1,6 @@
 enum SearchMode {
-  youtube._("YouTube"),
-  youtubeMusic._("YouTube Music");
+  youtube._('YouTube'),
+  youtubeMusic._('YouTube Music');
 
   final String label;
 
