@@ -285,7 +285,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           isScrollControlled: true,
                           context: context,
                           builder: (context) => const PlayerQueuePopup(),
-                        );
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        });
                       },
                     ),
                   ),
