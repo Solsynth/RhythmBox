@@ -26,9 +26,13 @@ class SourcedTrackProvider extends GetxController {
       }
     });
 
-    query.isQueryingTrackInfo.value = true;
+    final isCurrentTrack = playback.state.value.activeTrack?.id == track.id;
+
+    if (isCurrentTrack) query.isQueryingTrackInfo.value = true;
+
     sourcedTrack.value = await SourcedTrack.fetchFromTrack(track: track);
-    query.isQueryingTrackInfo.value = false;
+
+    if (isCurrentTrack) query.isQueryingTrackInfo.value = false;
 
     return sourcedTrack.value;
   }
