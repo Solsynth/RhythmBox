@@ -45,6 +45,7 @@ class _BottomPlayerState extends State<BottomPlayer>
 
   Duration _durationCurrent = Duration.zero;
   Duration _durationTotal = Duration.zero;
+  Duration _durationBuffered = Duration.zero;
 
   void _updateDurationCurrent(Duration dur) {
     setState(() => _durationCurrent = dur);
@@ -70,8 +71,12 @@ class _BottomPlayerState extends State<BottomPlayer>
   void initState() {
     super.initState();
     _subscriptions = [
-      audioPlayer.durationStream.listen(_updateDurationTotal),
-      audioPlayer.positionStream.listen(_updateDurationCurrent),
+      audioPlayer.durationStream
+          .listen((dur) => setState(() => _durationTotal = dur)),
+      audioPlayer.positionStream
+          .listen((dur) => setState(() => _durationCurrent = dur)),
+      audioPlayer.bufferedPositionStream
+          .listen((dur) => setState(() => _durationBuffered = dur)),
       _playback.state.listen((state) {
         if (state.playlist.medias.isNotEmpty && !_isLifted) {
           _animationController.animateTo(1);
@@ -183,6 +188,7 @@ class _BottomPlayerState extends State<BottomPlayer>
             context.pushTransparentRoute(PlayerScreen(
               durationCurrent: _durationCurrent,
               durationTotal: _durationTotal,
+              durationBuffered: _durationBuffered,
             ));
           },
         ),

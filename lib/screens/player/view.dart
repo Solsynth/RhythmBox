@@ -13,12 +13,13 @@ import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class PlayerScreen extends StatefulWidget {
-  final Duration durationCurrent, durationTotal;
+  final Duration durationCurrent, durationTotal, durationBuffered;
 
   const PlayerScreen({
     super.key,
     required this.durationCurrent,
     required this.durationTotal,
+    required this.durationBuffered,
   });
 
   @override
@@ -37,6 +38,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   bool get _isPlaying => _playback.isPlaying.value;
   bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
+
+  double _bufferProgress = 0;
 
   Duration _durationCurrent = Duration.zero;
   Duration _durationTotal = Duration.zero;
@@ -75,9 +78,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
     super.initState();
     _durationCurrent = widget.durationCurrent;
     _durationTotal = widget.durationTotal;
+    _bufferProgress = widget.durationBuffered.inMilliseconds.toDouble();
     _subscriptions = [
-      audioPlayer.durationStream.listen(_updateDurationTotal),
-      audioPlayer.positionStream.listen(_updateDurationCurrent),
+      audioPlayer.durationStream
+          .listen((dur) => setState(() => _durationTotal = dur)),
+      audioPlayer.positionStream
+          .listen((dur) => setState(() => _durationCurrent = dur)),
+      audioPlayer.bufferedPositionStream.listen((dur) =>
+          setState(() => _bufferProgress = dur.inMilliseconds.toDouble())),
     ];
   }
 
@@ -154,13 +162,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       overlayShape: SliderComponentShape.noOverlay,
                     ),
                     child: Slider(
-                      value: _draggingValue ??
+                      secondaryTrackValue: _bufferProgress.abs(),
+                      value: _draggingValue?.abs() ??
                           (_durationCurrent.inMilliseconds <=
                                   _durationTotal.inMilliseconds
-                              ? _durationCurrent.inMilliseconds.toDouble()
+                              ? _durationCurrent.inMilliseconds.toDouble().abs()
                               : 0),
                       min: 0,
-                      max: _durationTotal.inMilliseconds.toDouble(),
+                      max: _durationTotal.inMilliseconds.abs().toDouble(),
                       onChanged: (value) {
                         setState(() => _draggingValue = value);
                       },
