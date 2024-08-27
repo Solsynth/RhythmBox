@@ -23,4 +23,11 @@ class AutoCacheImage extends StatelessWidget {
       height: height,
     );
   }
+
+  static ImageProvider provider(String url) {
+    if (PlatformInfo.canCacheImage) {
+      return CachedNetworkImageProvider(url);
+    }
+    return NetworkImage(url);
+  }
 }

@@ -1,4 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:get/get.dart';
+import 'package:rhythm_box/providers/user_preferences.dart';
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/utils.dart';
 import 'package:spotify/spotify.dart';
 
@@ -40,8 +43,8 @@ abstract class SourcedTrack extends Track {
   }
 
   static SourcedTrack fromJson(Map<String, dynamic> json) {
-    // TODO Follow user preferences
-    const audioSource = 'youtube';
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final audioSource = preferences.audioSource;
 
     final sourceInfo = SourceInfo.fromJson(json);
     final source = SourceMap.fromJson(json);
@@ -52,7 +55,7 @@ abstract class SourcedTrack extends Track {
         .cast<SourceInfo>();
 
     return switch (audioSource) {
-      'piped' => PipedSourcedTrack(
+      AudioSource.piped => PipedSourcedTrack(
           source: source,
           siblings: siblings,
           sourceInfo: sourceInfo,
@@ -86,12 +89,13 @@ abstract class SourcedTrack extends Track {
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
-    // TODO Follow user preferences
-    const audioSource = 'youtube';
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final audioSource = preferences.audioSource;
 
     try {
       return switch (audioSource) {
-        'piped' => await PipedSourcedTrack.fetchFromTrack(track: track),
+        AudioSource.piped =>
+          await PipedSourcedTrack.fetchFromTrack(track: track),
         _ => await YoutubeSourcedTrack.fetchFromTrack(track: track),
       };
     } on TrackNotFoundError catch (_) {
@@ -110,11 +114,11 @@ abstract class SourcedTrack extends Track {
   static Future<List<SiblingType>> fetchSiblings({
     required Track track,
   }) {
-    // TODO Follow user preferences
-    const audioSource = 'youtube';
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final audioSource = preferences.audioSource;
 
     return switch (audioSource) {
-      'piped' => PipedSourcedTrack.fetchSiblings(track: track),
+      AudioSource.piped => PipedSourcedTrack.fetchSiblings(track: track),
       _ => YoutubeSourcedTrack.fetchSiblings(track: track),
     };
   }
@@ -128,15 +132,15 @@ abstract class SourcedTrack extends Track {
   }
 
   String get url {
-    // TODO Follow user preferences
-    const streamMusicCodec = SourceCodecs.weba;
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final streamMusicCodec = preferences.streamMusicCodec;
 
     return getUrlOfCodec(streamMusicCodec);
   }
 
   String getUrlOfCodec(SourceCodecs codec) {
-    // TODO Follow user preferences
-    const audioQuality = SourceQualities.high;
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final audioQuality = preferences.audioQuality;
 
     return source[codec]?[audioQuality] ??
         // this will ensure playback doesn't break
@@ -145,8 +149,8 @@ abstract class SourcedTrack extends Track {
   }
 
   SourceCodecs get codec {
-    // TODO Follow user preferences
-    const streamMusicCodec = SourceCodecs.weba;
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final streamMusicCodec = preferences.streamMusicCodec;
 
     return streamMusicCodec;
   }

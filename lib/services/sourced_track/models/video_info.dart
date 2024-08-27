@@ -1,6 +1,5 @@
 import 'package:piped_client/piped_client.dart';
-import 'package:rhythm_box/services/sourced_track/models/search.dart';
-
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeVideoInfo {

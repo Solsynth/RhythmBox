@@ -1,7 +1,11 @@
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:http/http.dart';
+import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/utils.dart';
 import 'package:spotify/spotify.dart';
 import 'package:rhythm_box/services/song_link/song_link.dart';
@@ -43,19 +47,61 @@ class YoutubeSourcedTrack extends SourcedTrack {
   static Future<YoutubeSourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
-    // TODO Add cache query here
+    final DatabaseProvider db = Get.find();
+    final cachedSource = await (db.database.select(db.database.sourceMatchTable)
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .get()
+        .then((s) => s.firstOrNull);
 
-    final siblings = await fetchSiblings(track: track);
-    if (siblings.isEmpty) {
-      throw TrackNotFoundError(track);
+    if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
+      final siblings = await fetchSiblings(track: track);
+      if (siblings.isEmpty) {
+        throw TrackNotFoundError(track);
+      }
+
+      await db.database.into(db.database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: track.id!,
+              sourceId: siblings.first.info.id,
+              sourceType: const Value(SourceType.youtube),
+            ),
+          );
+
+      return YoutubeSourcedTrack(
+        siblings: siblings.map((s) => s.info).skip(1).toList(),
+        source: siblings.first.source as SourceMap,
+        sourceInfo: siblings.first.info,
+        track: track,
+      );
     }
 
-    // TODO Save to cache here
-
+    final item = await youtubeClient.videos.get(cachedSource.sourceId);
+    final manifest = await youtubeClient.videos.streamsClient
+        .getManifest(
+          cachedSource.sourceId,
+        )
+        .timeout(
+          const Duration(seconds: 5),
+          onTimeout: () => throw ClientException('Timeout'),
+        );
     return YoutubeSourcedTrack(
-      siblings: siblings.map((s) => s.info).skip(1).toList(),
-      source: siblings.first.source as SourceMap,
-      sourceInfo: siblings.first.info,
+      siblings: [],
+      source: toSourceMap(manifest),
+      sourceInfo: YoutubeSourceInfo(
+        id: item.id.value,
+        artist: item.author,
+        artistUrl: 'https://www.youtube.com/channel/${item.channelId}',
+        pageUrl: item.url,
+        thumbnail: item.thumbnails.highResUrl,
+        title: item.title,
+        duration: item.duration ?? Duration.zero,
+        album: null,
+      ),
       track: track,
     );
   }
@@ -243,7 +289,19 @@ class YoutubeSourcedTrack extends SourcedTrack {
           onTimeout: () => throw ClientException('Timeout'),
         );
 
-    // TODO Save to cache here
+    final DatabaseProvider db = Get.find();
+
+    await db.database.into(db.database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: id!,
+            sourceId: newSourceInfo.id,
+            sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return YoutubeSourcedTrack(
       siblings: newSiblings,

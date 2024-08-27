@@ -13,8 +13,7 @@ enum CloseBehavior {
 
 enum AudioSource {
   youtube,
-  piped,
-  jiosaavn;
+  piped;
 
   String get label => name[0].toUpperCase() + name.substring(1);
 }

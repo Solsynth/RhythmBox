@@ -21,7 +21,6 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 part 'database.g.dart';
 
 part 'tables/authentication.dart';
-part 'tables/blacklist.dart';
 part 'tables/preferences.dart';
 part 'tables/scrobbler.dart';
 part 'tables/skip_segment.dart';
@@ -39,7 +38,6 @@ part 'typeconverters/subtitle.dart';
 @DriftDatabase(
   tables: [
     AuthenticationTable,
-    BlacklistTable,
     PreferencesTable,
     ScrobblerTable,
     SkipSegmentTable,

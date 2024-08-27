@@ -1,9 +1,8 @@
 part of '../database.dart';
 
 enum SourceType {
-  youtube._("YouTube"),
-  youtubeMusic._("YouTube Music"),
-  jiosaavn._("JioSaavn");
+  youtube._('YouTube'),
+  youtubeMusic._('YouTube Music');
 
   final String label;
 
@@ -11,7 +10,7 @@ enum SourceType {
 }
 
 @TableIndex(
-  name: "uniq_track_match",
+  name: 'uniq_track_match',
   columns: {#trackId, #sourceId, #sourceType},
   unique: true,
 )

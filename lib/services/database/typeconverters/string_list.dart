@@ -5,11 +5,11 @@ class StringListConverter extends TypeConverter<List<String>, String> {
 
   @override
   List<String> fromSql(String fromDb) {
-    return fromDb.split(",").where((e) => e.isNotEmpty).toList();
+    return fromDb.split(',').where((e) => e.isNotEmpty).toList();
   }
 
   @override
   String toSql(List<String> value) {
-    return value.join(",");
+    return value.join(',');
   }
 }

@@ -1,6 +1,10 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:piped_client/piped_client.dart';
-import 'package:rhythm_box/services/sourced_track/models/search.dart';
+import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/user_preferences.dart';
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/utils.dart';
 import 'package:spotify/spotify.dart';
 
@@ -41,21 +45,62 @@ class PipedSourcedTrack extends SourcedTrack {
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
-    // TODO Add cache query here
+    final DatabaseProvider db = Get.find();
+    final cachedSource = await (db.database.select(db.database.sourceMatchTable)
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .getSingleOrNull();
 
-    final siblings = await fetchSiblings(track: track);
-    if (siblings.isEmpty) {
-      throw TrackNotFoundError(track);
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+
+    if (cachedSource == null) {
+      final siblings = await fetchSiblings(track: track);
+      if (siblings.isEmpty) {
+        throw TrackNotFoundError(track);
+      }
+
+      await db.database.into(db.database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: track.id!,
+              sourceId: siblings.first.info.id,
+              sourceType: Value(
+                preferences.searchMode == SearchMode.youtube
+                    ? SourceType.youtube
+                    : SourceType.youtubeMusic,
+              ),
+            ),
+          );
+
+      return PipedSourcedTrack(
+        siblings: siblings.map((s) => s.info).skip(1).toList(),
+        source: siblings.first.source as SourceMap,
+        sourceInfo: siblings.first.info,
+        track: track,
+      );
+    } else {
+      final client = _getClient();
+      final manifest = await client.streams(cachedSource.sourceId);
+
+      return PipedSourcedTrack(
+        siblings: [],
+        source: toSourceMap(manifest),
+        sourceInfo: PipedSourceInfo(
+          id: manifest.id,
+          artist: manifest.uploader,
+          artistUrl: manifest.uploaderUrl,
+          pageUrl: 'https://www.youtube.com/watch?v=${manifest.id}',
+          thumbnail: manifest.thumbnailUrl,
+          title: manifest.title,
+          duration: manifest.duration,
+          album: null,
+        ),
+        track: track,
+      );
     }
-
-    // TODO Insert to cache here
-
-    return PipedSourcedTrack(
-      siblings: siblings.map((s) => s.info).skip(1).toList(),
-      source: siblings.first.source as SourceMap,
-      sourceInfo: siblings.first.info,
-      track: track,
-    );
   }
 
   static SourceMap toSourceMap(PipedStreamResponse manifest) {
@@ -114,11 +159,10 @@ class PipedSourcedTrack extends SourcedTrack {
     required Track track,
   }) async {
     final pipedClient = _getClient();
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
 
-    // TODO Allow user search with normal youtube video (`youtube`)
-    const searchMode = SearchMode.youtubeMusic;
-    // TODO Follow user preferences
-    const audioSource = 'youtube';
+    final searchMode = preferences.searchMode;
+    final audioSource = preferences.audioSource;
 
     final query = SourcedTrack.getSearchTerm(track);
 
@@ -130,8 +174,9 @@ class PipedSourcedTrack extends SourcedTrack {
     );
 
     // when falling back to piped API make sure to use the YouTube mode
-    const isYouTubeMusic =
-        audioSource != 'piped' ? false : searchMode == SearchMode.youtubeMusic;
+    final isYouTubeMusic = audioSource != AudioSource.piped
+        ? false
+        : searchMode == SearchMode.youtubeMusic;
 
     if (isYouTubeMusic) {
       final artists = (track.artists ?? [])
@@ -227,7 +272,18 @@ class PipedSourcedTrack extends SourcedTrack {
 
     final manifest = await pipedClient.streams(newSourceInfo.id);
 
-    // TODO Save to cache here
+    final DatabaseProvider db = Get.find();
+    await db.database.into(db.database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: id!,
+            sourceId: newSourceInfo.id,
+            sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return PipedSourcedTrack(
       siblings: newSiblings,

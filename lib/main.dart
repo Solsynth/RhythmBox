@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/audio_player_stream.dart';
+import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/history.dart';
+import 'package:rhythm_box/providers/palette.dart';
+import 'package:rhythm_box/providers/scrobbler.dart';
+import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/spotify.dart';
+import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/router.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/routes/playback.dart';
@@ -51,7 +58,16 @@ class MyApp extends StatelessWidget {
 
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
-    Get.lazyPut(() => ActiveSourcedTrackProvider());
+
+    Get.put(ActiveSourcedTrackProvider());
+    Get.put(AudioPlayerStreamProvider());
+
+    Get.put(DatabaseProvider());
+    Get.put(PlaybackHistoryProvider());
+    Get.put(SegmentsProvider());
+    Get.put(PaletteProvider());
+    Get.put(ScrobblerProvider());
+    Get.put(UserPreferencesProvider());
 
     Get.put(AudioPlayerProvider());
     Get.put(QueryingTrackInfoProvider());
