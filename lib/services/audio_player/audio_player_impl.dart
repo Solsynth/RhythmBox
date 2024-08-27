@@ -89,14 +89,17 @@ class RhythmAudioPlayer extends AudioPlayerInterface
   int get currentIndex => _mkPlayer.state.playlist.index;
 
   Future<void> skipToNext() async {
+    Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
     await _mkPlayer.next();
   }
 
   Future<void> skipToPrevious() async {
+    Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
     await _mkPlayer.previous();
   }
 
   Future<void> jumpTo(int index) async {
+    Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
     await _mkPlayer.jump(index);
   }
 

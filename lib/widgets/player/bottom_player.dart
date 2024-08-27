@@ -163,6 +163,12 @@ class _BottomPlayerState extends State<BottomPlayer>
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
+                        icon: const Icon(Icons.skip_next),
+                        onPressed: _isFetchingActiveTrack
+                            ? null
+                            : audioPlayer.skipToNext,
+                      ),
+                      IconButton.filled(
                         icon: _isFetchingActiveTrack
                             ? const SizedBox(
                                 height: 20,

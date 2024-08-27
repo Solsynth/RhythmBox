@@ -32,7 +32,7 @@ class SourcedTrackProvider extends GetxController {
 
     sourcedTrack.value = await SourcedTrack.fetchFromTrack(track: track);
 
-    if (isCurrentTrack) query.isQueryingTrackInfo.value = false;
+    query.isQueryingTrackInfo.value = false;
 
     return sourcedTrack.value;
   }

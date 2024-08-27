@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
@@ -164,12 +165,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     child: Slider(
                       secondaryTrackValue: _bufferProgress.abs(),
                       value: _draggingValue?.abs() ??
-                          (_durationCurrent.inMilliseconds <=
-                                  _durationTotal.inMilliseconds
-                              ? _durationCurrent.inMilliseconds.toDouble().abs()
-                              : 0),
+                          _durationCurrent.inMilliseconds.toDouble().abs(),
                       min: 0,
-                      max: _durationTotal.inMilliseconds.abs().toDouble(),
+                      max: max(
+                        _durationTotal.inMilliseconds.abs(),
+                        _durationTotal.inMilliseconds.abs(),
+                      ).toDouble(),
                       onChanged: (value) {
                         setState(() => _draggingValue = value);
                       },
@@ -198,6 +199,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  IconButton(
+                    icon: const Icon(Icons.skip_previous),
+                    onPressed: _isFetchingActiveTrack
+                        ? null
+                        : audioPlayer.skipToPrevious,
+                  ),
+                  const Gap(8),
                   SizedBox(
                     width: 56,
                     height: 56,
@@ -218,6 +226,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       onPressed:
                           _isFetchingActiveTrack ? null : _togglePlayState,
                     ),
+                  ),
+                  const Gap(8),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed:
+                        _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
                   ),
                 ],
               )
