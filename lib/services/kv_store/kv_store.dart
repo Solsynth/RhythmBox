@@ -13,24 +13,18 @@ abstract class KVStoreService {
     _sharedPreferences = await SharedPreferences.getInstance();
   }
 
-  static bool get doneGettingStarted =>
-      sharedPreferences.getBool('doneGettingStarted') ?? false;
-  static Future<void> setDoneGettingStarted(bool value) async =>
-      await sharedPreferences.setBool('doneGettingStarted', value);
-
   static bool get askedForBatteryOptimization =>
-      sharedPreferences.getBool('askedForBatteryOptimization') ?? false;
+      sharedPreferences.getBool('asked_for_battery_optimization') ?? false;
   static Future<void> setAskedForBatteryOptimization(bool value) async =>
-      await sharedPreferences.setBool('askedForBatteryOptimization', value);
+      await sharedPreferences.setBool('asked_for_battery_optimization', value);
 
   static List<String> get recentSearches =>
-      sharedPreferences.getStringList('recentSearches') ?? [];
-
+      sharedPreferences.getStringList('recent_searches') ?? [];
   static Future<void> setRecentSearches(List<String> value) async =>
-      await sharedPreferences.setStringList('recentSearches', value);
+      await sharedPreferences.setStringList('recent_searches', value);
 
   static WindowSize? get windowSize {
-    final raw = sharedPreferences.getString('windowSize');
+    final raw = sharedPreferences.getString('window_size');
 
     if (raw == null) {
       return null;
@@ -40,7 +34,7 @@ abstract class KVStoreService {
 
   static Future<void> setWindowSize(WindowSize value) async =>
       await sharedPreferences.setString(
-        'windowSize',
+        'window_size',
         jsonEncode(
           value.toJson(),
         ),
@@ -82,9 +76,4 @@ abstract class KVStoreService {
   static double get volume => sharedPreferences.getDouble('volume') ?? 1.0;
   static Future<void> setVolume(double value) async =>
       await sharedPreferences.setDouble('volume', value);
-
-  static bool get hasMigratedToDrift =>
-      sharedPreferences.getBool('hasMigratedToDrift') ?? false;
-  static Future<void> setHasMigratedToDrift(bool value) async =>
-      await sharedPreferences.setBool('hasMigratedToDrift', value);
 }

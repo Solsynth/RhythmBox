@@ -21,9 +21,16 @@ class AudioPlayerStreamProvider extends GetxController {
   List<StreamSubscription>? _subscriptions;
 
   AudioPlayerStreamProvider() {
-    AudioServices.create().then(
-      (value) => notificationService = value,
-    );
+    _initNotificationService();
+  }
+
+  Future<void> _initNotificationService() async {
+    try {
+      final res = await AudioServices.create();
+      notificationService = res;
+    } catch (err) {
+      log('[AudioService] Unable to init audio service: $err');
+    }
   }
 
   @override
@@ -50,7 +57,7 @@ class AudioPlayerStreamProvider extends GetxController {
   }
 
   Future<void> updatePalette() async {
-    if (!Get.find<UserPreferences>().albumColorSync) {
+    if (!Get.find<UserPreferencesProvider>().state.value.albumColorSync) {
       if (palette.value != null) {
         palette.value = null;
       }

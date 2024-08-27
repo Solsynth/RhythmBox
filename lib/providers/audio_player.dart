@@ -1,19 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
-import 'package:get/get.dart';
+import 'package:drift/drift.dart';
+import 'package:get/get.dart' hide Value;
 import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/services/audio_player/state.dart';
-import 'package:rhythm_box/services/local_track.dart';
-import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AudioPlayerProvider extends GetxController {
-  late final SharedPreferences _prefs;
-
   RxBool isPlaying = false.obs;
 
   Rx<AudioPlayerState> state = Rx(AudioPlayerState(
@@ -28,40 +25,38 @@ class AudioPlayerProvider extends GetxController {
 
   @override
   void onInit() {
-    SharedPreferences.getInstance().then((ins) async {
-      _prefs = ins;
-      final res = await _readSavedState();
-      if (res != null) {
-        state.value = res;
-      } else {
-        state.value = AudioPlayerState(
-          loopMode: audioPlayer.loopMode,
-          playing: audioPlayer.isPlaying,
-          playlist: audioPlayer.playlist,
-          shuffled: audioPlayer.isShuffled,
-          collections: [],
-        );
-      }
-    });
-
     _subscriptions = [
       audioPlayer.playingStream.listen((playing) async {
         state.value = state.value.copyWith(playing: playing);
-        await _updateSavedState();
+        await _updatePlayerState(
+          AudioPlayerStateTableCompanion(
+            playing: Value(playing),
+          ),
+        );
       }),
       audioPlayer.loopModeStream.listen((loopMode) async {
         state.value = state.value.copyWith(loopMode: loopMode);
-        await _updateSavedState();
+        await _updatePlayerState(
+          AudioPlayerStateTableCompanion(
+            loopMode: Value(loopMode),
+          ),
+        );
       }),
       audioPlayer.shuffledStream.listen((shuffled) async {
         state.value = state.value.copyWith(shuffled: shuffled);
-        await _updateSavedState();
+        await _updatePlayerState(
+          AudioPlayerStateTableCompanion(
+            shuffled: Value(shuffled),
+          ),
+        );
       }),
       audioPlayer.playlistStream.listen((playlist) async {
         state.value = state.value.copyWith(playlist: playlist);
-        await _updateSavedState();
+        await _updatePlaylist(playlist);
       }),
     ];
+
+    _readSavedState();
 
     audioPlayer.playingStream.listen((playing) {
       isPlaying.value = playing;
@@ -80,16 +75,124 @@ class AudioPlayerProvider extends GetxController {
     super.dispose();
   }
 
-  Future<AudioPlayerState?> _readSavedState() async {
-    final data = _prefs.getString('player_state');
-    if (data == null) return null;
+  Future<void> _readSavedState() async {
+    final database = Get.find<DatabaseProvider>().database;
 
-    return AudioPlayerState.fromJson(jsonDecode(data));
+    var playerState =
+        await database.select(database.audioPlayerStateTable).getSingleOrNull();
+
+    if (playerState == null) {
+      await database.into(database.audioPlayerStateTable).insert(
+            AudioPlayerStateTableCompanion.insert(
+              playing: audioPlayer.isPlaying,
+              loopMode: audioPlayer.loopMode,
+              shuffled: audioPlayer.isShuffled,
+              collections: <String>[],
+              id: const Value(0),
+            ),
+          );
+
+      playerState =
+          await database.select(database.audioPlayerStateTable).getSingle();
+    } else {
+      await audioPlayer.setLoopMode(playerState.loopMode);
+      await audioPlayer.setShuffle(playerState.shuffled);
+    }
+
+    var playlist =
+        await database.select(database.playlistTable).getSingleOrNull();
+    var medias = await database.select(database.playlistMediaTable).get();
+
+    if (playlist == null) {
+      await database.into(database.playlistTable).insert(
+            PlaylistTableCompanion.insert(
+              audioPlayerStateId: 0,
+              index: audioPlayer.playlist.index,
+              id: const Value(0),
+            ),
+          );
+
+      playlist = await database.select(database.playlistTable).getSingle();
+    }
+
+    if (medias.isEmpty && audioPlayer.playlist.medias.isNotEmpty) {
+      await database.batch((batch) {
+        batch.insertAll(
+          database.playlistMediaTable,
+          [
+            for (final media in audioPlayer.playlist.medias)
+              PlaylistMediaTableCompanion.insert(
+                playlistId: playlist!.id,
+                uri: media.uri,
+                extras: Value(media.extras),
+                httpHeaders: Value(media.httpHeaders),
+              ),
+          ],
+        );
+      });
+    } else if (medias.isNotEmpty) {
+      await audioPlayer.openPlaylist(
+        medias
+            .map(
+              (media) => RhythmMedia.fromMedia(
+                Media(
+                  media.uri,
+                  extras: media.extras,
+                  httpHeaders: media.httpHeaders,
+                ),
+              ),
+            )
+            .toList(),
+        initialIndex: playlist.index,
+        autoPlay: false,
+      );
+    }
+
+    if (playerState.collections.isNotEmpty) {
+      state.value = state.value.copyWith(
+        collections: playerState.collections,
+      );
+    }
   }
 
-  Future<void> _updateSavedState() async {
-    final out = jsonEncode(state.value.toJson());
-    await _prefs.setString('player_state', out);
+  Future<void> _updatePlayerState(
+    AudioPlayerStateTableCompanion companion,
+  ) async {
+    final database = Get.find<DatabaseProvider>().database;
+
+    await (database.update(database.audioPlayerStateTable)
+          ..where((tb) => tb.id.equals(0)))
+        .write(companion);
+  }
+
+  Future<void> _updatePlaylist(
+    Playlist playlist,
+  ) async {
+    final database = Get.find<DatabaseProvider>().database;
+
+    await database.batch((batch) {
+      batch.update(
+        database.playlistTable,
+        PlaylistTableCompanion(index: Value(playlist.index)),
+        where: (tb) => tb.id.equals(0),
+      );
+
+      batch.deleteAll(database.playlistMediaTable);
+
+      if (playlist.medias.isEmpty) return;
+      batch.insertAll(
+        database.playlistMediaTable,
+        [
+          for (final media in playlist.medias)
+            PlaylistMediaTableCompanion.insert(
+              playlistId: 0,
+              uri: media.uri,
+              extras: Value(media.extras),
+              httpHeaders: Value(media.httpHeaders),
+            ),
+        ],
+      );
+    });
   }
 
   Future<void> addCollections(List<String> collectionIds) async {
@@ -98,7 +201,11 @@ class AudioPlayerProvider extends GetxController {
       ...collectionIds,
     ]);
 
-    await _updateSavedState();
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        collections: Value(state.value.collections),
+      ),
+    );
   }
 
   Future<void> addCollection(String collectionId) async {
@@ -112,7 +219,11 @@ class AudioPlayerProvider extends GetxController {
           .toList(),
     );
 
-    await _updateSavedState();
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        collections: Value(state.value.collections),
+      ),
+    );
   }
 
   Future<void> removeCollection(String collectionId) async {

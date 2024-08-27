@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:encrypt/encrypt.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rhythm_box/services/color.dart';
@@ -27,6 +28,7 @@ part 'tables/skip_segment.dart';
 part 'tables/source_match.dart';
 part 'tables/history.dart';
 part 'tables/lyrics.dart';
+part 'tables/audio_player_state.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
@@ -44,6 +46,9 @@ part 'typeconverters/subtitle.dart';
     SourceMatchTable,
     HistoryTable,
     LyricsTable,
+    AudioPlayerStateTable,
+    PlaylistTable,
+    PlaylistMediaTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {

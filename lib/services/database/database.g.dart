@@ -2951,6 +2951,879 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
   }
 }
 
+class $AudioPlayerStateTableTable extends AudioPlayerStateTable
+    with TableInfo<$AudioPlayerStateTableTable, AudioPlayerStateTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AudioPlayerStateTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _playingMeta =
+      const VerificationMeta('playing');
+  @override
+  late final GeneratedColumn<bool> playing = GeneratedColumn<bool>(
+      'playing', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("playing" IN (0, 1))'));
+  static const VerificationMeta _loopModeMeta =
+      const VerificationMeta('loopMode');
+  @override
+  late final GeneratedColumnWithTypeConverter<PlaylistMode, String> loopMode =
+      GeneratedColumn<String>('loop_mode', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<PlaylistMode>(
+              $AudioPlayerStateTableTable.$converterloopMode);
+  static const VerificationMeta _shuffledMeta =
+      const VerificationMeta('shuffled');
+  @override
+  late final GeneratedColumn<bool> shuffled = GeneratedColumn<bool>(
+      'shuffled', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("shuffled" IN (0, 1))'));
+  static const VerificationMeta _collectionsMeta =
+      const VerificationMeta('collections');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      collections = GeneratedColumn<String>('collections', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $AudioPlayerStateTableTable.$convertercollections);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, playing, loopMode, shuffled, collections];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'audio_player_state_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<AudioPlayerStateTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('playing')) {
+      context.handle(_playingMeta,
+          playing.isAcceptableOrUnknown(data['playing']!, _playingMeta));
+    } else if (isInserting) {
+      context.missing(_playingMeta);
+    }
+    context.handle(_loopModeMeta, const VerificationResult.success());
+    if (data.containsKey('shuffled')) {
+      context.handle(_shuffledMeta,
+          shuffled.isAcceptableOrUnknown(data['shuffled']!, _shuffledMeta));
+    } else if (isInserting) {
+      context.missing(_shuffledMeta);
+    }
+    context.handle(_collectionsMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AudioPlayerStateTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AudioPlayerStateTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      playing: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}playing'])!,
+      loopMode: $AudioPlayerStateTableTable.$converterloopMode.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}loop_mode'])!),
+      shuffled: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}shuffled'])!,
+      collections: $AudioPlayerStateTableTable.$convertercollections.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}collections'])!),
+    );
+  }
+
+  @override
+  $AudioPlayerStateTableTable createAlias(String alias) {
+    return $AudioPlayerStateTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<PlaylistMode, String, String> $converterloopMode =
+      const EnumNameConverter<PlaylistMode>(PlaylistMode.values);
+  static TypeConverter<List<String>, String> $convertercollections =
+      const StringListConverter();
+}
+
+class AudioPlayerStateTableData extends DataClass
+    implements Insertable<AudioPlayerStateTableData> {
+  final int id;
+  final bool playing;
+  final PlaylistMode loopMode;
+  final bool shuffled;
+  final List<String> collections;
+  const AudioPlayerStateTableData(
+      {required this.id,
+      required this.playing,
+      required this.loopMode,
+      required this.shuffled,
+      required this.collections});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['playing'] = Variable<bool>(playing);
+    {
+      map['loop_mode'] = Variable<String>(
+          $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode));
+    }
+    map['shuffled'] = Variable<bool>(shuffled);
+    {
+      map['collections'] = Variable<String>(
+          $AudioPlayerStateTableTable.$convertercollections.toSql(collections));
+    }
+    return map;
+  }
+
+  AudioPlayerStateTableCompanion toCompanion(bool nullToAbsent) {
+    return AudioPlayerStateTableCompanion(
+      id: Value(id),
+      playing: Value(playing),
+      loopMode: Value(loopMode),
+      shuffled: Value(shuffled),
+      collections: Value(collections),
+    );
+  }
+
+  factory AudioPlayerStateTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AudioPlayerStateTableData(
+      id: serializer.fromJson<int>(json['id']),
+      playing: serializer.fromJson<bool>(json['playing']),
+      loopMode: $AudioPlayerStateTableTable.$converterloopMode
+          .fromJson(serializer.fromJson<String>(json['loopMode'])),
+      shuffled: serializer.fromJson<bool>(json['shuffled']),
+      collections: serializer.fromJson<List<String>>(json['collections']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'playing': serializer.toJson<bool>(playing),
+      'loopMode': serializer.toJson<String>(
+          $AudioPlayerStateTableTable.$converterloopMode.toJson(loopMode)),
+      'shuffled': serializer.toJson<bool>(shuffled),
+      'collections': serializer.toJson<List<String>>(collections),
+    };
+  }
+
+  AudioPlayerStateTableData copyWith(
+          {int? id,
+          bool? playing,
+          PlaylistMode? loopMode,
+          bool? shuffled,
+          List<String>? collections}) =>
+      AudioPlayerStateTableData(
+        id: id ?? this.id,
+        playing: playing ?? this.playing,
+        loopMode: loopMode ?? this.loopMode,
+        shuffled: shuffled ?? this.shuffled,
+        collections: collections ?? this.collections,
+      );
+  AudioPlayerStateTableData copyWithCompanion(
+      AudioPlayerStateTableCompanion data) {
+    return AudioPlayerStateTableData(
+      id: data.id.present ? data.id.value : this.id,
+      playing: data.playing.present ? data.playing.value : this.playing,
+      loopMode: data.loopMode.present ? data.loopMode.value : this.loopMode,
+      shuffled: data.shuffled.present ? data.shuffled.value : this.shuffled,
+      collections:
+          data.collections.present ? data.collections.value : this.collections,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioPlayerStateTableData(')
+          ..write('id: $id, ')
+          ..write('playing: $playing, ')
+          ..write('loopMode: $loopMode, ')
+          ..write('shuffled: $shuffled, ')
+          ..write('collections: $collections')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, playing, loopMode, shuffled, collections);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AudioPlayerStateTableData &&
+          other.id == this.id &&
+          other.playing == this.playing &&
+          other.loopMode == this.loopMode &&
+          other.shuffled == this.shuffled &&
+          other.collections == this.collections);
+}
+
+class AudioPlayerStateTableCompanion
+    extends UpdateCompanion<AudioPlayerStateTableData> {
+  final Value<int> id;
+  final Value<bool> playing;
+  final Value<PlaylistMode> loopMode;
+  final Value<bool> shuffled;
+  final Value<List<String>> collections;
+  const AudioPlayerStateTableCompanion({
+    this.id = const Value.absent(),
+    this.playing = const Value.absent(),
+    this.loopMode = const Value.absent(),
+    this.shuffled = const Value.absent(),
+    this.collections = const Value.absent(),
+  });
+  AudioPlayerStateTableCompanion.insert({
+    this.id = const Value.absent(),
+    required bool playing,
+    required PlaylistMode loopMode,
+    required bool shuffled,
+    required List<String> collections,
+  })  : playing = Value(playing),
+        loopMode = Value(loopMode),
+        shuffled = Value(shuffled),
+        collections = Value(collections);
+  static Insertable<AudioPlayerStateTableData> custom({
+    Expression<int>? id,
+    Expression<bool>? playing,
+    Expression<String>? loopMode,
+    Expression<bool>? shuffled,
+    Expression<String>? collections,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (playing != null) 'playing': playing,
+      if (loopMode != null) 'loop_mode': loopMode,
+      if (shuffled != null) 'shuffled': shuffled,
+      if (collections != null) 'collections': collections,
+    });
+  }
+
+  AudioPlayerStateTableCompanion copyWith(
+      {Value<int>? id,
+      Value<bool>? playing,
+      Value<PlaylistMode>? loopMode,
+      Value<bool>? shuffled,
+      Value<List<String>>? collections}) {
+    return AudioPlayerStateTableCompanion(
+      id: id ?? this.id,
+      playing: playing ?? this.playing,
+      loopMode: loopMode ?? this.loopMode,
+      shuffled: shuffled ?? this.shuffled,
+      collections: collections ?? this.collections,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (playing.present) {
+      map['playing'] = Variable<bool>(playing.value);
+    }
+    if (loopMode.present) {
+      map['loop_mode'] = Variable<String>(
+          $AudioPlayerStateTableTable.$converterloopMode.toSql(loopMode.value));
+    }
+    if (shuffled.present) {
+      map['shuffled'] = Variable<bool>(shuffled.value);
+    }
+    if (collections.present) {
+      map['collections'] = Variable<String>($AudioPlayerStateTableTable
+          .$convertercollections
+          .toSql(collections.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AudioPlayerStateTableCompanion(')
+          ..write('id: $id, ')
+          ..write('playing: $playing, ')
+          ..write('loopMode: $loopMode, ')
+          ..write('shuffled: $shuffled, ')
+          ..write('collections: $collections')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PlaylistTableTable extends PlaylistTable
+    with TableInfo<$PlaylistTableTable, PlaylistTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlaylistTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _audioPlayerStateIdMeta =
+      const VerificationMeta('audioPlayerStateId');
+  @override
+  late final GeneratedColumn<int> audioPlayerStateId = GeneratedColumn<int>(
+      'audio_player_state_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES audio_player_state_table (id)'));
+  static const VerificationMeta _indexMeta = const VerificationMeta('index');
+  @override
+  late final GeneratedColumn<int> index = GeneratedColumn<int>(
+      'index', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, audioPlayerStateId, index];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'playlist_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<PlaylistTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('audio_player_state_id')) {
+      context.handle(
+          _audioPlayerStateIdMeta,
+          audioPlayerStateId.isAcceptableOrUnknown(
+              data['audio_player_state_id']!, _audioPlayerStateIdMeta));
+    } else if (isInserting) {
+      context.missing(_audioPlayerStateIdMeta);
+    }
+    if (data.containsKey('index')) {
+      context.handle(
+          _indexMeta, index.isAcceptableOrUnknown(data['index']!, _indexMeta));
+    } else if (isInserting) {
+      context.missing(_indexMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlaylistTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlaylistTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      audioPlayerStateId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}audio_player_state_id'])!,
+      index: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}index'])!,
+    );
+  }
+
+  @override
+  $PlaylistTableTable createAlias(String alias) {
+    return $PlaylistTableTable(attachedDatabase, alias);
+  }
+}
+
+class PlaylistTableData extends DataClass
+    implements Insertable<PlaylistTableData> {
+  final int id;
+  final int audioPlayerStateId;
+  final int index;
+  const PlaylistTableData(
+      {required this.id,
+      required this.audioPlayerStateId,
+      required this.index});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['audio_player_state_id'] = Variable<int>(audioPlayerStateId);
+    map['index'] = Variable<int>(index);
+    return map;
+  }
+
+  PlaylistTableCompanion toCompanion(bool nullToAbsent) {
+    return PlaylistTableCompanion(
+      id: Value(id),
+      audioPlayerStateId: Value(audioPlayerStateId),
+      index: Value(index),
+    );
+  }
+
+  factory PlaylistTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlaylistTableData(
+      id: serializer.fromJson<int>(json['id']),
+      audioPlayerStateId: serializer.fromJson<int>(json['audioPlayerStateId']),
+      index: serializer.fromJson<int>(json['index']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'audioPlayerStateId': serializer.toJson<int>(audioPlayerStateId),
+      'index': serializer.toJson<int>(index),
+    };
+  }
+
+  PlaylistTableData copyWith({int? id, int? audioPlayerStateId, int? index}) =>
+      PlaylistTableData(
+        id: id ?? this.id,
+        audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
+        index: index ?? this.index,
+      );
+  PlaylistTableData copyWithCompanion(PlaylistTableCompanion data) {
+    return PlaylistTableData(
+      id: data.id.present ? data.id.value : this.id,
+      audioPlayerStateId: data.audioPlayerStateId.present
+          ? data.audioPlayerStateId.value
+          : this.audioPlayerStateId,
+      index: data.index.present ? data.index.value : this.index,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaylistTableData(')
+          ..write('id: $id, ')
+          ..write('audioPlayerStateId: $audioPlayerStateId, ')
+          ..write('index: $index')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, audioPlayerStateId, index);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlaylistTableData &&
+          other.id == this.id &&
+          other.audioPlayerStateId == this.audioPlayerStateId &&
+          other.index == this.index);
+}
+
+class PlaylistTableCompanion extends UpdateCompanion<PlaylistTableData> {
+  final Value<int> id;
+  final Value<int> audioPlayerStateId;
+  final Value<int> index;
+  const PlaylistTableCompanion({
+    this.id = const Value.absent(),
+    this.audioPlayerStateId = const Value.absent(),
+    this.index = const Value.absent(),
+  });
+  PlaylistTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int audioPlayerStateId,
+    required int index,
+  })  : audioPlayerStateId = Value(audioPlayerStateId),
+        index = Value(index);
+  static Insertable<PlaylistTableData> custom({
+    Expression<int>? id,
+    Expression<int>? audioPlayerStateId,
+    Expression<int>? index,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (audioPlayerStateId != null)
+        'audio_player_state_id': audioPlayerStateId,
+      if (index != null) 'index': index,
+    });
+  }
+
+  PlaylistTableCompanion copyWith(
+      {Value<int>? id, Value<int>? audioPlayerStateId, Value<int>? index}) {
+    return PlaylistTableCompanion(
+      id: id ?? this.id,
+      audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
+      index: index ?? this.index,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (audioPlayerStateId.present) {
+      map['audio_player_state_id'] = Variable<int>(audioPlayerStateId.value);
+    }
+    if (index.present) {
+      map['index'] = Variable<int>(index.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaylistTableCompanion(')
+          ..write('id: $id, ')
+          ..write('audioPlayerStateId: $audioPlayerStateId, ')
+          ..write('index: $index')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PlaylistMediaTableTable extends PlaylistMediaTable
+    with TableInfo<$PlaylistMediaTableTable, PlaylistMediaTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlaylistMediaTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _playlistIdMeta =
+      const VerificationMeta('playlistId');
+  @override
+  late final GeneratedColumn<int> playlistId = GeneratedColumn<int>(
+      'playlist_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES playlist_table (id)'));
+  static const VerificationMeta _uriMeta = const VerificationMeta('uri');
+  @override
+  late final GeneratedColumn<String> uri = GeneratedColumn<String>(
+      'uri', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _extrasMeta = const VerificationMeta('extras');
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, dynamic>?, String>
+      extras = GeneratedColumn<String>('extras', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<Map<String, dynamic>?>(
+              $PlaylistMediaTableTable.$converterextrasn);
+  static const VerificationMeta _httpHeadersMeta =
+      const VerificationMeta('httpHeaders');
+  @override
+  late final GeneratedColumnWithTypeConverter<Map<String, String>?, String>
+      httpHeaders = GeneratedColumn<String>('http_headers', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<Map<String, String>?>(
+              $PlaylistMediaTableTable.$converterhttpHeadersn);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, playlistId, uri, extras, httpHeaders];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'playlist_media_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<PlaylistMediaTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('playlist_id')) {
+      context.handle(
+          _playlistIdMeta,
+          playlistId.isAcceptableOrUnknown(
+              data['playlist_id']!, _playlistIdMeta));
+    } else if (isInserting) {
+      context.missing(_playlistIdMeta);
+    }
+    if (data.containsKey('uri')) {
+      context.handle(
+          _uriMeta, uri.isAcceptableOrUnknown(data['uri']!, _uriMeta));
+    } else if (isInserting) {
+      context.missing(_uriMeta);
+    }
+    context.handle(_extrasMeta, const VerificationResult.success());
+    context.handle(_httpHeadersMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlaylistMediaTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlaylistMediaTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      playlistId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}playlist_id'])!,
+      uri: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}uri'])!,
+      extras: $PlaylistMediaTableTable.$converterextrasn.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}extras'])),
+      httpHeaders: $PlaylistMediaTableTable.$converterhttpHeadersn.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}http_headers'])),
+    );
+  }
+
+  @override
+  $PlaylistMediaTableTable createAlias(String alias) {
+    return $PlaylistMediaTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<Map<String, dynamic>, String> $converterextras =
+      const MapTypeConverter();
+  static TypeConverter<Map<String, dynamic>?, String?> $converterextrasn =
+      NullAwareTypeConverter.wrap($converterextras);
+  static TypeConverter<Map<String, String>, String> $converterhttpHeaders =
+      const MapTypeConverter();
+  static TypeConverter<Map<String, String>?, String?> $converterhttpHeadersn =
+      NullAwareTypeConverter.wrap($converterhttpHeaders);
+}
+
+class PlaylistMediaTableData extends DataClass
+    implements Insertable<PlaylistMediaTableData> {
+  final int id;
+  final int playlistId;
+  final String uri;
+  final Map<String, dynamic>? extras;
+  final Map<String, String>? httpHeaders;
+  const PlaylistMediaTableData(
+      {required this.id,
+      required this.playlistId,
+      required this.uri,
+      this.extras,
+      this.httpHeaders});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['playlist_id'] = Variable<int>(playlistId);
+    map['uri'] = Variable<String>(uri);
+    if (!nullToAbsent || extras != null) {
+      map['extras'] = Variable<String>(
+          $PlaylistMediaTableTable.$converterextrasn.toSql(extras));
+    }
+    if (!nullToAbsent || httpHeaders != null) {
+      map['http_headers'] = Variable<String>(
+          $PlaylistMediaTableTable.$converterhttpHeadersn.toSql(httpHeaders));
+    }
+    return map;
+  }
+
+  PlaylistMediaTableCompanion toCompanion(bool nullToAbsent) {
+    return PlaylistMediaTableCompanion(
+      id: Value(id),
+      playlistId: Value(playlistId),
+      uri: Value(uri),
+      extras:
+          extras == null && nullToAbsent ? const Value.absent() : Value(extras),
+      httpHeaders: httpHeaders == null && nullToAbsent
+          ? const Value.absent()
+          : Value(httpHeaders),
+    );
+  }
+
+  factory PlaylistMediaTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlaylistMediaTableData(
+      id: serializer.fromJson<int>(json['id']),
+      playlistId: serializer.fromJson<int>(json['playlistId']),
+      uri: serializer.fromJson<String>(json['uri']),
+      extras: serializer.fromJson<Map<String, dynamic>?>(json['extras']),
+      httpHeaders:
+          serializer.fromJson<Map<String, String>?>(json['httpHeaders']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'playlistId': serializer.toJson<int>(playlistId),
+      'uri': serializer.toJson<String>(uri),
+      'extras': serializer.toJson<Map<String, dynamic>?>(extras),
+      'httpHeaders': serializer.toJson<Map<String, String>?>(httpHeaders),
+    };
+  }
+
+  PlaylistMediaTableData copyWith(
+          {int? id,
+          int? playlistId,
+          String? uri,
+          Value<Map<String, dynamic>?> extras = const Value.absent(),
+          Value<Map<String, String>?> httpHeaders = const Value.absent()}) =>
+      PlaylistMediaTableData(
+        id: id ?? this.id,
+        playlistId: playlistId ?? this.playlistId,
+        uri: uri ?? this.uri,
+        extras: extras.present ? extras.value : this.extras,
+        httpHeaders: httpHeaders.present ? httpHeaders.value : this.httpHeaders,
+      );
+  PlaylistMediaTableData copyWithCompanion(PlaylistMediaTableCompanion data) {
+    return PlaylistMediaTableData(
+      id: data.id.present ? data.id.value : this.id,
+      playlistId:
+          data.playlistId.present ? data.playlistId.value : this.playlistId,
+      uri: data.uri.present ? data.uri.value : this.uri,
+      extras: data.extras.present ? data.extras.value : this.extras,
+      httpHeaders:
+          data.httpHeaders.present ? data.httpHeaders.value : this.httpHeaders,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaylistMediaTableData(')
+          ..write('id: $id, ')
+          ..write('playlistId: $playlistId, ')
+          ..write('uri: $uri, ')
+          ..write('extras: $extras, ')
+          ..write('httpHeaders: $httpHeaders')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, playlistId, uri, extras, httpHeaders);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlaylistMediaTableData &&
+          other.id == this.id &&
+          other.playlistId == this.playlistId &&
+          other.uri == this.uri &&
+          other.extras == this.extras &&
+          other.httpHeaders == this.httpHeaders);
+}
+
+class PlaylistMediaTableCompanion
+    extends UpdateCompanion<PlaylistMediaTableData> {
+  final Value<int> id;
+  final Value<int> playlistId;
+  final Value<String> uri;
+  final Value<Map<String, dynamic>?> extras;
+  final Value<Map<String, String>?> httpHeaders;
+  const PlaylistMediaTableCompanion({
+    this.id = const Value.absent(),
+    this.playlistId = const Value.absent(),
+    this.uri = const Value.absent(),
+    this.extras = const Value.absent(),
+    this.httpHeaders = const Value.absent(),
+  });
+  PlaylistMediaTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int playlistId,
+    required String uri,
+    this.extras = const Value.absent(),
+    this.httpHeaders = const Value.absent(),
+  })  : playlistId = Value(playlistId),
+        uri = Value(uri);
+  static Insertable<PlaylistMediaTableData> custom({
+    Expression<int>? id,
+    Expression<int>? playlistId,
+    Expression<String>? uri,
+    Expression<String>? extras,
+    Expression<String>? httpHeaders,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (playlistId != null) 'playlist_id': playlistId,
+      if (uri != null) 'uri': uri,
+      if (extras != null) 'extras': extras,
+      if (httpHeaders != null) 'http_headers': httpHeaders,
+    });
+  }
+
+  PlaylistMediaTableCompanion copyWith(
+      {Value<int>? id,
+      Value<int>? playlistId,
+      Value<String>? uri,
+      Value<Map<String, dynamic>?>? extras,
+      Value<Map<String, String>?>? httpHeaders}) {
+    return PlaylistMediaTableCompanion(
+      id: id ?? this.id,
+      playlistId: playlistId ?? this.playlistId,
+      uri: uri ?? this.uri,
+      extras: extras ?? this.extras,
+      httpHeaders: httpHeaders ?? this.httpHeaders,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (playlistId.present) {
+      map['playlist_id'] = Variable<int>(playlistId.value);
+    }
+    if (uri.present) {
+      map['uri'] = Variable<String>(uri.value);
+    }
+    if (extras.present) {
+      map['extras'] = Variable<String>(
+          $PlaylistMediaTableTable.$converterextrasn.toSql(extras.value));
+    }
+    if (httpHeaders.present) {
+      map['http_headers'] = Variable<String>($PlaylistMediaTableTable
+          .$converterhttpHeadersn
+          .toSql(httpHeaders.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaylistMediaTableCompanion(')
+          ..write('id: $id, ')
+          ..write('playlistId: $playlistId, ')
+          ..write('uri: $uri, ')
+          ..write('extras: $extras, ')
+          ..write('httpHeaders: $httpHeaders')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2965,6 +3838,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $SourceMatchTableTable(this);
   late final $HistoryTableTable historyTable = $HistoryTableTable(this);
   late final $LyricsTableTable lyricsTable = $LyricsTableTable(this);
+  late final $AudioPlayerStateTableTable audioPlayerStateTable =
+      $AudioPlayerStateTableTable(this);
+  late final $PlaylistTableTable playlistTable = $PlaylistTableTable(this);
+  late final $PlaylistMediaTableTable playlistMediaTable =
+      $PlaylistMediaTableTable(this);
   late final Index uniqTrackMatch = Index('uniq_track_match',
       'CREATE UNIQUE INDEX uniq_track_match ON source_match_table (track_id, source_id, source_type)');
   @override
@@ -2979,6 +3857,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         sourceMatchTable,
         historyTable,
         lyricsTable,
+        audioPlayerStateTable,
+        playlistTable,
+        playlistMediaTable,
         uniqTrackMatch
       ];
 }
@@ -4313,6 +5194,675 @@ typedef $$LyricsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     LyricsTableData,
     PrefetchHooks Function()>;
+typedef $$AudioPlayerStateTableTableCreateCompanionBuilder
+    = AudioPlayerStateTableCompanion Function({
+  Value<int> id,
+  required bool playing,
+  required PlaylistMode loopMode,
+  required bool shuffled,
+  required List<String> collections,
+});
+typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder
+    = AudioPlayerStateTableCompanion Function({
+  Value<int> id,
+  Value<bool> playing,
+  Value<PlaylistMode> loopMode,
+  Value<bool> shuffled,
+  Value<List<String>> collections,
+});
+
+final class $$AudioPlayerStateTableTableReferences extends BaseReferences<
+    _$AppDatabase, $AudioPlayerStateTableTable, AudioPlayerStateTableData> {
+  $$AudioPlayerStateTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$PlaylistTableTable, List<PlaylistTableData>>
+      _playlistTableRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.playlistTable,
+              aliasName: $_aliasNameGenerator(db.audioPlayerStateTable.id,
+                  db.playlistTable.audioPlayerStateId));
+
+  $$PlaylistTableTableProcessedTableManager get playlistTableRefs {
+    final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
+        .filter((f) => f.audioPlayerStateId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_playlistTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$AudioPlayerStateTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $AudioPlayerStateTableTable> {
+  $$AudioPlayerStateTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get playing => $state.composableBuilder(
+      column: $state.table.playing,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<PlaylistMode, PlaylistMode, String>
+      get loopMode => $state.composableBuilder(
+          column: $state.table.loopMode,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get shuffled => $state.composableBuilder(
+      column: $state.table.shuffled,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get collections => $state.composableBuilder(
+          column: $state.table.collections,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ComposableFilter playlistTableRefs(
+      ComposableFilter Function($$PlaylistTableTableFilterComposer f) f) {
+    final $$PlaylistTableTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.playlistTable,
+        getReferencedColumn: (t) => t.audioPlayerStateId,
+        builder: (joinBuilder, parentComposers) =>
+            $$PlaylistTableTableFilterComposer(ComposerState($state.db,
+                $state.db.playlistTable, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$AudioPlayerStateTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $AudioPlayerStateTableTable> {
+  $$AudioPlayerStateTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get playing => $state.composableBuilder(
+      column: $state.table.playing,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get loopMode => $state.composableBuilder(
+      column: $state.table.loopMode,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get shuffled => $state.composableBuilder(
+      column: $state.table.shuffled,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get collections => $state.composableBuilder(
+      column: $state.table.collections,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AudioPlayerStateTableTable,
+    AudioPlayerStateTableData,
+    $$AudioPlayerStateTableTableFilterComposer,
+    $$AudioPlayerStateTableTableOrderingComposer,
+    $$AudioPlayerStateTableTableCreateCompanionBuilder,
+    $$AudioPlayerStateTableTableUpdateCompanionBuilder,
+    (AudioPlayerStateTableData, $$AudioPlayerStateTableTableReferences),
+    AudioPlayerStateTableData,
+    PrefetchHooks Function({bool playlistTableRefs})> {
+  $$AudioPlayerStateTableTableTableManager(
+      _$AppDatabase db, $AudioPlayerStateTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$AudioPlayerStateTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$AudioPlayerStateTableTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> playing = const Value.absent(),
+            Value<PlaylistMode> loopMode = const Value.absent(),
+            Value<bool> shuffled = const Value.absent(),
+            Value<List<String>> collections = const Value.absent(),
+          }) =>
+              AudioPlayerStateTableCompanion(
+            id: id,
+            playing: playing,
+            loopMode: loopMode,
+            shuffled: shuffled,
+            collections: collections,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required bool playing,
+            required PlaylistMode loopMode,
+            required bool shuffled,
+            required List<String> collections,
+          }) =>
+              AudioPlayerStateTableCompanion.insert(
+            id: id,
+            playing: playing,
+            loopMode: loopMode,
+            shuffled: shuffled,
+            collections: collections,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$AudioPlayerStateTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({playlistTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (playlistTableRefs) db.playlistTable
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (playlistTableRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$AudioPlayerStateTableTableReferences
+                            ._playlistTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$AudioPlayerStateTableTableReferences(
+                                    db, table, p0)
+                                .playlistTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.audioPlayerStateId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$AudioPlayerStateTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $AudioPlayerStateTableTable,
+        AudioPlayerStateTableData,
+        $$AudioPlayerStateTableTableFilterComposer,
+        $$AudioPlayerStateTableTableOrderingComposer,
+        $$AudioPlayerStateTableTableCreateCompanionBuilder,
+        $$AudioPlayerStateTableTableUpdateCompanionBuilder,
+        (AudioPlayerStateTableData, $$AudioPlayerStateTableTableReferences),
+        AudioPlayerStateTableData,
+        PrefetchHooks Function({bool playlistTableRefs})>;
+typedef $$PlaylistTableTableCreateCompanionBuilder = PlaylistTableCompanion
+    Function({
+  Value<int> id,
+  required int audioPlayerStateId,
+  required int index,
+});
+typedef $$PlaylistTableTableUpdateCompanionBuilder = PlaylistTableCompanion
+    Function({
+  Value<int> id,
+  Value<int> audioPlayerStateId,
+  Value<int> index,
+});
+
+final class $$PlaylistTableTableReferences extends BaseReferences<_$AppDatabase,
+    $PlaylistTableTable, PlaylistTableData> {
+  $$PlaylistTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $AudioPlayerStateTableTable _audioPlayerStateIdTable(
+          _$AppDatabase db) =>
+      db.audioPlayerStateTable.createAlias($_aliasNameGenerator(
+          db.playlistTable.audioPlayerStateId, db.audioPlayerStateTable.id));
+
+  $$AudioPlayerStateTableTableProcessedTableManager? get audioPlayerStateId {
+    if ($_item.audioPlayerStateId == null) return null;
+    final manager = $$AudioPlayerStateTableTableTableManager(
+            $_db, $_db.audioPlayerStateTable)
+        .filter((f) => f.id($_item.audioPlayerStateId!));
+    final item = $_typedResult.readTableOrNull(_audioPlayerStateIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$PlaylistMediaTableTable,
+      List<PlaylistMediaTableData>> _playlistMediaTableRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.playlistMediaTable,
+          aliasName: $_aliasNameGenerator(
+              db.playlistTable.id, db.playlistMediaTable.playlistId));
+
+  $$PlaylistMediaTableTableProcessedTableManager get playlistMediaTableRefs {
+    final manager =
+        $$PlaylistMediaTableTableTableManager($_db, $_db.playlistMediaTable)
+            .filter((f) => f.playlistId.id($_item.id));
+
+    final cache =
+        $_typedResult.readTableOrNull(_playlistMediaTableRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$PlaylistTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $PlaylistTableTable> {
+  $$PlaylistTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get index => $state.composableBuilder(
+      column: $state.table.index,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$AudioPlayerStateTableTableFilterComposer get audioPlayerStateId {
+    final $$AudioPlayerStateTableTableFilterComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.audioPlayerStateId,
+            referencedTable: $state.db.audioPlayerStateTable,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                $$AudioPlayerStateTableTableFilterComposer(ComposerState(
+                    $state.db,
+                    $state.db.audioPlayerStateTable,
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+
+  ComposableFilter playlistMediaTableRefs(
+      ComposableFilter Function($$PlaylistMediaTableTableFilterComposer f) f) {
+    final $$PlaylistMediaTableTableFilterComposer composer = $state
+        .composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $state.db.playlistMediaTable,
+            getReferencedColumn: (t) => t.playlistId,
+            builder: (joinBuilder, parentComposers) =>
+                $$PlaylistMediaTableTableFilterComposer(ComposerState(
+                    $state.db,
+                    $state.db.playlistMediaTable,
+                    joinBuilder,
+                    parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$PlaylistTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $PlaylistTableTable> {
+  $$PlaylistTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get index => $state.composableBuilder(
+      column: $state.table.index,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$AudioPlayerStateTableTableOrderingComposer get audioPlayerStateId {
+    final $$AudioPlayerStateTableTableOrderingComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.audioPlayerStateId,
+            referencedTable: $state.db.audioPlayerStateTable,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                $$AudioPlayerStateTableTableOrderingComposer(ComposerState(
+                    $state.db,
+                    $state.db.audioPlayerStateTable,
+                    joinBuilder,
+                    parentComposers)));
+    return composer;
+  }
+}
+
+class $$PlaylistTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlaylistTableTable,
+    PlaylistTableData,
+    $$PlaylistTableTableFilterComposer,
+    $$PlaylistTableTableOrderingComposer,
+    $$PlaylistTableTableCreateCompanionBuilder,
+    $$PlaylistTableTableUpdateCompanionBuilder,
+    (PlaylistTableData, $$PlaylistTableTableReferences),
+    PlaylistTableData,
+    PrefetchHooks Function(
+        {bool audioPlayerStateId, bool playlistMediaTableRefs})> {
+  $$PlaylistTableTableTableManager(_$AppDatabase db, $PlaylistTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PlaylistTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$PlaylistTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> audioPlayerStateId = const Value.absent(),
+            Value<int> index = const Value.absent(),
+          }) =>
+              PlaylistTableCompanion(
+            id: id,
+            audioPlayerStateId: audioPlayerStateId,
+            index: index,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int audioPlayerStateId,
+            required int index,
+          }) =>
+              PlaylistTableCompanion.insert(
+            id: id,
+            audioPlayerStateId: audioPlayerStateId,
+            index: index,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$PlaylistTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {audioPlayerStateId = false, playlistMediaTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (playlistMediaTableRefs) db.playlistMediaTable
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (audioPlayerStateId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.audioPlayerStateId,
+                    referencedTable: $$PlaylistTableTableReferences
+                        ._audioPlayerStateIdTable(db),
+                    referencedColumn: $$PlaylistTableTableReferences
+                        ._audioPlayerStateIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (playlistMediaTableRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable: $$PlaylistTableTableReferences
+                            ._playlistMediaTableRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$PlaylistTableTableReferences(db, table, p0)
+                                .playlistMediaTableRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.playlistId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$PlaylistTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $PlaylistTableTable,
+    PlaylistTableData,
+    $$PlaylistTableTableFilterComposer,
+    $$PlaylistTableTableOrderingComposer,
+    $$PlaylistTableTableCreateCompanionBuilder,
+    $$PlaylistTableTableUpdateCompanionBuilder,
+    (PlaylistTableData, $$PlaylistTableTableReferences),
+    PlaylistTableData,
+    PrefetchHooks Function(
+        {bool audioPlayerStateId, bool playlistMediaTableRefs})>;
+typedef $$PlaylistMediaTableTableCreateCompanionBuilder
+    = PlaylistMediaTableCompanion Function({
+  Value<int> id,
+  required int playlistId,
+  required String uri,
+  Value<Map<String, dynamic>?> extras,
+  Value<Map<String, String>?> httpHeaders,
+});
+typedef $$PlaylistMediaTableTableUpdateCompanionBuilder
+    = PlaylistMediaTableCompanion Function({
+  Value<int> id,
+  Value<int> playlistId,
+  Value<String> uri,
+  Value<Map<String, dynamic>?> extras,
+  Value<Map<String, String>?> httpHeaders,
+});
+
+final class $$PlaylistMediaTableTableReferences extends BaseReferences<
+    _$AppDatabase, $PlaylistMediaTableTable, PlaylistMediaTableData> {
+  $$PlaylistMediaTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $PlaylistTableTable _playlistIdTable(_$AppDatabase db) =>
+      db.playlistTable.createAlias($_aliasNameGenerator(
+          db.playlistMediaTable.playlistId, db.playlistTable.id));
+
+  $$PlaylistTableTableProcessedTableManager? get playlistId {
+    if ($_item.playlistId == null) return null;
+    final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
+        .filter((f) => f.id($_item.playlistId!));
+    final item = $_typedResult.readTableOrNull(_playlistIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$PlaylistMediaTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $PlaylistMediaTableTable> {
+  $$PlaylistMediaTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get uri => $state.composableBuilder(
+      column: $state.table.uri,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Map<String, dynamic>?, Map<String, dynamic>,
+          String>
+      get extras => $state.composableBuilder(
+          column: $state.table.extras,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<Map<String, String>?, Map<String, String>,
+          String>
+      get httpHeaders => $state.composableBuilder(
+          column: $state.table.httpHeaders,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  $$PlaylistTableTableFilterComposer get playlistId {
+    final $$PlaylistTableTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.playlistId,
+        referencedTable: $state.db.playlistTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$PlaylistTableTableFilterComposer(ComposerState($state.db,
+                $state.db.playlistTable, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$PlaylistMediaTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $PlaylistMediaTableTable> {
+  $$PlaylistMediaTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get uri => $state.composableBuilder(
+      column: $state.table.uri,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get extras => $state.composableBuilder(
+      column: $state.table.extras,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get httpHeaders => $state.composableBuilder(
+      column: $state.table.httpHeaders,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$PlaylistTableTableOrderingComposer get playlistId {
+    final $$PlaylistTableTableOrderingComposer composer =
+        $state.composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.playlistId,
+            referencedTable: $state.db.playlistTable,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder, parentComposers) =>
+                $$PlaylistTableTableOrderingComposer(ComposerState($state.db,
+                    $state.db.playlistTable, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$PlaylistMediaTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlaylistMediaTableTable,
+    PlaylistMediaTableData,
+    $$PlaylistMediaTableTableFilterComposer,
+    $$PlaylistMediaTableTableOrderingComposer,
+    $$PlaylistMediaTableTableCreateCompanionBuilder,
+    $$PlaylistMediaTableTableUpdateCompanionBuilder,
+    (PlaylistMediaTableData, $$PlaylistMediaTableTableReferences),
+    PlaylistMediaTableData,
+    PrefetchHooks Function({bool playlistId})> {
+  $$PlaylistMediaTableTableTableManager(
+      _$AppDatabase db, $PlaylistMediaTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PlaylistMediaTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$PlaylistMediaTableTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> playlistId = const Value.absent(),
+            Value<String> uri = const Value.absent(),
+            Value<Map<String, dynamic>?> extras = const Value.absent(),
+            Value<Map<String, String>?> httpHeaders = const Value.absent(),
+          }) =>
+              PlaylistMediaTableCompanion(
+            id: id,
+            playlistId: playlistId,
+            uri: uri,
+            extras: extras,
+            httpHeaders: httpHeaders,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int playlistId,
+            required String uri,
+            Value<Map<String, dynamic>?> extras = const Value.absent(),
+            Value<Map<String, String>?> httpHeaders = const Value.absent(),
+          }) =>
+              PlaylistMediaTableCompanion.insert(
+            id: id,
+            playlistId: playlistId,
+            uri: uri,
+            extras: extras,
+            httpHeaders: httpHeaders,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$PlaylistMediaTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({playlistId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (playlistId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.playlistId,
+                    referencedTable: $$PlaylistMediaTableTableReferences
+                        ._playlistIdTable(db),
+                    referencedColumn: $$PlaylistMediaTableTableReferences
+                        ._playlistIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$PlaylistMediaTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $PlaylistMediaTableTable,
+    PlaylistMediaTableData,
+    $$PlaylistMediaTableTableFilterComposer,
+    $$PlaylistMediaTableTableOrderingComposer,
+    $$PlaylistMediaTableTableCreateCompanionBuilder,
+    $$PlaylistMediaTableTableUpdateCompanionBuilder,
+    (PlaylistMediaTableData, $$PlaylistMediaTableTableReferences),
+    PlaylistMediaTableData,
+    PrefetchHooks Function({bool playlistId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4331,4 +5881,10 @@ class $AppDatabaseManager {
       $$HistoryTableTableTableManager(_db, _db.historyTable);
   $$LyricsTableTableTableManager get lyricsTable =>
       $$LyricsTableTableTableManager(_db, _db.lyricsTable);
+  $$AudioPlayerStateTableTableTableManager get audioPlayerStateTable =>
+      $$AudioPlayerStateTableTableTableManager(_db, _db.audioPlayerStateTable);
+  $$PlaylistTableTableTableManager get playlistTable =>
+      $$PlaylistTableTableTableManager(_db, _db.playlistTable);
+  $$PlaylistMediaTableTableTableManager get playlistMediaTable =>
+      $$PlaylistMediaTableTableTableManager(_db, _db.playlistMediaTable);
 }

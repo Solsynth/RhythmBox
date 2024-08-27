@@ -27,7 +27,7 @@ class AudioServices with WidgetsBindingObserver {
                       : 'dev.solsynth.rhythmBox',
                   androidNotificationChannelName: 'RhythmBox',
                   androidNotificationOngoing: false,
-                  androidNotificationIcon: 'drawable/ic_launcher_monochrome',
+                  androidNotificationIcon: 'drawable/ic_stat_name',
                   androidStopForegroundOnPause: false,
                   androidNotificationChannelDescription: 'RhythmBox Music',
                 ),

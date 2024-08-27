@@ -155,7 +155,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     ),
                     child: Slider(
                       value: _draggingValue ??
-                          _durationCurrent.inMilliseconds.toDouble(),
+                          (_durationCurrent.inMilliseconds <=
+                                  _durationTotal.inMilliseconds
+                              ? _durationCurrent.inMilliseconds.toDouble()
+                              : 0),
                       min: 0,
                       max: _durationTotal.inMilliseconds.toDouble(),
                       onChanged: (value) {
