@@ -81,6 +81,7 @@ dependencies:
     git:
       url: https://github.com/KRTirtho/scrobblenaut.git
       ref: dart-3-support
+  dismissible_page: ^1.0.2
 
 dev_dependencies:
   flutter_test:

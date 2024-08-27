@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
 
+    Get.put(AudioPlayerProvider());
     Get.put(ActiveSourcedTrackProvider());
     Get.put(AudioPlayerStreamProvider());
 
@@ -69,7 +70,6 @@ class MyApp extends StatelessWidget {
     Get.put(ScrobblerProvider());
     Get.put(UserPreferencesProvider());
 
-    Get.put(AudioPlayerProvider());
     Get.put(QueryingTrackInfoProvider());
     Get.put(SourcedTrackProvider());
 

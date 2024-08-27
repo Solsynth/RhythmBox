@@ -128,11 +128,11 @@ class AudioPlayerProvider extends GetxController {
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
-    final intendedActiveTrack = medias.elementAt(initialIndex);
-    if (intendedActiveTrack.track is! LocalTrack) {
-      await Get.find<SourcedTrackProvider>()
-          .fetch(RhythmMedia(intendedActiveTrack.track));
-    }
+    // final intendedActiveTrack = medias.elementAt(initialIndex);
+    // if (intendedActiveTrack.track is! LocalTrack) {
+    //   await Get.find<SourcedTrackProvider>()
+    //       .fetch(RhythmMedia(intendedActiveTrack.track));
+    // }
 
     if (medias.isEmpty) return;
 

@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/screens/explore.dart';
-import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/screens/playlist/view.dart';
 import 'package:rhythm_box/screens/settings.dart';
 import 'package:rhythm_box/shells/nav_shell.dart';
@@ -27,10 +26,5 @@ final router = GoRouter(routes: [
         builder: (context, state) => const SettingsScreen(),
       ),
     ],
-  ),
-  GoRoute(
-    path: '/player',
-    name: 'player',
-    builder: (context, state) => const PlayerScreen(),
   ),
 ]);

@@ -20,12 +20,15 @@ class AudioPlayerStreamProvider extends GetxController {
 
   List<StreamSubscription>? _subscriptions;
 
-  @override
-  void onInit() {
-    super.onInit();
+  AudioPlayerStreamProvider() {
     AudioServices.create().then(
       (value) => notificationService = value,
     );
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
 
     _subscriptions = [
       subscribeToPlaylist(),

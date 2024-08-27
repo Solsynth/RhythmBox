@@ -65,6 +65,8 @@ class _PlaylistTrackListState extends State<PlaylistTrackList> {
             title: Text(item?.name ?? 'Loading...'),
             subtitle: Text(
               item?.artists?.asString() ?? 'Please stand by...',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             onTap: () {
               if (item == null) return;

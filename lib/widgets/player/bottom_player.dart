@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
@@ -71,6 +72,12 @@ class _BottomPlayerState extends State<BottomPlayer>
     _subscriptions = [
       audioPlayer.durationStream.listen(_updateDurationTotal),
       audioPlayer.positionStream.listen(_updateDurationCurrent),
+      _playback.state.listen((state) {
+        if (state.playlist.medias.isNotEmpty && !_isLifted) {
+          _animationController.animateTo(1);
+          _isLifted = true;
+        }
+      }),
       _playback.isPlaying.listen((value) {
         if (value && !_isLifted) {
           _animationController.animateTo(1);
@@ -104,6 +111,7 @@ class _BottomPlayerState extends State<BottomPlayer>
       axisAlignment: -1,
       child: Obx(
         () => GestureDetector(
+          behavior: HitTestBehavior.translucent,
           child: Column(
             children: [
               if (_durationCurrent != Duration.zero)
@@ -122,10 +130,10 @@ class _BottomPlayerState extends State<BottomPlayer>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    child: Hero(
-                      tag: const Key('current-active-track-album-art'),
+                  Hero(
+                    tag: const Key('current-active-track-album-art'),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
                       child: _albumArt != null
                           ? AutoCacheImage(_albumArt!, width: 64, height: 64)
                           : Container(
@@ -172,7 +180,10 @@ class _BottomPlayerState extends State<BottomPlayer>
             ],
           ),
           onTap: () {
-            GoRouter.of(context).pushNamed('player');
+            context.pushTransparentRoute(PlayerScreen(
+              durationCurrent: _durationCurrent,
+              durationTotal: _durationTotal,
+            ));
           },
         ),
       ),
