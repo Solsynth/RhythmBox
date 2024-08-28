@@ -249,7 +249,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final searchResults = await youtubeClient.search.search(
-      '$query - Topic',
+      query,
+      // '$query - Topic',
       filter: TypeFilters.video,
     );
 

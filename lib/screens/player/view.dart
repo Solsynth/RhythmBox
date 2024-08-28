@@ -10,8 +10,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/screens/player/queue.dart';
+import 'package:rhythm_box/screens/player/siblings.dart';
 import 'package:rhythm_box/services/artist.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
+import 'package:rhythm_box/services/duration.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
@@ -51,14 +53,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
       await audioPlayer.pause();
     }
     setState(() {});
-  }
-
-  String _formatDuration(Duration duration) {
-    String negativeSign = duration.isNegative ? '-' : '';
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String twoDigitMinutes = twoDigits(duration.inMinutes.abs());
-    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60).abs());
-    return '$negativeSign$twoDigitMinutes:$twoDigitSeconds';
   }
 
   double? _draggingValue;
@@ -173,11 +167,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        _formatDuration(_durationCurrent),
+                        _durationCurrent.toHumanReadableString(),
                         style: GoogleFonts.robotoMono(fontSize: 12),
                       ),
                       Text(
-                        _formatDuration(_durationTotal),
+                        _durationTotal.toHumanReadableString(),
                         style: GoogleFonts.robotoMono(fontSize: 12),
                       ),
                     ],
@@ -302,7 +296,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     child: TextButton.icon(
                       icon: const Icon(Icons.merge),
                       label: const Text('Sources'),
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => const SiblingTracksPopup(),
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        });
+                      },
                     ),
                   ),
                 ],
