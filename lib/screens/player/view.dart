@@ -39,13 +39,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
   bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
   PlaylistMode get _loopMode => _playback.state.value.loopMode;
 
-  double _bufferProgress = 0;
-
-  Duration _durationCurrent = Duration.zero;
-  Duration _durationTotal = Duration.zero;
-
-  List<StreamSubscription>? _subscriptions;
-
   Future<void> _togglePlayState() async {
     if (!audioPlayer.isPlaying) {
       await audioPlayer.resume();
@@ -56,32 +49,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
   }
 
   double? _draggingValue;
-
-  @override
-  void initState() {
-    super.initState();
-    _durationCurrent = audioPlayer.position;
-    _durationTotal = audioPlayer.duration;
-    _bufferProgress = audioPlayer.bufferedPosition.inMilliseconds.toDouble();
-    _subscriptions = [
-      audioPlayer.durationStream
-          .listen((dur) => setState(() => _durationTotal = dur)),
-      audioPlayer.positionStream
-          .listen((dur) => setState(() => _durationCurrent = dur)),
-      audioPlayer.bufferedPositionStream.listen((dur) =>
-          setState(() => _bufferProgress = dur.inMilliseconds.toDouble())),
-    ];
-  }
-
-  @override
-  void dispose() {
-    if (_subscriptions != null) {
-      for (final subscription in _subscriptions!) {
-        subscription.cancel();
-      }
-    }
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,50 +101,58 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
               const Gap(24),
-              Column(
-                children: [
-                  SliderTheme(
-                    data: SliderThemeData(
-                      trackHeight: 2,
-                      trackShape: _PlayerProgressTrackShape(),
-                      thumbShape: const RoundSliderThumbShape(
-                        enabledThumbRadius: 8,
+              Obx(
+                () => Column(
+                  children: [
+                    SliderTheme(
+                      data: SliderThemeData(
+                        trackHeight: 2,
+                        trackShape: _PlayerProgressTrackShape(),
+                        thumbShape: const RoundSliderThumbShape(
+                          enabledThumbRadius: 8,
+                        ),
+                        overlayShape: SliderComponentShape.noOverlay,
                       ),
-                      overlayShape: SliderComponentShape.noOverlay,
+                      child: Slider(
+                        secondaryTrackValue: _playback
+                            .durationBuffered.value.inMilliseconds
+                            .abs()
+                            .toDouble(),
+                        value: _draggingValue?.abs() ??
+                            _playback.durationCurrent.value.inMilliseconds
+                                .toDouble()
+                                .abs(),
+                        min: 0,
+                        max: max(
+                          _playback.durationCurrent.value.inMilliseconds.abs(),
+                          _playback.durationTotal.value.inMilliseconds.abs(),
+                        ).toDouble(),
+                        onChanged: (value) {
+                          setState(() => _draggingValue = value);
+                        },
+                        onChangeEnd: (value) {
+                          audioPlayer
+                              .seek(Duration(milliseconds: value.toInt()));
+                        },
+                      ),
                     ),
-                    child: Slider(
-                      secondaryTrackValue: _bufferProgress.abs(),
-                      value: _draggingValue?.abs() ??
-                          _durationCurrent.inMilliseconds.toDouble().abs(),
-                      min: 0,
-                      max: max(
-                        _durationTotal.inMilliseconds.abs(),
-                        _durationTotal.inMilliseconds.abs(),
-                      ).toDouble(),
-                      onChanged: (value) {
-                        setState(() => _draggingValue = value);
-                      },
-                      onChangeEnd: (value) {
-                        print('Seek to $value ms');
-                        audioPlayer.seek(Duration(milliseconds: value.toInt()));
-                      },
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        _durationCurrent.toHumanReadableString(),
-                        style: GoogleFonts.robotoMono(fontSize: 12),
-                      ),
-                      Text(
-                        _durationTotal.toHumanReadableString(),
-                        style: GoogleFonts.robotoMono(fontSize: 12),
-                      ),
-                    ],
-                  ).paddingSymmetric(horizontal: 8, vertical: 4),
-                ],
-              ).paddingSymmetric(horizontal: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _playback.durationCurrent.value
+                              .toHumanReadableString(),
+                          style: GoogleFonts.robotoMono(fontSize: 12),
+                        ),
+                        Text(
+                          _playback.durationTotal.value.toHumanReadableString(),
+                          style: GoogleFonts.robotoMono(fontSize: 12),
+                        ),
+                      ],
+                    ).paddingSymmetric(horizontal: 8, vertical: 4),
+                  ],
+                ).paddingSymmetric(horizontal: 24),
+              ),
               const Gap(24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

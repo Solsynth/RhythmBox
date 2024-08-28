@@ -11,6 +11,10 @@ import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 
 class AudioPlayerProvider extends GetxController {
+  Rx<Duration> durationTotal = Rx(Duration.zero);
+  Rx<Duration> durationCurrent = Rx(Duration.zero);
+  Rx<Duration> durationBuffered = Rx(Duration.zero);
+
   RxBool isPlaying = false.obs;
 
   Rx<AudioPlayerState> state = Rx(AudioPlayerState(
@@ -54,6 +58,11 @@ class AudioPlayerProvider extends GetxController {
         state.value = state.value.copyWith(playlist: playlist);
         await _updatePlaylist(playlist);
       }),
+      audioPlayer.durationStream.listen((value) => durationTotal.value = value),
+      audioPlayer.positionStream
+          .listen((value) => durationCurrent.value = value),
+      audioPlayer.bufferedPositionStream
+          .listen((value) => durationBuffered.value = value),
     ];
 
     _readSavedState();

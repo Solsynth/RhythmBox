@@ -44,9 +44,6 @@ class _BottomPlayerState extends State<BottomPlayer>
   bool get _isPlaying => _playback.isPlaying.value;
   bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
 
-  Duration _durationCurrent = Duration.zero;
-  Duration _durationTotal = Duration.zero;
-
   List<StreamSubscription>? _subscriptions;
 
   Future<void> _togglePlayState() async {
@@ -63,10 +60,6 @@ class _BottomPlayerState extends State<BottomPlayer>
   void initState() {
     super.initState();
     _subscriptions = [
-      audioPlayer.durationStream
-          .listen((dur) => setState(() => _durationTotal = dur)),
-      audioPlayer.positionStream
-          .listen((dur) => setState(() => _durationCurrent = dur)),
       _playback.state.listen((state) {
         if (state.playlist.medias.isNotEmpty && !_isLifted) {
           _animationController.animateTo(1);
@@ -109,12 +102,12 @@ class _BottomPlayerState extends State<BottomPlayer>
           behavior: HitTestBehavior.translucent,
           child: Column(
             children: [
-              if (_durationCurrent != Duration.zero)
+              if (_playback.durationCurrent.value != Duration.zero)
                 TweenAnimationBuilder<double>(
                   tween: Tween(
                     begin: 0,
-                    end: _durationCurrent.inMilliseconds /
-                        max(_durationTotal.inMilliseconds, 1),
+                    end: _playback.durationCurrent.value.inMilliseconds /
+                        max(_playback.durationTotal.value.inMilliseconds, 1),
                   ),
                   duration: const Duration(milliseconds: 1000),
                   builder: (context, value, _) => LinearProgressIndicator(

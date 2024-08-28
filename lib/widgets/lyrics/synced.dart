@@ -107,7 +107,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                       )
                     : Padding(
                         padding: idx == _lyric!.lyrics.length - 1
-                            ? const EdgeInsets.all(8.0).copyWith(bottom: 100)
+                            ? const EdgeInsets.all(8.0).copyWith(bottom: 80)
                             : const EdgeInsets.all(8.0),
                         child: AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 250),
@@ -141,8 +141,9 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                                 ),
                               ).animate(target: isActive ? 1 : 0).scale(
                                     duration: 300.ms,
-                                    begin: const Offset(0.9, 0.9),
-                                    end: const Offset(1.3, 1.3),
+                                    begin: const Offset(1, 1),
+                                    end: const Offset(1.25, 1.25),
+                                    curve: Curves.easeInOut,
                                   );
                             }).paddingSymmetric(horizontal: 12),
                           ),
