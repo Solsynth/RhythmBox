@@ -5,6 +5,7 @@ import 'package:rhythm_box/screens/explore.dart';
 import 'package:rhythm_box/screens/player/lyrics.dart';
 import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/screens/playlist/view.dart';
+import 'package:rhythm_box/screens/search/view.dart';
 import 'package:rhythm_box/screens/settings.dart';
 import 'package:rhythm_box/shells/nav_shell.dart';
 
@@ -16,6 +17,11 @@ final router = GoRouter(routes: [
         path: '/',
         name: 'explore',
         builder: (context, state) => const ExploreScreen(),
+      ),
+      GoRoute(
+        path: '/search',
+        name: 'search',
+        builder: (context, state) => const SearchScreen(),
       ),
       GoRoute(
         path: '/playlist/:id',

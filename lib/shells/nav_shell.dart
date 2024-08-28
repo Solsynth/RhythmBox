@@ -24,7 +24,8 @@ class _NavShellState extends State<NavShell> {
 
   final List<Destination> _allDestinations = <Destination>[
     Destination('explore'.tr, 'explore', Icons.explore),
-    Destination('settings'.tr, 'settings', Icons.settings)
+    Destination('search'.tr, 'search', Icons.search),
+    Destination('settings'.tr, 'settings', Icons.settings),
   ];
 
   @override
