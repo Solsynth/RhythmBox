@@ -10,6 +10,7 @@ import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
+import 'package:rhythm_box/widgets/sized_container.dart';
 import 'package:rhythm_box/widgets/tracks/playlist_track_list.dart';
 import 'package:spotify/spotify.dart';
 
@@ -60,6 +61,7 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Playlist'),
+          centerTitle: MediaQuery.of(context).size.width >= 720,
         ),
         body: Builder(
           builder: (context) {
@@ -69,85 +71,114 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
               );
             }
 
-            return CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Material(
-                            borderRadius: radius,
-                            elevation: 2,
-                            child: ClipRRect(
+            return CenteredContainer(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Material(
                               borderRadius: radius,
-                              child: Hero(
-                                tag: Key('playlist-cover-${_playlist!.id}'),
-                                child: AutoCacheImage(
-                                  _playlist!.images!.first.url!,
-                                  width: 160.0,
-                                  height: 160.0,
+                              elevation: 2,
+                              child: ClipRRect(
+                                borderRadius: radius,
+                                child: Hero(
+                                  tag: Key('playlist-cover-${_playlist!.id}'),
+                                  child: AutoCacheImage(
+                                    _playlist!.images!.first.url!,
+                                    width: 160.0,
+                                    height: 160.0,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const Gap(24),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _playlist!.name ?? 'Playlist',
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.fade,
-                                ),
-                                Text(
-                                  _playlist!.description ?? 'A Playlist',
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const Gap(8),
-                                Text(
-                                  "${NumberFormat.compactCurrency(symbol: '', decimalDigits: 2).format(_playlist!.followers!.total!)} saves",
-                                ),
-                                Text(
-                                  '#${_playlist!.id}',
-                                  style: GoogleFonts.robotoMono(fontSize: 10),
-                                ),
-                              ],
+                            const Gap(24),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _playlist!.name ?? 'Playlist',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  Text(
+                                    _playlist!.description ?? 'A Playlist',
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const Gap(8),
+                                  Text(
+                                    "${NumberFormat.compactCurrency(symbol: '', decimalDigits: 2).format(_playlist!.followers!.total!)} saves",
+                                  ),
+                                  Text(
+                                    '#${_playlist!.id}',
+                                    style: GoogleFonts.robotoMono(fontSize: 10),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ).paddingOnly(left: 24, right: 24, top: 24),
-                      const Gap(8),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          Obx(
-                            () => ElevatedButton.icon(
-                              icon: (_isCurrentPlaylist &&
-                                      _playback.isPlaying.value)
-                                  ? const Icon(Icons.pause_outlined)
-                                  : const Icon(Icons.play_arrow),
-                              label: const Text('Play'),
+                          ],
+                        ).paddingOnly(left: 24, right: 24, top: 24),
+                        const Gap(8),
+                        Wrap(
+                          spacing: 8,
+                          children: [
+                            Obx(
+                              () => ElevatedButton.icon(
+                                icon: (_isCurrentPlaylist &&
+                                        _playback.isPlaying.value)
+                                    ? const Icon(Icons.pause_outlined)
+                                    : const Icon(Icons.play_arrow),
+                                label: const Text('Play'),
+                                onPressed: _isUpdating
+                                    ? null
+                                    : () async {
+                                        if (_isCurrentPlaylist &&
+                                            _playback.isPlaying.value) {
+                                          audioPlayer.pause();
+                                          return;
+                                        } else if (_isCurrentPlaylist &&
+                                            !_playback.isPlaying.value) {
+                                          audioPlayer.resume();
+                                          return;
+                                        }
+
+                                        setState(() => _isUpdating = true);
+
+                                        final tracks = (await _spotify
+                                                .api.playlists
+                                                .getTracksByPlaylistId(
+                                                    widget.playlistId)
+                                                .all())
+                                            .toList();
+
+                                        await _playback.load(tracks,
+                                            autoPlay: true);
+                                        _playback.addCollection(_playlist!.id!);
+                                        Get.find<PlaybackHistoryProvider>()
+                                            .addPlaylists([_playlist!]);
+
+                                        setState(() => _isUpdating = false);
+                                      },
+                              ),
+                            ),
+                            TextButton.icon(
+                              icon: const Icon(Icons.shuffle),
+                              label: const Text('Shuffle'),
                               onPressed: _isUpdating
                                   ? null
                                   : () async {
-                                      if (_isCurrentPlaylist &&
-                                          _playback.isPlaying.value) {
-                                        audioPlayer.pause();
-                                        return;
-                                      } else if (_isCurrentPlaylist &&
-                                          !_playback.isPlaying.value) {
-                                        audioPlayer.resume();
-                                        return;
-                                      }
-
                                       setState(() => _isUpdating = true);
+
+                                      audioPlayer.setShuffle(true);
 
                                       final tracks = (await _spotify
                                               .api.playlists
@@ -156,8 +187,12 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                                               .all())
                                           .toList();
 
-                                      await _playback.load(tracks,
-                                          autoPlay: true);
+                                      await _playback.load(
+                                        tracks,
+                                        autoPlay: true,
+                                        initialIndex:
+                                            Random().nextInt(tracks.length),
+                                      );
                                       _playback.addCollection(_playlist!.id!);
                                       Get.find<PlaybackHistoryProvider>()
                                           .addPlaylists([_playlist!]);
@@ -165,50 +200,21 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                                       setState(() => _isUpdating = false);
                                     },
                             ),
-                          ),
-                          TextButton.icon(
-                            icon: const Icon(Icons.shuffle),
-                            label: const Text('Shuffle'),
-                            onPressed: _isUpdating
-                                ? null
-                                : () async {
-                                    setState(() => _isUpdating = true);
-
-                                    audioPlayer.setShuffle(true);
-
-                                    final tracks = (await _spotify.api.playlists
-                                            .getTracksByPlaylistId(
-                                                widget.playlistId)
-                                            .all())
-                                        .toList();
-
-                                    await _playback.load(
-                                      tracks,
-                                      autoPlay: true,
-                                      initialIndex:
-                                          Random().nextInt(tracks.length),
-                                    );
-                                    _playback.addCollection(_playlist!.id!);
-                                    Get.find<PlaybackHistoryProvider>()
-                                        .addPlaylists([_playlist!]);
-
-                                    setState(() => _isUpdating = false);
-                                  },
-                          ),
-                        ],
-                      ).paddingSymmetric(horizontal: 24),
-                      const Gap(24),
-                    ],
+                          ],
+                        ).paddingSymmetric(horizontal: 24),
+                        const Gap(24),
+                      ],
+                    ),
                   ),
-                ),
-                SliverToBoxAdapter(
-                  child: Text(
-                    'Songs (${_playlist!.tracks!.total})',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ).paddingOnly(left: 28, right: 28, bottom: 4),
-                ),
-                PlaylistTrackList(playlistId: widget.playlistId),
-              ],
+                  SliverToBoxAdapter(
+                    child: Text(
+                      'Songs (${_playlist!.tracks!.total})',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ).paddingOnly(left: 28, right: 28, bottom: 4),
+                  ),
+                  PlaylistTrackList(playlistId: widget.playlistId),
+                ],
+              ),
             );
           },
         ),

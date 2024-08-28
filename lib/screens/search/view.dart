@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
+import 'package:rhythm_box/widgets/sized_container.dart';
 import 'package:rhythm_box/widgets/tracks/track_list.dart';
 import 'package:spotify/spotify.dart';
 
@@ -61,11 +62,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   FocusManager.instance.primaryFocus?.unfocus(),
             ).paddingSymmetric(horizontal: 24, vertical: 8),
             Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  if (_searchResult != null)
-                    TrackSliverList(tracks: List<Track>.from(_searchResult!)),
-                ],
+              child: CenteredContainer(
+                child: CustomScrollView(
+                  slivers: [
+                    if (_searchResult != null)
+                      TrackSliverList(tracks: List<Track>.from(_searchResult!)),
+                  ],
+                ),
               ),
             ),
           ],

@@ -40,6 +40,7 @@ class _NavShellState extends State<NavShell> {
             const BottomPlayer(key: Key('app-wide-bottom-player')),
             const Divider(height: 0.3, thickness: 0.3),
             BottomNavigationBar(
+              landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
               elevation: 0,
               showUnselectedLabels: false,
               currentIndex: _focusDestination,

@@ -16,6 +16,7 @@ import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/duration.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
+import 'package:rhythm_box/widgets/lyrics/synced.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class PlayerScreen extends StatefulWidget {
@@ -50,9 +51,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
   double? _draggingValue;
 
+  static const double maxAlbumSize = 360;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final albumSize = max(size.shortestSide, maxAlbumSize).toDouble();
+
+    final isLargeScreen = size.width >= 720;
 
     return DismissiblePage(
       backgroundColor: Theme.of(context).colorScheme.surface,
@@ -63,230 +69,260 @@ class _PlayerScreenState extends State<PlayerScreen> {
       child: Material(
         color: Colors.transparent,
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Row(
             children: [
-              Hero(
-                tag: const Key('current-active-track-album-art'),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: _albumArt != null
-                        ? AutoCacheImage(
-                            _albumArt!,
-                            width: size.width,
-                            height: size.width,
-                          )
-                        : Container(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHigh,
-                            width: 64,
-                            height: 64,
-                            child: const Center(child: Icon(Icons.image)),
-                          ),
-                  ),
-                ).marginSymmetric(horizontal: 24),
-              ),
-              const Gap(24),
-              Text(
-                _playback.state.value.activeTrack?.name ?? 'Not playing',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-              Text(
-                _playback.state.value.activeTrack?.artists?.asString() ??
-                    'No author',
-                style: Theme.of(context).textTheme.bodyMedium,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const Gap(24),
-              Obx(
-                () => Column(
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SliderTheme(
-                      data: SliderThemeData(
-                        trackHeight: 2,
-                        trackShape: _PlayerProgressTrackShape(),
-                        thumbShape: const RoundSliderThumbShape(
-                          enabledThumbRadius: 8,
-                        ),
-                        overlayShape: SliderComponentShape.noOverlay,
-                      ),
-                      child: Slider(
-                        secondaryTrackValue: _playback
-                            .durationBuffered.value.inMilliseconds
-                            .abs()
-                            .toDouble(),
-                        value: _draggingValue?.abs() ??
-                            _playback.durationCurrent.value.inMilliseconds
-                                .toDouble()
-                                .abs(),
-                        min: 0,
-                        max: max(
-                          _playback.durationCurrent.value.inMilliseconds.abs(),
-                          _playback.durationTotal.value.inMilliseconds.abs(),
-                        ).toDouble(),
-                        onChanged: (value) {
-                          setState(() => _draggingValue = value);
-                        },
-                        onChangeEnd: (value) {
-                          audioPlayer
-                              .seek(Duration(milliseconds: value.toInt()));
-                        },
+                    LimitedBox(
+                      maxHeight: maxAlbumSize,
+                      maxWidth: maxAlbumSize,
+                      child: Hero(
+                        tag: const Key('current-active-track-album-art'),
+                        child: ClipRRect(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(16)),
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: _albumArt != null
+                                ? AutoCacheImage(
+                                    _albumArt!,
+                                    width: albumSize,
+                                    height: albumSize,
+                                  )
+                                : Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHigh,
+                                    width: 64,
+                                    height: 64,
+                                    child:
+                                        const Center(child: Icon(Icons.image)),
+                                  ),
+                          ),
+                        ).marginSymmetric(horizontal: 24),
                       ),
                     ),
+                    const Gap(24),
+                    Text(
+                      _playback.state.value.activeTrack?.name ?? 'Not playing',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    Text(
+                      _playback.state.value.activeTrack?.artists?.asString() ??
+                          'No author',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Gap(24),
+                    Obx(
+                      () => Column(
+                        children: [
+                          SliderTheme(
+                            data: SliderThemeData(
+                              trackHeight: 2,
+                              trackShape: _PlayerProgressTrackShape(),
+                              thumbShape: const RoundSliderThumbShape(
+                                enabledThumbRadius: 8,
+                              ),
+                              overlayShape: SliderComponentShape.noOverlay,
+                            ),
+                            child: Slider(
+                              secondaryTrackValue: _playback
+                                  .durationBuffered.value.inMilliseconds
+                                  .abs()
+                                  .toDouble(),
+                              value: _draggingValue?.abs() ??
+                                  _playback.durationCurrent.value.inMilliseconds
+                                      .toDouble()
+                                      .abs(),
+                              min: 0,
+                              max: max(
+                                _playback.durationCurrent.value.inMilliseconds
+                                    .abs(),
+                                _playback.durationTotal.value.inMilliseconds
+                                    .abs(),
+                              ).toDouble(),
+                              onChanged: (value) {
+                                setState(() => _draggingValue = value);
+                              },
+                              onChangeEnd: (value) {
+                                audioPlayer.seek(
+                                    Duration(milliseconds: value.toInt()));
+                              },
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _playback.durationCurrent.value
+                                    .toHumanReadableString(),
+                                style: GoogleFonts.robotoMono(fontSize: 12),
+                              ),
+                              Text(
+                                _playback.durationTotal.value
+                                    .toHumanReadableString(),
+                                style: GoogleFonts.robotoMono(fontSize: 12),
+                              ),
+                            ],
+                          ).paddingSymmetric(horizontal: 8, vertical: 4),
+                        ],
+                      ).paddingSymmetric(horizontal: 24),
+                    ),
+                    const Gap(24),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          _playback.durationCurrent.value
-                              .toHumanReadableString(),
-                          style: GoogleFonts.robotoMono(fontSize: 12),
+                        StreamBuilder<bool>(
+                          stream: audioPlayer.shuffledStream,
+                          builder: (context, snapshot) {
+                            final shuffled = snapshot.data ?? false;
+                            return IconButton(
+                              icon: Icon(
+                                shuffled
+                                    ? Icons.shuffle_on_outlined
+                                    : Icons.shuffle,
+                              ),
+                              onPressed: _isFetchingActiveTrack
+                                  ? null
+                                  : () {
+                                      if (shuffled) {
+                                        audioPlayer.setShuffle(false);
+                                      } else {
+                                        audioPlayer.setShuffle(true);
+                                      }
+                                    },
+                            );
+                          },
                         ),
-                        Text(
-                          _playback.durationTotal.value.toHumanReadableString(),
-                          style: GoogleFonts.robotoMono(fontSize: 12),
+                        IconButton(
+                          icon: const Icon(Icons.skip_previous),
+                          onPressed: _isFetchingActiveTrack
+                              ? null
+                              : audioPlayer.skipToPrevious,
+                        ),
+                        const Gap(8),
+                        SizedBox(
+                          width: 56,
+                          height: 56,
+                          child: IconButton.filled(
+                            icon: _isFetchingActiveTrack
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : Icon(
+                                    !_isPlaying
+                                        ? Icons.play_arrow
+                                        : Icons.pause,
+                                    size: 28,
+                                  ),
+                            onPressed: _isFetchingActiveTrack
+                                ? null
+                                : _togglePlayState,
+                          ),
+                        ),
+                        const Gap(8),
+                        IconButton(
+                          icon: const Icon(Icons.skip_next),
+                          onPressed: _isFetchingActiveTrack
+                              ? null
+                              : audioPlayer.skipToNext,
+                        ),
+                        Obx(
+                          () => IconButton(
+                            icon: Icon(
+                              _loopMode == PlaylistMode.none
+                                  ? Icons.repeat
+                                  : _loopMode == PlaylistMode.loop
+                                      ? Icons.repeat_on_outlined
+                                      : Icons.repeat_one_on_outlined,
+                            ),
+                            onPressed: _isFetchingActiveTrack
+                                ? null
+                                : () async {
+                                    await audioPlayer.setLoopMode(
+                                      switch (_loopMode) {
+                                        PlaylistMode.loop =>
+                                          PlaylistMode.single,
+                                        PlaylistMode.single =>
+                                          PlaylistMode.none,
+                                        PlaylistMode.none => PlaylistMode.loop,
+                                      },
+                                    );
+                                  },
+                          ),
                         ),
                       ],
-                    ).paddingSymmetric(horizontal: 8, vertical: 4),
-                  ],
-                ).paddingSymmetric(horizontal: 24),
-              ),
-              const Gap(24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StreamBuilder<bool>(
-                    stream: audioPlayer.shuffledStream,
-                    builder: (context, snapshot) {
-                      final shuffled = snapshot.data ?? false;
-                      return IconButton(
-                        icon: Icon(
-                          shuffled ? Icons.shuffle_on_outlined : Icons.shuffle,
-                        ),
-                        onPressed: _isFetchingActiveTrack
-                            ? null
-                            : () {
-                                if (shuffled) {
-                                  audioPlayer.setShuffle(false);
-                                } else {
-                                  audioPlayer.setShuffle(true);
+                    ),
+                    const Gap(20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton.icon(
+                            icon: const Icon(Icons.queue_music),
+                            label: const Text('Queue'),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) => const PlayerQueuePopup(),
+                              ).then((_) {
+                                if (mounted) {
+                                  setState(() {});
                                 }
-                              },
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.skip_previous),
-                    onPressed: _isFetchingActiveTrack
-                        ? null
-                        : audioPlayer.skipToPrevious,
-                  ),
-                  const Gap(8),
-                  SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: IconButton.filled(
-                      icon: _isFetchingActiveTrack
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
-                            )
-                          : Icon(
-                              !_isPlaying ? Icons.play_arrow : Icons.pause,
-                              size: 28,
-                            ),
-                      onPressed:
-                          _isFetchingActiveTrack ? null : _togglePlayState,
-                    ),
-                  ),
-                  const Gap(8),
-                  IconButton(
-                    icon: const Icon(Icons.skip_next),
-                    onPressed:
-                        _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
-                  ),
-                  Obx(
-                    () => IconButton(
-                      icon: Icon(
-                        _loopMode == PlaylistMode.none
-                            ? Icons.repeat
-                            : _loopMode == PlaylistMode.loop
-                                ? Icons.repeat_on_outlined
-                                : Icons.repeat_one_on_outlined,
-                      ),
-                      onPressed: _isFetchingActiveTrack
-                          ? null
-                          : () async {
-                              await audioPlayer.setLoopMode(
-                                switch (_loopMode) {
-                                  PlaylistMode.loop => PlaylistMode.single,
-                                  PlaylistMode.single => PlaylistMode.none,
-                                  PlaylistMode.none => PlaylistMode.loop,
-                                },
-                              );
+                              });
                             },
+                          ),
+                        ),
+                        if (!isLargeScreen) const Gap(4),
+                        if (!isLargeScreen)
+                          Expanded(
+                            child: TextButton.icon(
+                              icon: const Icon(Icons.lyrics),
+                              label: const Text('Lyrics'),
+                              onPressed: () {
+                                GoRouter.of(context).pushNamed('playerLyrics');
+                              },
+                            ),
+                          ),
+                        const Gap(4),
+                        Expanded(
+                          child: TextButton.icon(
+                            icon: const Icon(Icons.merge),
+                            label: const Text('Sources'),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                useRootNavigator: true,
+                                isScrollControlled: true,
+                                context: context,
+                                builder: (context) =>
+                                    const SiblingTracksPopup(),
+                              ).then((_) {
+                                if (mounted) {
+                                  setState(() {});
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              const Gap(20),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextButton.icon(
-                      icon: const Icon(Icons.queue_music),
-                      label: const Text('Queue'),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) => const PlayerQueuePopup(),
-                        ).then((_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  const Gap(4),
-                  Expanded(
-                    child: TextButton.icon(
-                      icon: const Icon(Icons.lyrics),
-                      label: const Text('Lyrics'),
-                      onPressed: () {
-                        GoRouter.of(context).pushNamed('playerLyrics');
-                      },
-                    ),
-                  ),
-                  const Gap(4),
-                  Expanded(
-                    child: TextButton.icon(
-                      icon: const Icon(Icons.merge),
-                      label: const Text('Sources'),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          useRootNavigator: true,
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) => const SiblingTracksPopup(),
-                        ).then((_) {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
+              if (isLargeScreen) const Gap(24),
+              if (isLargeScreen)
+                const Expanded(
+                  child: SyncedLyrics(defaultTextZoom: 67),
+                )
             ],
           ),
         ).marginAll(24),
