@@ -11,6 +11,7 @@ import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/router.dart';
+import 'package:rhythm_box/services/lyrics/provider.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/routes/playback.dart';
 import 'package:rhythm_box/services/server/server.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
 
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
+    Get.lazyPut(() => SyncedLyricsProvider());
 
     Get.put(DatabaseProvider());
 

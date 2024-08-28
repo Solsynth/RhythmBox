@@ -9,7 +9,7 @@ import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rhythm_box/services/color.dart';
-import 'package:rhythm_box/services/lyrics.dart';
+import 'package:rhythm_box/services/lyrics/model.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/kv_store/encrypted_kv_store.dart';
 import 'package:rhythm_box/services/kv_store/kv_store.dart';

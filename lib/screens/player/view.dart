@@ -5,6 +5,7 @@ import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
@@ -16,14 +17,7 @@ import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class PlayerScreen extends StatefulWidget {
-  final Duration durationCurrent, durationTotal, durationBuffered;
-
-  const PlayerScreen({
-    super.key,
-    required this.durationCurrent,
-    required this.durationTotal,
-    required this.durationBuffered,
-  });
+  const PlayerScreen({super.key});
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -72,9 +66,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _durationCurrent = widget.durationCurrent;
-    _durationTotal = widget.durationTotal;
-    _bufferProgress = widget.durationBuffered.inMilliseconds.toDouble();
+    _durationCurrent = audioPlayer.position;
+    _durationTotal = audioPlayer.duration;
+    _bufferProgress = audioPlayer.bufferedPosition.inMilliseconds.toDouble();
     _subscriptions = [
       audioPlayer.durationStream
           .listen((dur) => setState(() => _durationTotal = dur)),
@@ -298,7 +292,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     child: TextButton.icon(
                       icon: const Icon(Icons.lyrics),
                       label: const Text('Lyrics'),
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).pushNamed('playerLyrics');
+                      },
                     ),
                   ),
                   const Gap(4),

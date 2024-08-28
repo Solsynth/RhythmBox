@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:dismissible_page/dismissible_page.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
-import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
@@ -14,7 +13,9 @@ import 'package:rhythm_box/widgets/player/track_details.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class BottomPlayer extends StatefulWidget {
-  const BottomPlayer({super.key});
+  final bool usePop;
+
+  const BottomPlayer({super.key, this.usePop = false});
 
   @override
   State<BottomPlayer> createState() => _BottomPlayerState();
@@ -45,15 +46,6 @@ class _BottomPlayerState extends State<BottomPlayer>
 
   Duration _durationCurrent = Duration.zero;
   Duration _durationTotal = Duration.zero;
-  Duration _durationBuffered = Duration.zero;
-
-  void _updateDurationCurrent(Duration dur) {
-    setState(() => _durationCurrent = dur);
-  }
-
-  void _updateDurationTotal(Duration dur) {
-    setState(() => _durationTotal = dur);
-  }
 
   List<StreamSubscription>? _subscriptions;
 
@@ -75,8 +67,6 @@ class _BottomPlayerState extends State<BottomPlayer>
           .listen((dur) => setState(() => _durationTotal = dur)),
       audioPlayer.positionStream
           .listen((dur) => setState(() => _durationCurrent = dur)),
-      audioPlayer.bufferedPositionStream
-          .listen((dur) => setState(() => _durationBuffered = dur)),
       _playback.state.listen((state) {
         if (state.playlist.medias.isNotEmpty && !_isLifted) {
           _animationController.animateTo(1);
@@ -126,7 +116,7 @@ class _BottomPlayerState extends State<BottomPlayer>
                     end: _durationCurrent.inMilliseconds /
                         max(_durationTotal.inMilliseconds, 1),
                   ),
-                  duration: const Duration(milliseconds: 100),
+                  duration: const Duration(milliseconds: 1000),
                   builder: (context, value, _) => LinearProgressIndicator(
                     minHeight: 3,
                     value: value,
@@ -191,11 +181,11 @@ class _BottomPlayerState extends State<BottomPlayer>
             ],
           ),
           onTap: () {
-            context.pushTransparentRoute(PlayerScreen(
-              durationCurrent: _durationCurrent,
-              durationTotal: _durationTotal,
-              durationBuffered: _durationBuffered,
-            ));
+            if (widget.usePop) {
+              GoRouter.of(context).pop();
+            } else {
+              GoRouter.of(context).pushNamed('player');
+            }
           },
         ),
       ),

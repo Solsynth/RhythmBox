@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/history.dart';
+import 'package:rhythm_box/providers/palette.dart';
 import 'package:rhythm_box/providers/scrobbler.dart';
 import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
@@ -16,7 +17,6 @@ import 'package:rhythm_box/widgets/auto_cache_image.dart';
 
 class AudioPlayerStreamProvider extends GetxController {
   late final AudioServices notificationService;
-  final Rxn<PaletteGenerator?> palette = Rxn<PaletteGenerator?>();
 
   List<StreamSubscription>? _subscriptions;
 
@@ -58,9 +58,7 @@ class AudioPlayerStreamProvider extends GetxController {
 
   Future<void> updatePalette() async {
     if (!Get.find<UserPreferencesProvider>().state.value.albumColorSync) {
-      if (palette.value != null) {
-        palette.value = null;
-      }
+      Get.find<PaletteProvider>().clear();
       return;
     }
 
@@ -74,7 +72,7 @@ class AudioPlayerStreamProvider extends GetxController {
           (activeTrack.album?.images).asUrlString()!,
         ),
       );
-      palette.value = newPalette;
+      Get.find<PaletteProvider>().updatePalette(newPalette);
     }
   }
 
