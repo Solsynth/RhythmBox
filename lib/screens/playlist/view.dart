@@ -1,9 +1,14 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/spotify.dart';
+import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/widgets/tracks/playlist_track_list.dart';
 import 'package:spotify/spotify.dart';
@@ -24,8 +29,14 @@ class PlaylistViewScreen extends StatefulWidget {
 
 class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
   late final SpotifyProvider _spotify = Get.find();
+  late final AudioPlayerProvider _playback = Get.find();
+
+  bool get _isCurrentPlaylist => _playlist != null
+      ? _playback.state.value.containsCollection(_playlist!.id!)
+      : false;
 
   bool _isLoading = true;
+  bool _isUpdating = false;
 
   Playlist? _playlist;
 
@@ -116,15 +127,73 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                       Wrap(
                         spacing: 8,
                         children: [
-                          ElevatedButton.icon(
-                            icon: const Icon(Icons.play_arrow_outlined),
-                            label: const Text('Play'),
-                            onPressed: () {},
+                          Obx(
+                            () => ElevatedButton.icon(
+                              icon: (_isCurrentPlaylist &&
+                                      _playback.isPlaying.value)
+                                  ? const Icon(Icons.pause_outlined)
+                                  : const Icon(Icons.play_arrow),
+                              label: const Text('Play'),
+                              onPressed: _isUpdating
+                                  ? null
+                                  : () async {
+                                      if (_isCurrentPlaylist &&
+                                          _playback.isPlaying.value) {
+                                        audioPlayer.pause();
+                                        return;
+                                      } else if (_isCurrentPlaylist &&
+                                          !_playback.isPlaying.value) {
+                                        audioPlayer.resume();
+                                        return;
+                                      }
+
+                                      setState(() => _isUpdating = true);
+
+                                      final tracks = (await _spotify
+                                              .api.playlists
+                                              .getTracksByPlaylistId(
+                                                  widget.playlistId)
+                                              .all())
+                                          .toList();
+
+                                      await _playback.load(tracks,
+                                          autoPlay: true);
+                                      _playback.addCollection(_playlist!.id!);
+                                      Get.find<PlaybackHistoryProvider>()
+                                          .addPlaylists([_playlist!]);
+
+                                      setState(() => _isUpdating = false);
+                                    },
+                            ),
                           ),
                           TextButton.icon(
                             icon: const Icon(Icons.shuffle),
                             label: const Text('Shuffle'),
-                            onPressed: () {},
+                            onPressed: _isUpdating
+                                ? null
+                                : () async {
+                                    setState(() => _isUpdating = true);
+
+                                    audioPlayer.setShuffle(true);
+
+                                    final tracks = (await _spotify.api.playlists
+                                            .getTracksByPlaylistId(
+                                                widget.playlistId)
+                                            .all())
+                                        .toList();
+
+                                    await _playback.load(
+                                      tracks,
+                                      autoPlay: true,
+                                      initialIndex:
+                                          Random().nextInt(tracks.length),
+                                    );
+                                    _playback.addCollection(_playlist!.id!);
+                                    Get.find<PlaybackHistoryProvider>()
+                                        .addPlaylists([_playlist!]);
+
+                                    setState(() => _isUpdating = false);
+                                  },
                           ),
                         ],
                       ).paddingSymmetric(horizontal: 24),

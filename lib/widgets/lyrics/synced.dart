@@ -141,7 +141,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                                 ),
                               ).animate(target: isActive ? 1 : 0).scale(
                                     duration: 300.ms,
-                                    begin: const Offset(1, 1),
+                                    begin: const Offset(0.9, 0.9),
                                     end: const Offset(1.3, 1.3),
                                   );
                             }).paddingSymmetric(horizontal: 12),

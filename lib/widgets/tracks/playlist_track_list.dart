@@ -70,11 +70,13 @@ class _PlaylistTrackListState extends State<PlaylistTrackList> {
             ),
             onTap: () {
               if (item == null) return;
-              Get.find<AudioPlayerProvider>().load(
-                _tracks!,
-                initialIndex: idx,
-                autoPlay: true,
-              );
+              Get.find<AudioPlayerProvider>()
+                ..load(
+                  _tracks!,
+                  initialIndex: idx,
+                  autoPlay: true,
+                )
+                ..addCollection(widget.playlistId);
             },
           );
         },

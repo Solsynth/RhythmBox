@@ -36,7 +36,7 @@ class _NavShellState extends State<NavShell> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const BottomPlayer(),
+            const BottomPlayer(key: Key('app-wide-bottom-player')),
             const Divider(height: 0.3, thickness: 0.3),
             BottomNavigationBar(
               elevation: 0,

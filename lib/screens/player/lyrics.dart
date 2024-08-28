@@ -23,10 +23,13 @@ class LyricsScreen extends StatelessWidget {
           ],
         ),
         bottomNavigationBar: const SizedBox(
-          height: 83,
+          height: 85,
           child: Material(
             elevation: 2,
-            child: BottomPlayer(usePop: true),
+            child: BottomPlayer(
+              key: Key('lyrics-page-bottom-player'),
+              usePop: true,
+            ),
           ),
         ),
       ),
