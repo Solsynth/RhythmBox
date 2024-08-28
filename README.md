@@ -1,16 +1,12 @@
-# rhythm_box
+# RhythmBox
 
-A new Flutter project.
+Yet another spotify third-party client. Support multi-platform because built with flutter.
 
-## Getting Started
+This project is inspired by and taken supported by [spotube](https://spotube.krtirtho.dev).
+Their original app is good enough. But I just want to redesign the user interface and make it ready add to more features and more backend support.
 
-This project is a starting point for a Flutter application.
+## License
 
-A few resources to get you started if this is your first Flutter project:
+This project is open-sourced under APGLv3 license. The original spotube project is open-sourced under license BSD-Clause4 and copyright by Kingkor Roy Tirtho.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+This project is all rights reversed by LittleSheep and Solsynth LLC.
