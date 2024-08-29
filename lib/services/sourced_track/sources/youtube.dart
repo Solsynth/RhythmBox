@@ -250,8 +250,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
     final searchResults = await youtubeClient.search.search(
       query,
-      // '$query - Topic',
-      filter: TypeFilters.video,
+      filter: const SearchFilter('CAMSAhAB'),
     );
 
     if (ServiceUtils.onlyContainsEnglish(query)) {

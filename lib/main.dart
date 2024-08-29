@@ -10,6 +10,7 @@ import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/endless_playback.dart';
 import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/palette.dart';
+import 'package:rhythm_box/providers/recent_played.dart';
 import 'package:rhythm_box/providers/scrobbler.dart';
 import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/spotify.dart';
@@ -105,6 +106,7 @@ class MyApp extends StatelessWidget {
     Get.put(SourcedTrackProvider());
     Get.put(EndlessPlaybackProvider());
     Get.put(VolumeProvider());
+    Get.put(RecentlyPlayedProvider());
 
     Get.put(ServerPlaybackRoutesProvider());
     Get.put(PlaybackServerProvider());

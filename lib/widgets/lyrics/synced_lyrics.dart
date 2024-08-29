@@ -109,6 +109,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
     final size = MediaQuery.of(context).size;
 
     return CustomScrollView(
+      cacheExtent: 10000,
       controller: _autoScrollController,
       slivers: [
         if (_lyric == null)
@@ -164,6 +165,9 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                           ),
                           textAlign: TextAlign.center,
                           child: InkWell(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(8),
+                            ),
                             onTap: () async {
                               final time = Duration(
                                 seconds: lyricSlice.time.inSeconds -
@@ -184,7 +188,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                                       : _unFocusColor,
                                 ),
                                 duration: 500.ms,
-                                curve: Curves.easeInOut,
+                                curve: Curves.decelerate,
                                 child: Text(
                                   lyricSlice.text,
                                   textAlign:
