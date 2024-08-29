@@ -24,6 +24,7 @@ import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/routes/playback.dart';
 import 'package:rhythm_box/services/server/server.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/shells/system_shell.dart';
 import 'package:rhythm_box/translations.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:smtc_windows/smtc_windows.dart';
@@ -41,6 +42,7 @@ Future<void> main(List<String> rawArgs) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (PlatformInfo.isDesktop) {
+    await windowManager.ensureInitialized();
     await windowManager.setPreventClose(true);
   }
   if (PlatformInfo.isWindows) {
@@ -82,6 +84,13 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       translations: AppTranslations(),
       onInit: () => _initializeProviders(context),
+      builder: (context, child) {
+        return SystemShell(
+          child: ScaffoldMessenger(
+            child: child ?? const SizedBox(),
+          ),
+        );
+      },
     );
   }
 

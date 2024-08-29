@@ -894,6 +894,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.15.0"
+  metadata_god:
+    dependency: "direct main"
+    description:
+      path: "packages/metadata_god"
+      ref: cargokit
+      resolved-ref: "331636d8e378e3ac9ad30a4b0d3eed17d5a85fe9"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
+    version: "0.5.3"
   mime:
     dependency: transitive
     description:

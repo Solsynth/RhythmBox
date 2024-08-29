@@ -47,7 +47,7 @@ class PlaylistSection extends StatelessWidget {
                         onTap: () {
                           if (item == null) return;
                           GoRouter.of(context).pushNamed(
-                            'playlistView',
+                            'albumView',
                             pathParameters: {'id': item.id!},
                           );
                         },
