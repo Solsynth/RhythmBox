@@ -14,6 +14,7 @@ import 'package:rhythm_box/providers/scrobbler.dart';
 import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
+import 'package:rhythm_box/providers/volume.dart';
 import 'package:rhythm_box/router.dart';
 import 'package:rhythm_box/services/kv_store/encrypted_kv_store.dart';
 import 'package:rhythm_box/services/kv_store/kv_store.dart';
@@ -103,6 +104,7 @@ class MyApp extends StatelessWidget {
     Get.put(QueryingTrackInfoProvider());
     Get.put(SourcedTrackProvider());
     Get.put(EndlessPlaybackProvider());
+    Get.put(VolumeProvider());
 
     Get.put(ServerPlaybackRoutesProvider());
     Get.put(PlaybackServerProvider());

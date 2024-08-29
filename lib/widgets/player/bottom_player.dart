@@ -11,6 +11,7 @@ import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/widgets/player/track_details.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
+import 'package:rhythm_box/widgets/volume_slider.dart';
 
 class BottomPlayer extends StatefulWidget {
   final bool usePop;
@@ -93,6 +94,45 @@ class _BottomPlayerState extends State<BottomPlayer>
 
   @override
   Widget build(BuildContext context) {
+    final controls = Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MediaQuery.of(context).size.width >= 720
+          ? MainAxisAlignment.center
+          : MainAxisAlignment.end,
+      children: [
+        if (MediaQuery.of(context).size.width >= 720)
+          IconButton(
+            icon: const Icon(Icons.skip_previous),
+            onPressed:
+                _isFetchingActiveTrack ? null : audioPlayer.skipToPrevious,
+          )
+        else
+          IconButton(
+            icon: const Icon(Icons.skip_next),
+            onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
+          ),
+        IconButton.filled(
+          icon: _isFetchingActiveTrack
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                  ),
+                )
+              : Icon(
+                  !_isPlaying ? Icons.play_arrow : Icons.pause,
+                ),
+          onPressed: _isFetchingActiveTrack ? null : _togglePlayState,
+        ),
+        if (MediaQuery.of(context).size.width >= 720)
+          IconButton(
+            icon: const Icon(Icons.skip_next),
+            onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
+          )
+      ],
+    );
+
     return SizeTransition(
       sizeFactor: _animation,
       axis: Axis.vertical,
@@ -118,56 +158,60 @@ class _BottomPlayerState extends State<BottomPlayer>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Hero(
-                    tag: const Key('current-active-track-album-art'),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      child: _albumArt != null
-                          ? AutoCacheImage(_albumArt!, width: 64, height: 64)
-                          : Container(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .surfaceContainerHigh,
-                              width: 64,
-                              height: 64,
-                              child: const Center(child: Icon(Icons.image)),
-                            ),
-                    ),
-                  ),
-                  const Gap(12),
                   Expanded(
-                    child: PlayerTrackDetails(
-                      track: _playback.state.value.activeTrack,
+                    child: Row(
+                      children: [
+                        Hero(
+                          tag: const Key('current-active-track-album-art'),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            child: _albumArt != null
+                                ? AutoCacheImage(
+                                    _albumArt!,
+                                    width: 64,
+                                    height: 64,
+                                  )
+                                : Container(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHigh,
+                                    width: 64,
+                                    height: 64,
+                                    child: const Center(
+                                      child: Icon(Icons.image),
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        const Gap(12),
+                        Expanded(
+                          child: PlayerTrackDetails(
+                            track: _playback.state.value.activeTrack,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Gap(12),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.skip_next),
-                        onPressed: _isFetchingActiveTrack
-                            ? null
-                            : audioPlayer.skipToNext,
+                  if (MediaQuery.of(context).size.width >= 720)
+                    Expanded(child: controls)
+                  else
+                    controls,
+                  if (MediaQuery.of(context).size.width >= 720) const Gap(12),
+                  if (MediaQuery.of(context).size.width >= 720)
+                    const Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Expanded(
+                            child: VolumeSlider(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                            ),
+                          )
+                        ],
                       ),
-                      IconButton.filled(
-                        icon: _isFetchingActiveTrack
-                            ? const SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                ),
-                              )
-                            : Icon(
-                                !_isPlaying ? Icons.play_arrow : Icons.pause,
-                              ),
-                        onPressed:
-                            _isFetchingActiveTrack ? null : _togglePlayState,
-                      ),
-                    ],
-                  ),
+                    ),
                   const Gap(12),
                 ],
               ).paddingSymmetric(horizontal: 12, vertical: 8),

@@ -29,7 +29,7 @@ class ActiveSourcedTrackProvider extends GetxController {
     final oldActiveIndex = audioPlayer.currentIndex;
 
     await playback.addTracksAtFirst([newTrack]);
-    await Future.delayed(const Duration(milliseconds: 50));
+    await Future.delayed(const Duration(milliseconds: 300));
     await playback.jumpToTrack(newTrack);
 
     await audioPlayer.removeTrack(oldActiveIndex);
