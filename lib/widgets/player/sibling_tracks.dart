@@ -144,7 +144,7 @@ class _SiblingTracksState extends State<SiblingTracks> {
     return Column(
       children: [
         Container(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: TextField(
             controller: _searchTermController,

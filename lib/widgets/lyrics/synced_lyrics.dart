@@ -7,6 +7,7 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/lyrics/model.dart';
 import 'package:rhythm_box/services/lyrics/provider.dart';
+import 'package:rhythm_box/widgets/sized_container.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 class SyncedLyrics extends StatefulWidget {
@@ -45,7 +46,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
   List<StreamSubscription>? _subscriptions;
 
   Color get _unFocusColor =>
-      Theme.of(context).colorScheme.onSurface.withOpacity(0.75);
+      Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
 
   @override
   void initState() {
@@ -79,6 +80,12 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
     return CustomScrollView(
       controller: _autoScrollController,
       slivers: [
+        if (_lyric == null)
+          const SliverFillRemaining(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
         if (_lyric != null && _lyric!.lyrics.isNotEmpty)
           SliverList.builder(
             itemCount: _lyric!.lyrics.length,
@@ -113,8 +120,9 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                       )
                     : Padding(
                         padding: idx == _lyric!.lyrics.length - 1
-                            ? const EdgeInsets.all(8.0).copyWith(bottom: 80)
-                            : const EdgeInsets.all(8.0),
+                            ? const EdgeInsets.symmetric(vertical: 8)
+                                .copyWith(bottom: 80)
+                            : const EdgeInsets.symmetric(vertical: 8),
                         child: AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 250),
                           style: TextStyle(
@@ -137,26 +145,48 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                               audioPlayer.seek(time);
                             },
                             child: Builder(builder: (context) {
-                              return Text(
-                                lyricSlice.text,
+                              return AnimatedDefaultTextStyle(
                                 style: TextStyle(
+                                  fontSize: isActive ? 20 : 16,
                                   color: isActive
                                       ? Theme.of(context).colorScheme.onSurface
                                       : _unFocusColor,
-                                  fontSize: 16,
                                 ),
-                              ).animate(target: isActive ? 1 : 0).scale(
-                                    duration: 300.ms,
-                                    begin: const Offset(1, 1),
-                                    end: const Offset(1.25, 1.25),
-                                    curve: Curves.easeInOut,
-                                  );
-                            }).paddingSymmetric(horizontal: 12),
+                                duration: 500.ms,
+                                curve: Curves.easeInOut,
+                                child: Text(
+                                  lyricSlice.text,
+                                  textAlign:
+                                      MediaQuery.of(context).size.width >= 720
+                                          ? TextAlign.center
+                                          : TextAlign.left,
+                                ),
+                              );
+                            }).paddingSymmetric(horizontal: 24),
                           ),
                         ),
                       ),
               );
             }),
+          )
+        else if (_lyric != null && _lyric!.lyrics.isEmpty)
+          SliverFillRemaining(
+            child: CenteredContainer(
+              maxWidth: 280,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Lyrics Not Found',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const Text(
+                    "This song haven't lyrics that recorded in our database.",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           ),
       ],
     );

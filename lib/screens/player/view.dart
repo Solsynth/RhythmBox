@@ -17,6 +17,7 @@ import 'package:rhythm_box/services/duration.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
+import 'package:rhythm_box/widgets/tracks/heart_button.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class PlayerScreen extends StatefulWidget {
@@ -108,22 +109,36 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     ),
                     const Gap(24),
                     Obx(
-                      () => Text(
-                        _playback.state.value.activeTrack?.name ??
-                            'Not playing',
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Obx(
-                      () => Text(
-                        _playback.state.value.activeTrack?.artists
-                                ?.asString() ??
-                            'No author',
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _playback.state.value.activeTrack?.name ??
+                                      'Not playing',
+                                  style: Theme.of(context).textTheme.titleLarge,
+                                  textAlign: TextAlign.left,
+                                ),
+                                Text(
+                                  _playback.state.value.activeTrack?.artists
+                                          ?.asString() ??
+                                      'No author',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.left,
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (_playback.state.value.activeTrack != null)
+                            TrackHeartButton(
+                              trackId: _playback.state.value.activeTrack!.id!,
+                            ),
+                        ],
+                      ).paddingSymmetric(horizontal: 32),
                     ),
                     const Gap(24),
                     Obx(
