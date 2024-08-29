@@ -7,6 +7,7 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/audio_player_stream.dart';
 import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/endless_playback.dart';
 import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/palette.dart';
 import 'package:rhythm_box/providers/scrobbler.dart';
@@ -92,6 +93,7 @@ class MyApp extends StatelessWidget {
     Get.put(AudioPlayerProvider());
     Get.put(ActiveSourcedTrackProvider());
     Get.put(AudioPlayerStreamProvider());
+    Get.put(EndlessPlaybackProvider());
 
     Get.put(PlaybackHistoryProvider());
     Get.put(SegmentsProvider());

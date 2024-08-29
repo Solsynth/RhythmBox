@@ -103,6 +103,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Obx(
                 () => SwitchListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  secondary: const Icon(Icons.all_inclusive),
+                  title: const Text('Endless Playback'),
+                  subtitle: const Text(
+                      'Automatically get more recommendation for you after your queue finish playing'),
+                  value: _preferences.state.value.endlessPlayback,
+                  onChanged: _preferences.setEndlessPlayback,
+                ),
+              ),
+              Obx(
+                () => SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                   secondary: const Icon(Icons.graphic_eq),
                   title: const Text('Normalize Audio'),
                   subtitle:

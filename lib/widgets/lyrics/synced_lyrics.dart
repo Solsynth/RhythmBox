@@ -63,7 +63,15 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
           idx,
           preferPosition: AutoScrollPosition.middle,
         );
+        return;
       }
+    }
+
+    if (_lyric!.lyrics.isNotEmpty) {
+      _autoScrollController.scrollToIndex(
+        0,
+        preferPosition: AutoScrollPosition.begin,
+      );
     }
   }
 
@@ -77,7 +85,9 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
       _playback.state.listen((value) {
         if (value.activeTrack == null) return;
         if (value.activeTrack!.id != _activeTrackId) {
-          _pullLyrics();
+          _pullLyrics().then((_) {
+            _syncLyricsProgress();
+          });
         }
       }),
     ];
