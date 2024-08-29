@@ -1,8 +1,11 @@
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:rhythm_box/platform.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/audio_player_stream.dart';
+import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/palette.dart';
@@ -11,6 +14,8 @@ import 'package:rhythm_box/providers/skip_segments.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/router.dart';
+import 'package:rhythm_box/services/kv_store/encrypted_kv_store.dart';
+import 'package:rhythm_box/services/kv_store/kv_store.dart';
 import 'package:rhythm_box/services/lyrics/provider.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/routes/playback.dart';
@@ -18,9 +23,29 @@ import 'package:rhythm_box/services/server/server.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
 import 'package:rhythm_box/translations.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
+import 'package:smtc_windows/smtc_windows.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+Future<void> main(List<String> rawArgs) async {
+  if (rawArgs.contains('web_view_title_bar')) {
+    WidgetsFlutterBinding.ensureInitialized();
+    if (runWebViewTitleBarWidget(rawArgs)) {
+      return;
+    }
+  }
+
   MediaKit.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (PlatformInfo.isDesktop) {
+    await windowManager.setPreventClose(true);
+  }
+  if (PlatformInfo.isWindows) {
+    await SMTCWindows.initialize();
+  }
+
+  await KVStoreService.initialize();
+  await EncryptedKvStoreService.initialize();
 
   runApp(const MyApp());
 }
@@ -62,6 +87,7 @@ class MyApp extends StatelessWidget {
     Get.lazyPut(() => SyncedLyricsProvider());
 
     Get.put(DatabaseProvider());
+    Get.put(AuthenticationProvider());
 
     Get.put(AudioPlayerProvider());
     Get.put(ActiveSourcedTrackProvider());

@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rhythm_box/screens/auth/mobile_login.dart';
 import 'package:rhythm_box/screens/explore.dart';
 import 'package:rhythm_box/screens/player/lyrics.dart';
 import 'package:rhythm_box/screens/player/view.dart';
@@ -59,6 +60,16 @@ final router = GoRouter(routes: [
         path: '/player/lyrics',
         name: 'playerLyrics',
         builder: (context, state) => const LyricsScreen(),
+      ),
+    ],
+  ),
+  ShellRoute(
+    builder: (context, state, child) => child,
+    routes: [
+      GoRoute(
+        path: '/auth/mobile-login',
+        name: 'authMobileLogin',
+        builder: (context, state) => const MobileLogin(),
       ),
     ],
   ),

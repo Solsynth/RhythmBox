@@ -7,8 +7,6 @@ class PaletteProvider extends GetxController {
 
   void updatePalette(PaletteGenerator? newPalette) {
     palette.value = newPalette;
-    print('call update!');
-    print(newPalette);
     if (newPalette != null) {
       Get.changeTheme(
         ThemeData.from(

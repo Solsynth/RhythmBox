@@ -3879,6 +3879,50 @@ typedef $$AuthenticationTableTableUpdateCompanionBuilder
   Value<DateTime> expiration,
 });
 
+class $$AuthenticationTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AuthenticationTableTable,
+    AuthenticationTableData,
+    $$AuthenticationTableTableFilterComposer,
+    $$AuthenticationTableTableOrderingComposer,
+    $$AuthenticationTableTableCreateCompanionBuilder,
+    $$AuthenticationTableTableUpdateCompanionBuilder> {
+  $$AuthenticationTableTableTableManager(
+      _$AppDatabase db, $AuthenticationTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$AuthenticationTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$AuthenticationTableTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DecryptedText> cookie = const Value.absent(),
+            Value<DecryptedText> accessToken = const Value.absent(),
+            Value<DateTime> expiration = const Value.absent(),
+          }) =>
+              AuthenticationTableCompanion(
+            id: id,
+            cookie: cookie,
+            accessToken: accessToken,
+            expiration: expiration,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required DecryptedText cookie,
+            required DecryptedText accessToken,
+            required DateTime expiration,
+          }) =>
+              AuthenticationTableCompanion.insert(
+            id: id,
+            cookie: cookie,
+            accessToken: accessToken,
+            expiration: expiration,
+          ),
+        ));
+}
+
 class $$AuthenticationTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $AuthenticationTableTable> {
   $$AuthenticationTableTableFilterComposer(super.$state);
@@ -3931,76 +3975,6 @@ class $$AuthenticationTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$AuthenticationTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AuthenticationTableTable,
-    AuthenticationTableData,
-    $$AuthenticationTableTableFilterComposer,
-    $$AuthenticationTableTableOrderingComposer,
-    $$AuthenticationTableTableCreateCompanionBuilder,
-    $$AuthenticationTableTableUpdateCompanionBuilder,
-    (
-      AuthenticationTableData,
-      BaseReferences<_$AppDatabase, $AuthenticationTableTable,
-          AuthenticationTableData>
-    ),
-    AuthenticationTableData,
-    PrefetchHooks Function()> {
-  $$AuthenticationTableTableTableManager(
-      _$AppDatabase db, $AuthenticationTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$AuthenticationTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$AuthenticationTableTableOrderingComposer(
-              ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DecryptedText> cookie = const Value.absent(),
-            Value<DecryptedText> accessToken = const Value.absent(),
-            Value<DateTime> expiration = const Value.absent(),
-          }) =>
-              AuthenticationTableCompanion(
-            id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required DecryptedText cookie,
-            required DecryptedText accessToken,
-            required DateTime expiration,
-          }) =>
-              AuthenticationTableCompanion.insert(
-            id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$AuthenticationTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $AuthenticationTableTable,
-    AuthenticationTableData,
-    $$AuthenticationTableTableFilterComposer,
-    $$AuthenticationTableTableOrderingComposer,
-    $$AuthenticationTableTableCreateCompanionBuilder,
-    $$AuthenticationTableTableUpdateCompanionBuilder,
-    (
-      AuthenticationTableData,
-      BaseReferences<_$AppDatabase, $AuthenticationTableTable,
-          AuthenticationTableData>
-    ),
-    AuthenticationTableData,
-    PrefetchHooks Function()>;
 typedef $$PreferencesTableTableCreateCompanionBuilder
     = PreferencesTableCompanion Function({
   Value<int> id,
@@ -4057,6 +4031,134 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<bool> endlessPlayback,
   Value<bool> enableConnect,
 });
+
+class $$PreferencesTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PreferencesTableTable,
+    PreferencesTableData,
+    $$PreferencesTableTableFilterComposer,
+    $$PreferencesTableTableOrderingComposer,
+    $$PreferencesTableTableCreateCompanionBuilder,
+    $$PreferencesTableTableUpdateCompanionBuilder> {
+  $$PreferencesTableTableTableManager(
+      _$AppDatabase db, $PreferencesTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PreferencesTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$PreferencesTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<SourceQualities> audioQuality = const Value.absent(),
+            Value<bool> albumColorSync = const Value.absent(),
+            Value<bool> amoledDarkTheme = const Value.absent(),
+            Value<bool> checkUpdate = const Value.absent(),
+            Value<bool> normalizeAudio = const Value.absent(),
+            Value<bool> showSystemTrayIcon = const Value.absent(),
+            Value<bool> systemTitleBar = const Value.absent(),
+            Value<bool> skipNonMusic = const Value.absent(),
+            Value<CloseBehavior> closeBehavior = const Value.absent(),
+            Value<RhythmColor> accentColorScheme = const Value.absent(),
+            Value<LayoutMode> layoutMode = const Value.absent(),
+            Value<Locale> locale = const Value.absent(),
+            Value<Market> market = const Value.absent(),
+            Value<SearchMode> searchMode = const Value.absent(),
+            Value<String> downloadLocation = const Value.absent(),
+            Value<List<String>> localLibraryLocation = const Value.absent(),
+            Value<String> pipedInstance = const Value.absent(),
+            Value<ThemeMode> themeMode = const Value.absent(),
+            Value<AudioSource> audioSource = const Value.absent(),
+            Value<SourceCodecs> streamMusicCodec = const Value.absent(),
+            Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
+            Value<bool> discordPresence = const Value.absent(),
+            Value<bool> endlessPlayback = const Value.absent(),
+            Value<bool> enableConnect = const Value.absent(),
+          }) =>
+              PreferencesTableCompanion(
+            id: id,
+            audioQuality: audioQuality,
+            albumColorSync: albumColorSync,
+            amoledDarkTheme: amoledDarkTheme,
+            checkUpdate: checkUpdate,
+            normalizeAudio: normalizeAudio,
+            showSystemTrayIcon: showSystemTrayIcon,
+            systemTitleBar: systemTitleBar,
+            skipNonMusic: skipNonMusic,
+            closeBehavior: closeBehavior,
+            accentColorScheme: accentColorScheme,
+            layoutMode: layoutMode,
+            locale: locale,
+            market: market,
+            searchMode: searchMode,
+            downloadLocation: downloadLocation,
+            localLibraryLocation: localLibraryLocation,
+            pipedInstance: pipedInstance,
+            themeMode: themeMode,
+            audioSource: audioSource,
+            streamMusicCodec: streamMusicCodec,
+            downloadMusicCodec: downloadMusicCodec,
+            discordPresence: discordPresence,
+            endlessPlayback: endlessPlayback,
+            enableConnect: enableConnect,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<SourceQualities> audioQuality = const Value.absent(),
+            Value<bool> albumColorSync = const Value.absent(),
+            Value<bool> amoledDarkTheme = const Value.absent(),
+            Value<bool> checkUpdate = const Value.absent(),
+            Value<bool> normalizeAudio = const Value.absent(),
+            Value<bool> showSystemTrayIcon = const Value.absent(),
+            Value<bool> systemTitleBar = const Value.absent(),
+            Value<bool> skipNonMusic = const Value.absent(),
+            Value<CloseBehavior> closeBehavior = const Value.absent(),
+            Value<RhythmColor> accentColorScheme = const Value.absent(),
+            Value<LayoutMode> layoutMode = const Value.absent(),
+            Value<Locale> locale = const Value.absent(),
+            Value<Market> market = const Value.absent(),
+            Value<SearchMode> searchMode = const Value.absent(),
+            Value<String> downloadLocation = const Value.absent(),
+            Value<List<String>> localLibraryLocation = const Value.absent(),
+            Value<String> pipedInstance = const Value.absent(),
+            Value<ThemeMode> themeMode = const Value.absent(),
+            Value<AudioSource> audioSource = const Value.absent(),
+            Value<SourceCodecs> streamMusicCodec = const Value.absent(),
+            Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
+            Value<bool> discordPresence = const Value.absent(),
+            Value<bool> endlessPlayback = const Value.absent(),
+            Value<bool> enableConnect = const Value.absent(),
+          }) =>
+              PreferencesTableCompanion.insert(
+            id: id,
+            audioQuality: audioQuality,
+            albumColorSync: albumColorSync,
+            amoledDarkTheme: amoledDarkTheme,
+            checkUpdate: checkUpdate,
+            normalizeAudio: normalizeAudio,
+            showSystemTrayIcon: showSystemTrayIcon,
+            systemTitleBar: systemTitleBar,
+            skipNonMusic: skipNonMusic,
+            closeBehavior: closeBehavior,
+            accentColorScheme: accentColorScheme,
+            layoutMode: layoutMode,
+            locale: locale,
+            market: market,
+            searchMode: searchMode,
+            downloadLocation: downloadLocation,
+            localLibraryLocation: localLibraryLocation,
+            pipedInstance: pipedInstance,
+            themeMode: themeMode,
+            audioSource: audioSource,
+            streamMusicCodec: streamMusicCodec,
+            downloadMusicCodec: downloadMusicCodec,
+            discordPresence: discordPresence,
+            endlessPlayback: endlessPlayback,
+            enableConnect: enableConnect,
+          ),
+        ));
+}
 
 class $$PreferencesTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $PreferencesTableTable> {
@@ -4340,160 +4442,6 @@ class $$PreferencesTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$PreferencesTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PreferencesTableTable,
-    PreferencesTableData,
-    $$PreferencesTableTableFilterComposer,
-    $$PreferencesTableTableOrderingComposer,
-    $$PreferencesTableTableCreateCompanionBuilder,
-    $$PreferencesTableTableUpdateCompanionBuilder,
-    (
-      PreferencesTableData,
-      BaseReferences<_$AppDatabase, $PreferencesTableTable,
-          PreferencesTableData>
-    ),
-    PreferencesTableData,
-    PrefetchHooks Function()> {
-  $$PreferencesTableTableTableManager(
-      _$AppDatabase db, $PreferencesTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$PreferencesTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$PreferencesTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<SourceQualities> audioQuality = const Value.absent(),
-            Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
-            Value<bool> checkUpdate = const Value.absent(),
-            Value<bool> normalizeAudio = const Value.absent(),
-            Value<bool> showSystemTrayIcon = const Value.absent(),
-            Value<bool> systemTitleBar = const Value.absent(),
-            Value<bool> skipNonMusic = const Value.absent(),
-            Value<CloseBehavior> closeBehavior = const Value.absent(),
-            Value<RhythmColor> accentColorScheme = const Value.absent(),
-            Value<LayoutMode> layoutMode = const Value.absent(),
-            Value<Locale> locale = const Value.absent(),
-            Value<Market> market = const Value.absent(),
-            Value<SearchMode> searchMode = const Value.absent(),
-            Value<String> downloadLocation = const Value.absent(),
-            Value<List<String>> localLibraryLocation = const Value.absent(),
-            Value<String> pipedInstance = const Value.absent(),
-            Value<ThemeMode> themeMode = const Value.absent(),
-            Value<AudioSource> audioSource = const Value.absent(),
-            Value<SourceCodecs> streamMusicCodec = const Value.absent(),
-            Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
-            Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
-          }) =>
-              PreferencesTableCompanion(
-            id: id,
-            audioQuality: audioQuality,
-            albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
-            checkUpdate: checkUpdate,
-            normalizeAudio: normalizeAudio,
-            showSystemTrayIcon: showSystemTrayIcon,
-            systemTitleBar: systemTitleBar,
-            skipNonMusic: skipNonMusic,
-            closeBehavior: closeBehavior,
-            accentColorScheme: accentColorScheme,
-            layoutMode: layoutMode,
-            locale: locale,
-            market: market,
-            searchMode: searchMode,
-            downloadLocation: downloadLocation,
-            localLibraryLocation: localLibraryLocation,
-            pipedInstance: pipedInstance,
-            themeMode: themeMode,
-            audioSource: audioSource,
-            streamMusicCodec: streamMusicCodec,
-            downloadMusicCodec: downloadMusicCodec,
-            discordPresence: discordPresence,
-            endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<SourceQualities> audioQuality = const Value.absent(),
-            Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
-            Value<bool> checkUpdate = const Value.absent(),
-            Value<bool> normalizeAudio = const Value.absent(),
-            Value<bool> showSystemTrayIcon = const Value.absent(),
-            Value<bool> systemTitleBar = const Value.absent(),
-            Value<bool> skipNonMusic = const Value.absent(),
-            Value<CloseBehavior> closeBehavior = const Value.absent(),
-            Value<RhythmColor> accentColorScheme = const Value.absent(),
-            Value<LayoutMode> layoutMode = const Value.absent(),
-            Value<Locale> locale = const Value.absent(),
-            Value<Market> market = const Value.absent(),
-            Value<SearchMode> searchMode = const Value.absent(),
-            Value<String> downloadLocation = const Value.absent(),
-            Value<List<String>> localLibraryLocation = const Value.absent(),
-            Value<String> pipedInstance = const Value.absent(),
-            Value<ThemeMode> themeMode = const Value.absent(),
-            Value<AudioSource> audioSource = const Value.absent(),
-            Value<SourceCodecs> streamMusicCodec = const Value.absent(),
-            Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
-            Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
-          }) =>
-              PreferencesTableCompanion.insert(
-            id: id,
-            audioQuality: audioQuality,
-            albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
-            checkUpdate: checkUpdate,
-            normalizeAudio: normalizeAudio,
-            showSystemTrayIcon: showSystemTrayIcon,
-            systemTitleBar: systemTitleBar,
-            skipNonMusic: skipNonMusic,
-            closeBehavior: closeBehavior,
-            accentColorScheme: accentColorScheme,
-            layoutMode: layoutMode,
-            locale: locale,
-            market: market,
-            searchMode: searchMode,
-            downloadLocation: downloadLocation,
-            localLibraryLocation: localLibraryLocation,
-            pipedInstance: pipedInstance,
-            themeMode: themeMode,
-            audioSource: audioSource,
-            streamMusicCodec: streamMusicCodec,
-            downloadMusicCodec: downloadMusicCodec,
-            discordPresence: discordPresence,
-            endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$PreferencesTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PreferencesTableTable,
-    PreferencesTableData,
-    $$PreferencesTableTableFilterComposer,
-    $$PreferencesTableTableOrderingComposer,
-    $$PreferencesTableTableCreateCompanionBuilder,
-    $$PreferencesTableTableUpdateCompanionBuilder,
-    (
-      PreferencesTableData,
-      BaseReferences<_$AppDatabase, $PreferencesTableTable,
-          PreferencesTableData>
-    ),
-    PreferencesTableData,
-    PrefetchHooks Function()>;
 typedef $$ScrobblerTableTableCreateCompanionBuilder = ScrobblerTableCompanion
     Function({
   Value<int> id,
@@ -4508,6 +4456,50 @@ typedef $$ScrobblerTableTableUpdateCompanionBuilder = ScrobblerTableCompanion
   Value<String> username,
   Value<DecryptedText> passwordHash,
 });
+
+class $$ScrobblerTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ScrobblerTableTable,
+    ScrobblerTableData,
+    $$ScrobblerTableTableFilterComposer,
+    $$ScrobblerTableTableOrderingComposer,
+    $$ScrobblerTableTableCreateCompanionBuilder,
+    $$ScrobblerTableTableUpdateCompanionBuilder> {
+  $$ScrobblerTableTableTableManager(
+      _$AppDatabase db, $ScrobblerTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ScrobblerTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ScrobblerTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<String> username = const Value.absent(),
+            Value<DecryptedText> passwordHash = const Value.absent(),
+          }) =>
+              ScrobblerTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            username: username,
+            passwordHash: passwordHash,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            required String username,
+            required DecryptedText passwordHash,
+          }) =>
+              ScrobblerTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            username: username,
+            passwordHash: passwordHash,
+          ),
+        ));
+}
 
 class $$ScrobblerTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $ScrobblerTableTable> {
@@ -4559,74 +4551,6 @@ class $$ScrobblerTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$ScrobblerTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ScrobblerTableTable,
-    ScrobblerTableData,
-    $$ScrobblerTableTableFilterComposer,
-    $$ScrobblerTableTableOrderingComposer,
-    $$ScrobblerTableTableCreateCompanionBuilder,
-    $$ScrobblerTableTableUpdateCompanionBuilder,
-    (
-      ScrobblerTableData,
-      BaseReferences<_$AppDatabase, $ScrobblerTableTable, ScrobblerTableData>
-    ),
-    ScrobblerTableData,
-    PrefetchHooks Function()> {
-  $$ScrobblerTableTableTableManager(
-      _$AppDatabase db, $ScrobblerTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$ScrobblerTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$ScrobblerTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<String> username = const Value.absent(),
-            Value<DecryptedText> passwordHash = const Value.absent(),
-          }) =>
-              ScrobblerTableCompanion(
-            id: id,
-            createdAt: createdAt,
-            username: username,
-            passwordHash: passwordHash,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            required String username,
-            required DecryptedText passwordHash,
-          }) =>
-              ScrobblerTableCompanion.insert(
-            id: id,
-            createdAt: createdAt,
-            username: username,
-            passwordHash: passwordHash,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$ScrobblerTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ScrobblerTableTable,
-    ScrobblerTableData,
-    $$ScrobblerTableTableFilterComposer,
-    $$ScrobblerTableTableOrderingComposer,
-    $$ScrobblerTableTableCreateCompanionBuilder,
-    $$ScrobblerTableTableUpdateCompanionBuilder,
-    (
-      ScrobblerTableData,
-      BaseReferences<_$AppDatabase, $ScrobblerTableTable, ScrobblerTableData>
-    ),
-    ScrobblerTableData,
-    PrefetchHooks Function()>;
 typedef $$SkipSegmentTableTableCreateCompanionBuilder
     = SkipSegmentTableCompanion Function({
   Value<int> id,
@@ -4643,6 +4567,54 @@ typedef $$SkipSegmentTableTableUpdateCompanionBuilder
   Value<String> trackId,
   Value<DateTime> createdAt,
 });
+
+class $$SkipSegmentTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SkipSegmentTableTable,
+    SkipSegmentTableData,
+    $$SkipSegmentTableTableFilterComposer,
+    $$SkipSegmentTableTableOrderingComposer,
+    $$SkipSegmentTableTableCreateCompanionBuilder,
+    $$SkipSegmentTableTableUpdateCompanionBuilder> {
+  $$SkipSegmentTableTableTableManager(
+      _$AppDatabase db, $SkipSegmentTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SkipSegmentTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SkipSegmentTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> start = const Value.absent(),
+            Value<int> end = const Value.absent(),
+            Value<String> trackId = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SkipSegmentTableCompanion(
+            id: id,
+            start: start,
+            end: end,
+            trackId: trackId,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int start,
+            required int end,
+            required String trackId,
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SkipSegmentTableCompanion.insert(
+            id: id,
+            start: start,
+            end: end,
+            trackId: trackId,
+            createdAt: createdAt,
+          ),
+        ));
+}
 
 class $$SkipSegmentTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $SkipSegmentTableTable> {
@@ -4702,80 +4674,6 @@ class $$SkipSegmentTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$SkipSegmentTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SkipSegmentTableTable,
-    SkipSegmentTableData,
-    $$SkipSegmentTableTableFilterComposer,
-    $$SkipSegmentTableTableOrderingComposer,
-    $$SkipSegmentTableTableCreateCompanionBuilder,
-    $$SkipSegmentTableTableUpdateCompanionBuilder,
-    (
-      SkipSegmentTableData,
-      BaseReferences<_$AppDatabase, $SkipSegmentTableTable,
-          SkipSegmentTableData>
-    ),
-    SkipSegmentTableData,
-    PrefetchHooks Function()> {
-  $$SkipSegmentTableTableTableManager(
-      _$AppDatabase db, $SkipSegmentTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$SkipSegmentTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$SkipSegmentTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> start = const Value.absent(),
-            Value<int> end = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SkipSegmentTableCompanion(
-            id: id,
-            start: start,
-            end: end,
-            trackId: trackId,
-            createdAt: createdAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int start,
-            required int end,
-            required String trackId,
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SkipSegmentTableCompanion.insert(
-            id: id,
-            start: start,
-            end: end,
-            trackId: trackId,
-            createdAt: createdAt,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$SkipSegmentTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SkipSegmentTableTable,
-    SkipSegmentTableData,
-    $$SkipSegmentTableTableFilterComposer,
-    $$SkipSegmentTableTableOrderingComposer,
-    $$SkipSegmentTableTableCreateCompanionBuilder,
-    $$SkipSegmentTableTableUpdateCompanionBuilder,
-    (
-      SkipSegmentTableData,
-      BaseReferences<_$AppDatabase, $SkipSegmentTableTable,
-          SkipSegmentTableData>
-    ),
-    SkipSegmentTableData,
-    PrefetchHooks Function()>;
 typedef $$SourceMatchTableTableCreateCompanionBuilder
     = SourceMatchTableCompanion Function({
   Value<int> id,
@@ -4792,6 +4690,54 @@ typedef $$SourceMatchTableTableUpdateCompanionBuilder
   Value<SourceType> sourceType,
   Value<DateTime> createdAt,
 });
+
+class $$SourceMatchTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SourceMatchTableTable,
+    SourceMatchTableData,
+    $$SourceMatchTableTableFilterComposer,
+    $$SourceMatchTableTableOrderingComposer,
+    $$SourceMatchTableTableCreateCompanionBuilder,
+    $$SourceMatchTableTableUpdateCompanionBuilder> {
+  $$SourceMatchTableTableTableManager(
+      _$AppDatabase db, $SourceMatchTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SourceMatchTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SourceMatchTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trackId = const Value.absent(),
+            Value<String> sourceId = const Value.absent(),
+            Value<SourceType> sourceType = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SourceMatchTableCompanion(
+            id: id,
+            trackId: trackId,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            createdAt: createdAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trackId,
+            required String sourceId,
+            Value<SourceType> sourceType = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+          }) =>
+              SourceMatchTableCompanion.insert(
+            id: id,
+            trackId: trackId,
+            sourceId: sourceId,
+            sourceType: sourceType,
+            createdAt: createdAt,
+          ),
+        ));
+}
 
 class $$SourceMatchTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $SourceMatchTableTable> {
@@ -4853,80 +4799,6 @@ class $$SourceMatchTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$SourceMatchTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SourceMatchTableTable,
-    SourceMatchTableData,
-    $$SourceMatchTableTableFilterComposer,
-    $$SourceMatchTableTableOrderingComposer,
-    $$SourceMatchTableTableCreateCompanionBuilder,
-    $$SourceMatchTableTableUpdateCompanionBuilder,
-    (
-      SourceMatchTableData,
-      BaseReferences<_$AppDatabase, $SourceMatchTableTable,
-          SourceMatchTableData>
-    ),
-    SourceMatchTableData,
-    PrefetchHooks Function()> {
-  $$SourceMatchTableTableTableManager(
-      _$AppDatabase db, $SourceMatchTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$SourceMatchTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$SourceMatchTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<String> sourceId = const Value.absent(),
-            Value<SourceType> sourceType = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SourceMatchTableCompanion(
-            id: id,
-            trackId: trackId,
-            sourceId: sourceId,
-            sourceType: sourceType,
-            createdAt: createdAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trackId,
-            required String sourceId,
-            Value<SourceType> sourceType = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-          }) =>
-              SourceMatchTableCompanion.insert(
-            id: id,
-            trackId: trackId,
-            sourceId: sourceId,
-            sourceType: sourceType,
-            createdAt: createdAt,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$SourceMatchTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SourceMatchTableTable,
-    SourceMatchTableData,
-    $$SourceMatchTableTableFilterComposer,
-    $$SourceMatchTableTableOrderingComposer,
-    $$SourceMatchTableTableCreateCompanionBuilder,
-    $$SourceMatchTableTableUpdateCompanionBuilder,
-    (
-      SourceMatchTableData,
-      BaseReferences<_$AppDatabase, $SourceMatchTableTable,
-          SourceMatchTableData>
-    ),
-    SourceMatchTableData,
-    PrefetchHooks Function()>;
 typedef $$HistoryTableTableCreateCompanionBuilder = HistoryTableCompanion
     Function({
   Value<int> id,
@@ -4943,6 +4815,53 @@ typedef $$HistoryTableTableUpdateCompanionBuilder = HistoryTableCompanion
   Value<String> itemId,
   Value<Map<String, dynamic>> data,
 });
+
+class $$HistoryTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $HistoryTableTable,
+    HistoryTableData,
+    $$HistoryTableTableFilterComposer,
+    $$HistoryTableTableOrderingComposer,
+    $$HistoryTableTableCreateCompanionBuilder,
+    $$HistoryTableTableUpdateCompanionBuilder> {
+  $$HistoryTableTableTableManager(_$AppDatabase db, $HistoryTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$HistoryTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$HistoryTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<HistoryEntryType> type = const Value.absent(),
+            Value<String> itemId = const Value.absent(),
+            Value<Map<String, dynamic>> data = const Value.absent(),
+          }) =>
+              HistoryTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            type: type,
+            itemId: itemId,
+            data: data,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            required HistoryEntryType type,
+            required String itemId,
+            required Map<String, dynamic> data,
+          }) =>
+              HistoryTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            type: type,
+            itemId: itemId,
+            data: data,
+          ),
+        ));
+}
 
 class $$HistoryTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $HistoryTableTable> {
@@ -5007,77 +4926,6 @@ class $$HistoryTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$HistoryTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $HistoryTableTable,
-    HistoryTableData,
-    $$HistoryTableTableFilterComposer,
-    $$HistoryTableTableOrderingComposer,
-    $$HistoryTableTableCreateCompanionBuilder,
-    $$HistoryTableTableUpdateCompanionBuilder,
-    (
-      HistoryTableData,
-      BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>
-    ),
-    HistoryTableData,
-    PrefetchHooks Function()> {
-  $$HistoryTableTableTableManager(_$AppDatabase db, $HistoryTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$HistoryTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$HistoryTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<HistoryEntryType> type = const Value.absent(),
-            Value<String> itemId = const Value.absent(),
-            Value<Map<String, dynamic>> data = const Value.absent(),
-          }) =>
-              HistoryTableCompanion(
-            id: id,
-            createdAt: createdAt,
-            type: type,
-            itemId: itemId,
-            data: data,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            required HistoryEntryType type,
-            required String itemId,
-            required Map<String, dynamic> data,
-          }) =>
-              HistoryTableCompanion.insert(
-            id: id,
-            createdAt: createdAt,
-            type: type,
-            itemId: itemId,
-            data: data,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$HistoryTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $HistoryTableTable,
-    HistoryTableData,
-    $$HistoryTableTableFilterComposer,
-    $$HistoryTableTableOrderingComposer,
-    $$HistoryTableTableCreateCompanionBuilder,
-    $$HistoryTableTableUpdateCompanionBuilder,
-    (
-      HistoryTableData,
-      BaseReferences<_$AppDatabase, $HistoryTableTable, HistoryTableData>
-    ),
-    HistoryTableData,
-    PrefetchHooks Function()>;
 typedef $$LyricsTableTableCreateCompanionBuilder = LyricsTableCompanion
     Function({
   Value<int> id,
@@ -5090,6 +4938,45 @@ typedef $$LyricsTableTableUpdateCompanionBuilder = LyricsTableCompanion
   Value<String> trackId,
   Value<SubtitleSimple> data,
 });
+
+class $$LyricsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $LyricsTableTable,
+    LyricsTableData,
+    $$LyricsTableTableFilterComposer,
+    $$LyricsTableTableOrderingComposer,
+    $$LyricsTableTableCreateCompanionBuilder,
+    $$LyricsTableTableUpdateCompanionBuilder> {
+  $$LyricsTableTableTableManager(_$AppDatabase db, $LyricsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$LyricsTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$LyricsTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trackId = const Value.absent(),
+            Value<SubtitleSimple> data = const Value.absent(),
+          }) =>
+              LyricsTableCompanion(
+            id: id,
+            trackId: trackId,
+            data: data,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trackId,
+            required SubtitleSimple data,
+          }) =>
+              LyricsTableCompanion.insert(
+            id: id,
+            trackId: trackId,
+            data: data,
+          ),
+        ));
+}
 
 class $$LyricsTableTableFilterComposer
     extends FilterComposer<_$AppDatabase, $LyricsTableTable> {
@@ -5131,69 +5018,6 @@ class $$LyricsTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$LyricsTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $LyricsTableTable,
-    LyricsTableData,
-    $$LyricsTableTableFilterComposer,
-    $$LyricsTableTableOrderingComposer,
-    $$LyricsTableTableCreateCompanionBuilder,
-    $$LyricsTableTableUpdateCompanionBuilder,
-    (
-      LyricsTableData,
-      BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>
-    ),
-    LyricsTableData,
-    PrefetchHooks Function()> {
-  $$LyricsTableTableTableManager(_$AppDatabase db, $LyricsTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$LyricsTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$LyricsTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<SubtitleSimple> data = const Value.absent(),
-          }) =>
-              LyricsTableCompanion(
-            id: id,
-            trackId: trackId,
-            data: data,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trackId,
-            required SubtitleSimple data,
-          }) =>
-              LyricsTableCompanion.insert(
-            id: id,
-            trackId: trackId,
-            data: data,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ));
-}
-
-typedef $$LyricsTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $LyricsTableTable,
-    LyricsTableData,
-    $$LyricsTableTableFilterComposer,
-    $$LyricsTableTableOrderingComposer,
-    $$LyricsTableTableCreateCompanionBuilder,
-    $$LyricsTableTableUpdateCompanionBuilder,
-    (
-      LyricsTableData,
-      BaseReferences<_$AppDatabase, $LyricsTableTable, LyricsTableData>
-    ),
-    LyricsTableData,
-    PrefetchHooks Function()>;
 typedef $$AudioPlayerStateTableTableCreateCompanionBuilder
     = AudioPlayerStateTableCompanion Function({
   Value<int> id,
@@ -5211,25 +5035,52 @@ typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder
   Value<List<String>> collections,
 });
 
-final class $$AudioPlayerStateTableTableReferences extends BaseReferences<
-    _$AppDatabase, $AudioPlayerStateTableTable, AudioPlayerStateTableData> {
-  $$AudioPlayerStateTableTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$PlaylistTableTable, List<PlaylistTableData>>
-      _playlistTableRefsTable(_$AppDatabase db) =>
-          MultiTypedResultKey.fromTable(db.playlistTable,
-              aliasName: $_aliasNameGenerator(db.audioPlayerStateTable.id,
-                  db.playlistTable.audioPlayerStateId));
-
-  $$PlaylistTableTableProcessedTableManager get playlistTableRefs {
-    final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
-        .filter((f) => f.audioPlayerStateId.id($_item.id));
-
-    final cache = $_typedResult.readTableOrNull(_playlistTableRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
+class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AudioPlayerStateTableTable,
+    AudioPlayerStateTableData,
+    $$AudioPlayerStateTableTableFilterComposer,
+    $$AudioPlayerStateTableTableOrderingComposer,
+    $$AudioPlayerStateTableTableCreateCompanionBuilder,
+    $$AudioPlayerStateTableTableUpdateCompanionBuilder> {
+  $$AudioPlayerStateTableTableTableManager(
+      _$AppDatabase db, $AudioPlayerStateTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$AudioPlayerStateTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$AudioPlayerStateTableTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> playing = const Value.absent(),
+            Value<PlaylistMode> loopMode = const Value.absent(),
+            Value<bool> shuffled = const Value.absent(),
+            Value<List<String>> collections = const Value.absent(),
+          }) =>
+              AudioPlayerStateTableCompanion(
+            id: id,
+            playing: playing,
+            loopMode: loopMode,
+            shuffled: shuffled,
+            collections: collections,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required bool playing,
+            required PlaylistMode loopMode,
+            required bool shuffled,
+            required List<String> collections,
+          }) =>
+              AudioPlayerStateTableCompanion.insert(
+            id: id,
+            playing: playing,
+            loopMode: loopMode,
+            shuffled: shuffled,
+            collections: collections,
+          ),
+        ));
 }
 
 class $$AudioPlayerStateTableTableFilterComposer
@@ -5307,101 +5158,6 @@ class $$AudioPlayerStateTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
-class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $AudioPlayerStateTableTable,
-    AudioPlayerStateTableData,
-    $$AudioPlayerStateTableTableFilterComposer,
-    $$AudioPlayerStateTableTableOrderingComposer,
-    $$AudioPlayerStateTableTableCreateCompanionBuilder,
-    $$AudioPlayerStateTableTableUpdateCompanionBuilder,
-    (AudioPlayerStateTableData, $$AudioPlayerStateTableTableReferences),
-    AudioPlayerStateTableData,
-    PrefetchHooks Function({bool playlistTableRefs})> {
-  $$AudioPlayerStateTableTableTableManager(
-      _$AppDatabase db, $AudioPlayerStateTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer: $$AudioPlayerStateTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$AudioPlayerStateTableTableOrderingComposer(
-              ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<bool> playing = const Value.absent(),
-            Value<PlaylistMode> loopMode = const Value.absent(),
-            Value<bool> shuffled = const Value.absent(),
-            Value<List<String>> collections = const Value.absent(),
-          }) =>
-              AudioPlayerStateTableCompanion(
-            id: id,
-            playing: playing,
-            loopMode: loopMode,
-            shuffled: shuffled,
-            collections: collections,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required bool playing,
-            required PlaylistMode loopMode,
-            required bool shuffled,
-            required List<String> collections,
-          }) =>
-              AudioPlayerStateTableCompanion.insert(
-            id: id,
-            playing: playing,
-            loopMode: loopMode,
-            shuffled: shuffled,
-            collections: collections,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$AudioPlayerStateTableTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({playlistTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (playlistTableRefs) db.playlistTable
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (playlistTableRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$AudioPlayerStateTableTableReferences
-                            ._playlistTableRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$AudioPlayerStateTableTableReferences(
-                                    db, table, p0)
-                                .playlistTableRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.audioPlayerStateId == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$AudioPlayerStateTableTableProcessedTableManager
-    = ProcessedTableManager<
-        _$AppDatabase,
-        $AudioPlayerStateTableTable,
-        AudioPlayerStateTableData,
-        $$AudioPlayerStateTableTableFilterComposer,
-        $$AudioPlayerStateTableTableOrderingComposer,
-        $$AudioPlayerStateTableTableCreateCompanionBuilder,
-        $$AudioPlayerStateTableTableUpdateCompanionBuilder,
-        (AudioPlayerStateTableData, $$AudioPlayerStateTableTableReferences),
-        AudioPlayerStateTableData,
-        PrefetchHooks Function({bool playlistTableRefs})>;
 typedef $$PlaylistTableTableCreateCompanionBuilder = PlaylistTableCompanion
     Function({
   Value<int> id,
@@ -5415,44 +5171,43 @@ typedef $$PlaylistTableTableUpdateCompanionBuilder = PlaylistTableCompanion
   Value<int> index,
 });
 
-final class $$PlaylistTableTableReferences extends BaseReferences<_$AppDatabase,
-    $PlaylistTableTable, PlaylistTableData> {
-  $$PlaylistTableTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static $AudioPlayerStateTableTable _audioPlayerStateIdTable(
-          _$AppDatabase db) =>
-      db.audioPlayerStateTable.createAlias($_aliasNameGenerator(
-          db.playlistTable.audioPlayerStateId, db.audioPlayerStateTable.id));
-
-  $$AudioPlayerStateTableTableProcessedTableManager? get audioPlayerStateId {
-    if ($_item.audioPlayerStateId == null) return null;
-    final manager = $$AudioPlayerStateTableTableTableManager(
-            $_db, $_db.audioPlayerStateTable)
-        .filter((f) => f.id($_item.audioPlayerStateId!));
-    final item = $_typedResult.readTableOrNull(_audioPlayerStateIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
-
-  static MultiTypedResultKey<$PlaylistMediaTableTable,
-      List<PlaylistMediaTableData>> _playlistMediaTableRefsTable(
-          _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.playlistMediaTable,
-          aliasName: $_aliasNameGenerator(
-              db.playlistTable.id, db.playlistMediaTable.playlistId));
-
-  $$PlaylistMediaTableTableProcessedTableManager get playlistMediaTableRefs {
-    final manager =
-        $$PlaylistMediaTableTableTableManager($_db, $_db.playlistMediaTable)
-            .filter((f) => f.playlistId.id($_item.id));
-
-    final cache =
-        $_typedResult.readTableOrNull(_playlistMediaTableRefsTable($_db));
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: cache));
-  }
+class $$PlaylistTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlaylistTableTable,
+    PlaylistTableData,
+    $$PlaylistTableTableFilterComposer,
+    $$PlaylistTableTableOrderingComposer,
+    $$PlaylistTableTableCreateCompanionBuilder,
+    $$PlaylistTableTableUpdateCompanionBuilder> {
+  $$PlaylistTableTableTableManager(_$AppDatabase db, $PlaylistTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PlaylistTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$PlaylistTableTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> audioPlayerStateId = const Value.absent(),
+            Value<int> index = const Value.absent(),
+          }) =>
+              PlaylistTableCompanion(
+            id: id,
+            audioPlayerStateId: audioPlayerStateId,
+            index: index,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int audioPlayerStateId,
+            required int index,
+          }) =>
+              PlaylistTableCompanion.insert(
+            id: id,
+            audioPlayerStateId: audioPlayerStateId,
+            index: index,
+          ),
+        ));
 }
 
 class $$PlaylistTableTableFilterComposer
@@ -5532,118 +5287,6 @@ class $$PlaylistTableTableOrderingComposer
   }
 }
 
-class $$PlaylistTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PlaylistTableTable,
-    PlaylistTableData,
-    $$PlaylistTableTableFilterComposer,
-    $$PlaylistTableTableOrderingComposer,
-    $$PlaylistTableTableCreateCompanionBuilder,
-    $$PlaylistTableTableUpdateCompanionBuilder,
-    (PlaylistTableData, $$PlaylistTableTableReferences),
-    PlaylistTableData,
-    PrefetchHooks Function(
-        {bool audioPlayerStateId, bool playlistMediaTableRefs})> {
-  $$PlaylistTableTableTableManager(_$AppDatabase db, $PlaylistTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$PlaylistTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$PlaylistTableTableOrderingComposer(ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> audioPlayerStateId = const Value.absent(),
-            Value<int> index = const Value.absent(),
-          }) =>
-              PlaylistTableCompanion(
-            id: id,
-            audioPlayerStateId: audioPlayerStateId,
-            index: index,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int audioPlayerStateId,
-            required int index,
-          }) =>
-              PlaylistTableCompanion.insert(
-            id: id,
-            audioPlayerStateId: audioPlayerStateId,
-            index: index,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$PlaylistTableTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: (
-              {audioPlayerStateId = false, playlistMediaTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (playlistMediaTableRefs) db.playlistMediaTable
-              ],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (audioPlayerStateId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.audioPlayerStateId,
-                    referencedTable: $$PlaylistTableTableReferences
-                        ._audioPlayerStateIdTable(db),
-                    referencedColumn: $$PlaylistTableTableReferences
-                        ._audioPlayerStateIdTable(db)
-                        .id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (playlistMediaTableRefs)
-                    await $_getPrefetchedData(
-                        currentTable: table,
-                        referencedTable: $$PlaylistTableTableReferences
-                            ._playlistMediaTableRefsTable(db),
-                        managerFromTypedResult: (p0) =>
-                            $$PlaylistTableTableReferences(db, table, p0)
-                                .playlistMediaTableRefs,
-                        referencedItemsForCurrentItem:
-                            (item, referencedItems) => referencedItems
-                                .where((e) => e.playlistId == item.id),
-                        typedResults: items)
-                ];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$PlaylistTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PlaylistTableTable,
-    PlaylistTableData,
-    $$PlaylistTableTableFilterComposer,
-    $$PlaylistTableTableOrderingComposer,
-    $$PlaylistTableTableCreateCompanionBuilder,
-    $$PlaylistTableTableUpdateCompanionBuilder,
-    (PlaylistTableData, $$PlaylistTableTableReferences),
-    PlaylistTableData,
-    PrefetchHooks Function(
-        {bool audioPlayerStateId, bool playlistMediaTableRefs})>;
 typedef $$PlaylistMediaTableTableCreateCompanionBuilder
     = PlaylistMediaTableCompanion Function({
   Value<int> id,
@@ -5661,24 +5304,52 @@ typedef $$PlaylistMediaTableTableUpdateCompanionBuilder
   Value<Map<String, String>?> httpHeaders,
 });
 
-final class $$PlaylistMediaTableTableReferences extends BaseReferences<
-    _$AppDatabase, $PlaylistMediaTableTable, PlaylistMediaTableData> {
-  $$PlaylistMediaTableTableReferences(
-      super.$_db, super.$_table, super.$_typedResult);
-
-  static $PlaylistTableTable _playlistIdTable(_$AppDatabase db) =>
-      db.playlistTable.createAlias($_aliasNameGenerator(
-          db.playlistMediaTable.playlistId, db.playlistTable.id));
-
-  $$PlaylistTableTableProcessedTableManager? get playlistId {
-    if ($_item.playlistId == null) return null;
-    final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
-        .filter((f) => f.id($_item.playlistId!));
-    final item = $_typedResult.readTableOrNull(_playlistIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-        manager.$state.copyWith(prefetchedData: [item]));
-  }
+class $$PlaylistMediaTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $PlaylistMediaTableTable,
+    PlaylistMediaTableData,
+    $$PlaylistMediaTableTableFilterComposer,
+    $$PlaylistMediaTableTableOrderingComposer,
+    $$PlaylistMediaTableTableCreateCompanionBuilder,
+    $$PlaylistMediaTableTableUpdateCompanionBuilder> {
+  $$PlaylistMediaTableTableTableManager(
+      _$AppDatabase db, $PlaylistMediaTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$PlaylistMediaTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$PlaylistMediaTableTableOrderingComposer(
+              ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> playlistId = const Value.absent(),
+            Value<String> uri = const Value.absent(),
+            Value<Map<String, dynamic>?> extras = const Value.absent(),
+            Value<Map<String, String>?> httpHeaders = const Value.absent(),
+          }) =>
+              PlaylistMediaTableCompanion(
+            id: id,
+            playlistId: playlistId,
+            uri: uri,
+            extras: extras,
+            httpHeaders: httpHeaders,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int playlistId,
+            required String uri,
+            Value<Map<String, dynamic>?> extras = const Value.absent(),
+            Value<Map<String, String>?> httpHeaders = const Value.absent(),
+          }) =>
+              PlaylistMediaTableCompanion.insert(
+            id: id,
+            playlistId: playlistId,
+            uri: uri,
+            extras: extras,
+            httpHeaders: httpHeaders,
+          ),
+        ));
 }
 
 class $$PlaylistMediaTableTableFilterComposer
@@ -5759,110 +5430,6 @@ class $$PlaylistMediaTableTableOrderingComposer
     return composer;
   }
 }
-
-class $$PlaylistMediaTableTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PlaylistMediaTableTable,
-    PlaylistMediaTableData,
-    $$PlaylistMediaTableTableFilterComposer,
-    $$PlaylistMediaTableTableOrderingComposer,
-    $$PlaylistMediaTableTableCreateCompanionBuilder,
-    $$PlaylistMediaTableTableUpdateCompanionBuilder,
-    (PlaylistMediaTableData, $$PlaylistMediaTableTableReferences),
-    PlaylistMediaTableData,
-    PrefetchHooks Function({bool playlistId})> {
-  $$PlaylistMediaTableTableTableManager(
-      _$AppDatabase db, $PlaylistMediaTableTable table)
-      : super(TableManagerState(
-          db: db,
-          table: table,
-          filteringComposer:
-              $$PlaylistMediaTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$PlaylistMediaTableTableOrderingComposer(
-              ComposerState(db, table)),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<int> playlistId = const Value.absent(),
-            Value<String> uri = const Value.absent(),
-            Value<Map<String, dynamic>?> extras = const Value.absent(),
-            Value<Map<String, String>?> httpHeaders = const Value.absent(),
-          }) =>
-              PlaylistMediaTableCompanion(
-            id: id,
-            playlistId: playlistId,
-            uri: uri,
-            extras: extras,
-            httpHeaders: httpHeaders,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required int playlistId,
-            required String uri,
-            Value<Map<String, dynamic>?> extras = const Value.absent(),
-            Value<Map<String, String>?> httpHeaders = const Value.absent(),
-          }) =>
-              PlaylistMediaTableCompanion.insert(
-            id: id,
-            playlistId: playlistId,
-            uri: uri,
-            extras: extras,
-            httpHeaders: httpHeaders,
-          ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (
-                    e.readTable(table),
-                    $$PlaylistMediaTableTableReferences(db, table, e)
-                  ))
-              .toList(),
-          prefetchHooksCallback: ({playlistId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins: <
-                  T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic>>(state) {
-                if (playlistId) {
-                  state = state.withJoin(
-                    currentTable: table,
-                    currentColumn: table.playlistId,
-                    referencedTable: $$PlaylistMediaTableTableReferences
-                        ._playlistIdTable(db),
-                    referencedColumn: $$PlaylistMediaTableTableReferences
-                        ._playlistIdTable(db)
-                        .id,
-                  ) as T;
-                }
-
-                return state;
-              },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ));
-}
-
-typedef $$PlaylistMediaTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PlaylistMediaTableTable,
-    PlaylistMediaTableData,
-    $$PlaylistMediaTableTableFilterComposer,
-    $$PlaylistMediaTableTableOrderingComposer,
-    $$PlaylistMediaTableTableCreateCompanionBuilder,
-    $$PlaylistMediaTableTableUpdateCompanionBuilder,
-    (PlaylistMediaTableData, $$PlaylistMediaTableTableReferences),
-    PlaylistMediaTableData,
-    PrefetchHooks Function({bool playlistId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
