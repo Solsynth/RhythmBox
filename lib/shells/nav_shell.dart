@@ -24,6 +24,7 @@ class _NavShellState extends State<NavShell> {
 
   final List<Destination> _allDestinations = <Destination>[
     Destination('explore'.tr, 'explore', Icons.explore),
+    Destination('library'.tr, 'library', Icons.video_library),
     Destination('search'.tr, 'search', Icons.search),
     Destination('settings'.tr, 'settings', Icons.settings),
   ];
@@ -40,6 +41,7 @@ class _NavShellState extends State<NavShell> {
             const BottomPlayer(key: Key('app-wide-bottom-player')),
             const Divider(height: 0.3, thickness: 0.3),
             BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
               landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
               elevation: 0,
               showUnselectedLabels: false,

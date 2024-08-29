@@ -16,7 +16,7 @@ import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/duration.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
-import 'package:rhythm_box/widgets/lyrics/synced.dart';
+import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 
 class PlayerScreen extends StatefulWidget {
@@ -75,45 +75,55 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    LimitedBox(
-                      maxHeight: maxAlbumSize,
-                      maxWidth: maxAlbumSize,
-                      child: Hero(
-                        tag: const Key('current-active-track-album-art'),
-                        child: ClipRRect(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(16)),
-                          child: AspectRatio(
-                            aspectRatio: 1,
-                            child: _albumArt != null
-                                ? AutoCacheImage(
-                                    _albumArt!,
-                                    width: albumSize,
-                                    height: albumSize,
-                                  )
-                                : Container(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .surfaceContainerHigh,
-                                    width: 64,
-                                    height: 64,
-                                    child:
-                                        const Center(child: Icon(Icons.image)),
-                                  ),
-                          ),
-                        ).marginSymmetric(horizontal: 24),
+                    Obx(
+                      () => LimitedBox(
+                        maxHeight: maxAlbumSize,
+                        maxWidth: maxAlbumSize,
+                        child: Hero(
+                          tag: const Key('current-active-track-album-art'),
+                          child: ClipRRect(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(16)),
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: _albumArt != null
+                                  ? AutoCacheImage(
+                                      _albumArt!,
+                                      width: albumSize,
+                                      height: albumSize,
+                                    )
+                                  : Container(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceContainerHigh,
+                                      width: 64,
+                                      height: 64,
+                                      child: const Center(
+                                          child: Icon(Icons.image)),
+                                    ),
+                            ),
+                          ).marginSymmetric(horizontal: 24),
+                        ),
                       ),
                     ),
                     const Gap(24),
-                    Text(
-                      _playback.state.value.activeTrack?.name ?? 'Not playing',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    Obx(
+                      () => Text(
+                        _playback.state.value.activeTrack?.name ??
+                            'Not playing',
+                        style: Theme.of(context).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    Text(
-                      _playback.state.value.activeTrack?.artists?.asString() ??
-                          'No author',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
+                    Obx(
+                      () => Text(
+                        _playback.state.value.activeTrack?.artists
+                                ?.asString() ??
+                            'No author',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     const Gap(24),
                     Obx(
@@ -197,43 +207,49 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             );
                           },
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.skip_previous),
-                          onPressed: _isFetchingActiveTrack
-                              ? null
-                              : audioPlayer.skipToPrevious,
-                        ),
-                        const Gap(8),
-                        SizedBox(
-                          width: 56,
-                          height: 56,
-                          child: IconButton.filled(
-                            icon: _isFetchingActiveTrack
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2.5,
-                                    ),
-                                  )
-                                : Icon(
-                                    !_isPlaying
-                                        ? Icons.play_arrow
-                                        : Icons.pause,
-                                    size: 28,
-                                  ),
+                        Obx(
+                          () => IconButton(
+                            icon: const Icon(Icons.skip_previous),
                             onPressed: _isFetchingActiveTrack
                                 ? null
-                                : _togglePlayState,
+                                : audioPlayer.skipToPrevious,
                           ),
                         ),
                         const Gap(8),
-                        IconButton(
-                          icon: const Icon(Icons.skip_next),
-                          onPressed: _isFetchingActiveTrack
-                              ? null
-                              : audioPlayer.skipToNext,
+                        Obx(
+                          () => SizedBox(
+                            width: 56,
+                            height: 56,
+                            child: IconButton.filled(
+                              icon: _isFetchingActiveTrack
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  : Icon(
+                                      !_isPlaying
+                                          ? Icons.play_arrow
+                                          : Icons.pause,
+                                      size: 28,
+                                    ),
+                              onPressed: _isFetchingActiveTrack
+                                  ? null
+                                  : _togglePlayState,
+                            ),
+                          ),
+                        ),
+                        const Gap(8),
+                        Obx(
+                          () => IconButton(
+                            icon: const Icon(Icons.skip_next),
+                            onPressed: _isFetchingActiveTrack
+                                ? null
+                                : audioPlayer.skipToNext,
+                          ),
                         ),
                         Obx(
                           () => IconButton(

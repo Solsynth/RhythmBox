@@ -37,19 +37,46 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
       : false;
 
   bool _isLoading = true;
+  bool _isLoadingTracks = true;
   bool _isUpdating = false;
 
   Playlist? _playlist;
+  List<Track>? _tracks;
 
   Future<void> _pullPlaylist() async {
-    _playlist = await _spotify.api.playlists.get(widget.playlistId);
+    if (widget.playlistId == 'user-liked-tracks') {
+      _playlist = Playlist()
+        ..name = 'Liked Music'
+        ..description = 'Your favorite music'
+        ..type = 'playlist'
+        ..collaborative = false
+        ..public = false
+        ..id = 'user-liked-tracks';
+    } else {
+      _playlist = await _spotify.api.playlists.get(widget.playlistId);
+    }
     setState(() => _isLoading = false);
+  }
+
+  Future<void> _pullTracks() async {
+    if (widget.playlistId == 'user-liked-tracks') {
+      _tracks = (await _spotify.api.tracks.me.saved.all())
+          .map((x) => x.track!)
+          .toList();
+    } else {
+      _tracks = (await _spotify.api.playlists
+              .getTracksByPlaylistId(widget.playlistId)
+              .all())
+          .toList();
+    }
+    setState(() => _isLoadingTracks = false);
   }
 
   @override
   void initState() {
     super.initState();
     _pullPlaylist();
+    _pullTracks();
   }
 
   @override
@@ -86,14 +113,17 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                               elevation: 2,
                               child: ClipRRect(
                                 borderRadius: radius,
-                                child: Hero(
-                                  tag: Key('playlist-cover-${_playlist!.id}'),
-                                  child: AutoCacheImage(
-                                    _playlist!.images!.first.url!,
-                                    width: 160.0,
-                                    height: 160.0,
-                                  ),
-                                ),
+                                child: (_playlist?.images?.isNotEmpty ?? false)
+                                    ? AutoCacheImage(
+                                        _playlist!.images!.first.url!,
+                                        width: 160.0,
+                                        height: 160.0,
+                                      )
+                                    : const SizedBox(
+                                        width: 160,
+                                        height: 160,
+                                        child: Icon(Icons.image),
+                                      ),
                               ),
                             ),
                             const Gap(24),
@@ -116,7 +146,7 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                                   ),
                                   const Gap(8),
                                   Text(
-                                    "${NumberFormat.compactCurrency(symbol: '', decimalDigits: 2).format(_playlist!.followers!.total!)} saves",
+                                    "${NumberFormat.compactCurrency(symbol: '', decimalDigits: 2).format(_playlist!.followers?.total! ?? 0)} saves",
                                   ),
                                   Text(
                                     '#${_playlist!.id}',
@@ -153,14 +183,7 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
 
                                         setState(() => _isUpdating = true);
 
-                                        final tracks = (await _spotify
-                                                .api.playlists
-                                                .getTracksByPlaylistId(
-                                                    widget.playlistId)
-                                                .all())
-                                            .toList();
-
-                                        await _playback.load(tracks,
+                                        await _playback.load(_tracks!,
                                             autoPlay: true);
                                         _playback.addCollection(_playlist!.id!);
                                         Get.find<PlaybackHistoryProvider>()
@@ -180,18 +203,11 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
 
                                       audioPlayer.setShuffle(true);
 
-                                      final tracks = (await _spotify
-                                              .api.playlists
-                                              .getTracksByPlaylistId(
-                                                  widget.playlistId)
-                                              .all())
-                                          .toList();
-
                                       await _playback.load(
-                                        tracks,
+                                        _tracks!,
                                         autoPlay: true,
                                         initialIndex:
-                                            Random().nextInt(tracks.length),
+                                            Random().nextInt(_tracks!.length),
                                       );
                                       _playback.addCollection(_playlist!.id!);
                                       Get.find<PlaybackHistoryProvider>()
@@ -208,11 +224,15 @@ class _PlaylistViewScreenState extends State<PlaylistViewScreen> {
                   ),
                   SliverToBoxAdapter(
                     child: Text(
-                      'Songs (${_playlist!.tracks!.total})',
+                      'Songs (${_playlist!.tracks?.total ?? (_tracks?.length ?? 0)})',
                       style: Theme.of(context).textTheme.titleLarge,
                     ).paddingOnly(left: 28, right: 28, bottom: 4),
                   ),
-                  PlaylistTrackList(playlistId: widget.playlistId),
+                  PlaylistTrackList(
+                    isLoading: _isLoadingTracks,
+                    playlistId: widget.playlistId,
+                    tracks: _tracks,
+                  ),
                 ],
               ),
             );

@@ -1,82 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
-import 'package:rhythm_box/providers/spotify.dart';
-import 'package:rhythm_box/widgets/auto_cache_image.dart';
+import 'package:rhythm_box/widgets/tracks/track_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
-import 'package:rhythm_box/services/artist.dart';
 
-class PlaylistTrackList extends StatefulWidget {
+class PlaylistTrackList extends StatelessWidget {
   final String playlistId;
+  final List<Track>? tracks;
 
-  const PlaylistTrackList({super.key, required this.playlistId});
+  final bool isLoading;
 
-  @override
-  State<PlaylistTrackList> createState() => _PlaylistTrackListState();
-}
-
-class _PlaylistTrackListState extends State<PlaylistTrackList> {
-  late final SpotifyProvider _spotify = Get.find();
-
-  bool _isLoading = true;
-
-  List<Track>? _tracks;
-
-  Future<void> _pullTracks() async {
-    _tracks = (await _spotify.api.playlists
-            .getTracksByPlaylistId(widget.playlistId)
-            .all())
-        .toList();
-    setState(() => _isLoading = false);
-  }
-
-  @override
-  void initState() {
-    _pullTracks();
-    super.initState();
-  }
+  const PlaylistTrackList({
+    super.key,
+    this.isLoading = false,
+    required this.playlistId,
+    required this.tracks,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Skeletonizer.sliver(
-      enabled: _isLoading,
+      enabled: isLoading,
       child: SliverList.builder(
-        itemCount: _tracks?.length ?? 3,
+        itemCount: tracks?.length ?? 3,
         itemBuilder: (context, idx) {
-          final item = _tracks?[idx];
-          return ListTile(
-            leading: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(8)),
-              child: item != null
-                  ? AutoCacheImage(
-                      item.album!.images!.first.url!,
-                      width: 64.0,
-                      height: 64.0,
-                    )
-                  : const SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: Center(
-                        child: Icon(Icons.image),
-                      ),
-                    ),
-            ),
-            title: Text(item?.name ?? 'Loading...'),
-            subtitle: Text(
-              item?.artists?.asString() ?? 'Please stand by...',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+          final item = tracks?[idx];
+          return TrackTile(
+            item: item,
             onTap: () {
               if (item == null) return;
               Get.find<AudioPlayerProvider>()
                 ..load(
-                  _tracks!,
+                  tracks!,
                   initialIndex: idx,
                   autoPlay: true,
                 )
-                ..addCollection(widget.playlistId);
+                ..addCollection(playlistId);
             },
           );
         },

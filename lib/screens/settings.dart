@@ -45,8 +45,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               return FutureBuilder(
                 future: _spotify.api.me.get(),
                 builder: (context, snapshot) {
-                  print(snapshot.data);
-                  print(snapshot.error);
                   if (!snapshot.hasData) {
                     return const ListTile(
                       contentPadding:

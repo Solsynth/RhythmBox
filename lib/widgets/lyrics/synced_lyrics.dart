@@ -28,15 +28,16 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
   final AutoScrollController _autoScrollController = AutoScrollController();
 
   late final int _textZoomLevel = widget.defaultTextZoom;
-  late Duration _durationCurrent = audioPlayer.position;
 
   SubtitleSimple? _lyric;
+  String? _activeTrackId;
 
   bool get _isLyricSynced =>
       _lyric == null ? false : _lyric!.lyrics.any((x) => x.time.inSeconds > 0);
 
   Future<void> _pullLyrics() async {
     if (_playback.state.value.activeTrack == null) return;
+    _activeTrackId = _playback.state.value.activeTrack!.id;
     final out = await _syncedLyrics.fetch(_playback.state.value.activeTrack!);
     setState(() => _lyric = out);
   }
@@ -49,11 +50,15 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
   @override
   void initState() {
     super.initState();
-    _subscriptions = [
-      audioPlayer.positionStream
-          .listen((dur) => setState(() => _durationCurrent = dur)),
-    ];
     _pullLyrics();
+    _subscriptions = [
+      _playback.state.listen((value) {
+        if (value.activeTrack == null) return;
+        if (value.activeTrack!.id != _activeTrackId) {
+          _pullLyrics();
+        }
+      }),
+    ];
   }
 
   @override
@@ -77,18 +82,19 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
         if (_lyric != null && _lyric!.lyrics.isNotEmpty)
           SliverList.builder(
             itemCount: _lyric!.lyrics.length,
-            itemBuilder: (context, idx) {
+            itemBuilder: (context, idx) => Obx(() {
               final lyricSlice = _lyric!.lyrics[idx];
               final lyricNextSlice = idx + 1 < _lyric!.lyrics.length
                   ? _lyric!.lyrics[idx + 1]
                   : null;
-              final isActive =
-                  _durationCurrent.inSeconds >= lyricSlice.time.inSeconds &&
-                      (lyricNextSlice == null ||
-                          lyricNextSlice.time.inSeconds >
-                              _durationCurrent.inSeconds);
+              final isActive = _playback.durationCurrent.value.inSeconds >=
+                      lyricSlice.time.inSeconds &&
+                  (lyricNextSlice == null ||
+                      lyricNextSlice.time.inSeconds >
+                          _playback.durationCurrent.value.inSeconds);
 
-              if (_durationCurrent.inSeconds == lyricSlice.time.inSeconds &&
+              if (_playback.durationCurrent.value.inSeconds ==
+                      lyricSlice.time.inSeconds &&
                   _isLyricSynced) {
                 _autoScrollController.scrollToIndex(
                   idx,
@@ -150,7 +156,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                         ),
                       ),
               );
-            },
+            }),
           ),
       ],
     );

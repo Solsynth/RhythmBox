@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/providers/spotify.dart';
-import 'package:rhythm_box/widgets/auto_cache_image.dart';
+import 'package:rhythm_box/widgets/playlist/playlist_tile.dart';
 import 'package:rhythm_box/widgets/sized_container.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
@@ -49,29 +49,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
               itemCount: _featuredPlaylist?.length ?? 20,
               itemBuilder: (context, idx) {
                 final item = _featuredPlaylist?[idx];
-                return ListTile(
-                  leading: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    child: item != null
-                        ? AutoCacheImage(
-                            item.images!.first.url!,
-                            width: 64.0,
-                            height: 64.0,
-                          )
-                        : const SizedBox(
-                            width: 64,
-                            height: 64,
-                            child: Center(
-                              child: Icon(Icons.image),
-                            ),
-                          ),
-                  ),
-                  title: Text(item?.name ?? 'Loading...'),
-                  subtitle: Text(
-                    item?.description ?? 'Please stand by...',
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                return PlaylistTile(
+                  item: item,
                   onTap: () {
                     if (item == null) return;
                     GoRouter.of(context).pushNamed(

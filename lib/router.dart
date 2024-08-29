@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/screens/auth/mobile_login.dart';
 import 'package:rhythm_box/screens/explore.dart';
+import 'package:rhythm_box/screens/library/view.dart';
 import 'package:rhythm_box/screens/player/lyrics.dart';
 import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/screens/playlist/view.dart';
@@ -18,6 +19,11 @@ final router = GoRouter(routes: [
         path: '/',
         name: 'explore',
         builder: (context, state) => const ExploreScreen(),
+      ),
+      GoRoute(
+        path: '/library',
+        name: 'library',
+        builder: (context, state) => const LibraryScreen(),
       ),
       GoRoute(
         path: '/search',

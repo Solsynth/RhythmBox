@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rhythm_box/widgets/lyrics/synced.dart';
+import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/player/bottom_player.dart';
 
 class LyricsScreen extends StatelessWidget {
