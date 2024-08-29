@@ -48,10 +48,31 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
   Color get _unFocusColor =>
       Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
 
+  void _syncLyricsProgress() {
+    for (var idx = 0; idx < _lyric!.lyrics.length; idx++) {
+      final lyricSlice = _lyric!.lyrics[idx];
+      final lyricNextSlice =
+          idx + 1 < _lyric!.lyrics.length ? _lyric!.lyrics[idx + 1] : null;
+      final isActive = _playback.durationCurrent.value.inSeconds >=
+              lyricSlice.time.inSeconds &&
+          (lyricNextSlice == null ||
+              lyricNextSlice.time.inSeconds >
+                  _playback.durationCurrent.value.inSeconds);
+      if (isActive) {
+        _autoScrollController.scrollToIndex(
+          idx,
+          preferPosition: AutoScrollPosition.middle,
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _pullLyrics();
+    _pullLyrics().then((_) {
+      _syncLyricsProgress();
+    });
     _subscriptions = [
       _playback.state.listen((value) {
         if (value.activeTrack == null) return;

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/widgets/no_login_fallback.dart';
 import 'package:rhythm_box/widgets/playlist/user_playlist_list.dart';
+import 'package:rhythm_box/widgets/sized_container.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -18,16 +19,22 @@ class _LibraryScreenState extends State<LibraryScreen> {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).colorScheme.surface,
-      child: SafeArea(
-        child: Obx(() {
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Library'),
+          centerTitle: MediaQuery.of(context).size.width >= 720,
+        ),
+        body: Obx(() {
           if (_authenticate.auth.value == null) {
             return const NoLoginFallback();
           }
 
-          return const Column(
-            children: [
-              Expanded(child: UserPlaylistList()),
-            ],
+          return const CenteredContainer(
+            child: Column(
+              children: [
+                Expanded(child: UserPlaylistList()),
+              ],
+            ),
           );
         }),
       ),
