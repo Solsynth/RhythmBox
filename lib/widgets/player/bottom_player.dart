@@ -94,43 +94,45 @@ class _BottomPlayerState extends State<BottomPlayer>
 
   @override
   Widget build(BuildContext context) {
-    final controls = Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MediaQuery.of(context).size.width >= 720
-          ? MainAxisAlignment.center
-          : MainAxisAlignment.end,
-      children: [
-        if (MediaQuery.of(context).size.width >= 720)
-          IconButton(
-            icon: const Icon(Icons.skip_previous),
-            onPressed:
-                _isFetchingActiveTrack ? null : audioPlayer.skipToPrevious,
-          )
-        else
-          IconButton(
-            icon: const Icon(Icons.skip_next),
-            onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
-          ),
-        IconButton.filled(
-          icon: _isFetchingActiveTrack
-              ? const SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 3,
+    final controls = Obx(
+      () => Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MediaQuery.of(context).size.width >= 720
+            ? MainAxisAlignment.center
+            : MainAxisAlignment.end,
+        children: [
+          if (MediaQuery.of(context).size.width >= 720)
+            IconButton(
+              icon: const Icon(Icons.skip_previous),
+              onPressed:
+                  _isFetchingActiveTrack ? null : audioPlayer.skipToPrevious,
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.skip_next),
+              onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
+            ),
+          IconButton.filled(
+            icon: _isFetchingActiveTrack
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                    ),
+                  )
+                : Icon(
+                    !_isPlaying ? Icons.play_arrow : Icons.pause,
                   ),
-                )
-              : Icon(
-                  !_isPlaying ? Icons.play_arrow : Icons.pause,
-                ),
-          onPressed: _isFetchingActiveTrack ? null : _togglePlayState,
-        ),
-        if (MediaQuery.of(context).size.width >= 720)
-          IconButton(
-            icon: const Icon(Icons.skip_next),
-            onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
-          )
-      ],
+            onPressed: _isFetchingActiveTrack ? null : _togglePlayState,
+          ),
+          if (MediaQuery.of(context).size.width >= 720)
+            IconButton(
+              icon: const Icon(Icons.skip_next),
+              onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
+            )
+        ],
+      ),
     );
 
     return SizeTransition(
