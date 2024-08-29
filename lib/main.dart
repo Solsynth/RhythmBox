@@ -93,7 +93,6 @@ class MyApp extends StatelessWidget {
     Get.put(AudioPlayerProvider());
     Get.put(ActiveSourcedTrackProvider());
     Get.put(AudioPlayerStreamProvider());
-    Get.put(EndlessPlaybackProvider());
 
     Get.put(PlaybackHistoryProvider());
     Get.put(SegmentsProvider());
@@ -103,6 +102,7 @@ class MyApp extends StatelessWidget {
 
     Get.put(QueryingTrackInfoProvider());
     Get.put(SourcedTrackProvider());
+    Get.put(EndlessPlaybackProvider());
 
     Get.put(ServerPlaybackRoutesProvider());
     Get.put(PlaybackServerProvider());
