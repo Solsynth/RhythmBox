@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rhythm_box/screens/about.dart';
 import 'package:rhythm_box/screens/album/view.dart';
 import 'package:rhythm_box/screens/auth/mobile_login.dart';
 import 'package:rhythm_box/screens/explore.dart';
@@ -50,6 +51,11 @@ final router = GoRouter(routes: [
         path: '/settings',
         name: 'settings',
         builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: '/about',
+        name: 'about',
+        builder: (context, state) => const AboutScreen(),
       ),
     ],
   ),

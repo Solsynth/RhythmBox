@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "dev.solsynth" "\0"
-            VALUE "FileDescription", "rhythm_box" "\0"
+            VALUE "FileDescription", "RhythmBox" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "rhythm_box" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 dev.solsynth. All rights reserved." "\0"
-            VALUE "OriginalFilename", "rhythm_box.exe" "\0"
-            VALUE "ProductName", "rhythm_box" "\0"
+            VALUE "InternalName", "RhythmBox" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 Solsynth LLC. All rights reserved." "\0"
+            VALUE "OriginalFilename", "RhythmBox.exe" "\0"
+            VALUE "ProductName", "RhythmBox" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

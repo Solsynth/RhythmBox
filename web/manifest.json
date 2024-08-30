@@ -1,6 +1,6 @@
 {
-    "name": "rhythm_box",
-    "short_name": "rhythm_box",
+    "name": "RhythmBox",
+    "short_name": "RhythmBox",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

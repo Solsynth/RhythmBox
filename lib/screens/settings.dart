@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
@@ -121,6 +122,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _preferences.state.value.normalizeAudio,
                   onChanged: _preferences.setNormalizeAudio,
                 ),
+              ),
+              const Divider(thickness: 0.3, height: 1),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                leading: const Icon(Icons.info),
+                title: const Text('About'),
+                subtitle: const Text('More information about this app'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  GoRouter.of(context).pushNamed('about');
+                },
               ),
             ],
           ),
