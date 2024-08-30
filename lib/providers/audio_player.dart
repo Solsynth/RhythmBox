@@ -7,6 +7,9 @@ import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/services/audio_player/state.dart';
 import 'package:rhythm_box/services/database/database.dart';
+import 'package:rhythm_box/services/local_track.dart';
+import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 
@@ -248,11 +251,12 @@ class AudioPlayerProvider extends GetxController {
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
-    // final intendedActiveTrack = medias.elementAt(initialIndex);
-    // if (intendedActiveTrack.track is! LocalTrack) {
-    //   await Get.find<SourcedTrackProvider>()
-    //       .fetch(RhythmMedia(intendedActiveTrack.track));
-    // }
+    Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
+    final intendedActiveTrack = medias.elementAt(initialIndex);
+    if (intendedActiveTrack.track is! LocalTrack) {
+      await Get.find<SourcedTrackProvider>()
+          .fetch(RhythmMedia(intendedActiveTrack.track));
+    }
 
     if (medias.isEmpty) return;
 
