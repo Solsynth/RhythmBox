@@ -25,12 +25,12 @@ class ActiveSourcedTrackProvider extends GetxController {
 
     try {
       if (state.value == null) return;
+      await audioPlayer.pause();
       await populateSibling();
       final newTrack = await state.value!.swapWithSibling(sibling);
       if (newTrack == null) return;
 
       state.value = newTrack;
-      await audioPlayer.pause();
 
       final playback = Get.find<AudioPlayerProvider>();
       final oldActiveIndex = audioPlayer.currentIndex;
@@ -40,12 +40,11 @@ class ActiveSourcedTrackProvider extends GetxController {
 
       await audioPlayer.removeTrack(oldActiveIndex);
       await playback.jumpToTrack(newTrack);
-
-      await audioPlayer.resume();
     } catch (e, stack) {
       log('[Playback] Failed to swap with siblings. Error: $e; Trace:\n$stack');
     } finally {
       query.isQueryingTrackInfo.value = false;
+      await audioPlayer.resume();
     }
   }
 }

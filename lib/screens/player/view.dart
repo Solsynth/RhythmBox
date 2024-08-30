@@ -240,7 +240,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             width: 56,
                             height: 56,
                             child: IconButton.filled(
-                              icon: _isFetchingActiveTrack
+                              icon: (_isFetchingActiveTrack && _isPlaying)
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
@@ -255,9 +255,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                           : Icons.pause,
                                       size: 28,
                                     ),
-                              onPressed: _isFetchingActiveTrack
-                                  ? null
-                                  : _togglePlayState,
+                              onPressed: _togglePlayState,
                             ),
                           ),
                         ),

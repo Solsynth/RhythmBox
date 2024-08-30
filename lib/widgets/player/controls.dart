@@ -47,18 +47,19 @@ class _PlayerControlsState extends State<PlayerControls> {
               onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
             ),
           IconButton.filled(
-            icon: _isFetchingActiveTrack
+            icon: (_isFetchingActiveTrack && _isPlaying)
                 ? const SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 3,
+                      color: Colors.white,
                     ),
                   )
                 : Icon(
                     !_isPlaying ? Icons.play_arrow : Icons.pause,
                   ),
-            onPressed: _isFetchingActiveTrack ? null : _togglePlayState,
+            onPressed: _togglePlayState,
           ),
           if (MediaQuery.of(context).size.width >= 720)
             IconButton(
