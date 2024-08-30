@@ -44,6 +44,11 @@ Future<void> main(List<String> rawArgs) async {
   if (PlatformInfo.isDesktop) {
     await windowManager.ensureInitialized();
     await windowManager.setPreventClose(true);
+    if (PlatformInfo.isMacOS) {
+      await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
+    } else {
+      await windowManager.setTitleBarStyle(TitleBarStyle.normal);
+    }
   }
   if (PlatformInfo.isWindows) {
     await SMTCWindows.initialize();

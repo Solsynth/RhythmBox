@@ -11,9 +11,12 @@ class AboutScreen extends StatelessWidget {
     const denseButtonStyle =
         ButtonStyle(visualDensity: VisualDensity(vertical: -4));
 
-    return Material(
-      color: Theme.of(context).colorScheme.surface,
-      child: SizedBox(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        title: const Text('About'),
+      ),
+      body: SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

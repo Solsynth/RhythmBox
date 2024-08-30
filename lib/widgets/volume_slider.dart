@@ -67,7 +67,7 @@ class VolumeSlider extends StatelessWidget {
               }
             },
           ),
-          slider,
+          SizedBox(width: 100, child: slider),
         ],
       );
     });

@@ -132,12 +132,13 @@ class _MiniPlayerScreenState extends State<MiniPlayerScreen> {
                                     await windowManager.setAlwaysOnTop(
                                       snapshot.data == true ? false : true,
                                     );
+                                    setState(() {});
                                   },
                           );
                         },
                       ),
                   ],
-                ).paddingSymmetric(horizontal: 24),
+                ).paddingSymmetric(horizontal: 14),
               ),
             ),
           ),

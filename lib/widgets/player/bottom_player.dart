@@ -10,6 +10,7 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/widgets/player/controls.dart';
+import 'package:rhythm_box/widgets/player/devices.dart';
 import 'package:rhythm_box/widgets/player/track_details.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:rhythm_box/widgets/volume_slider.dart';
@@ -163,6 +164,16 @@ class _BottomPlayerState extends State<BottomPlayer>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          IconButton(
+                            icon: const Icon(Icons.speaker, size: 18),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                useRootNavigator: true,
+                                context: context,
+                                builder: (context) => const PlayerDevicePopup(),
+                              );
+                            },
+                          ),
                           if (!widget.isMiniPlayer && PlatformInfo.isDesktop)
                             IconButton(
                               icon: const Icon(

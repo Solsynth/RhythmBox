@@ -9,7 +9,7 @@ class SystemShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (PlatformInfo.isDesktop) {
+    if (PlatformInfo.isMacOS) {
       return DragToMoveArea(
         child: Column(
           children: [
