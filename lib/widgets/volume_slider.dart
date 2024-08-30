@@ -4,12 +4,10 @@ import 'package:get/get.dart';
 import 'package:rhythm_box/providers/volume.dart';
 
 class VolumeSlider extends StatelessWidget {
-  final bool isFullWidth;
   final MainAxisAlignment mainAxisAlignment;
 
   const VolumeSlider({
     super.key,
-    this.isFullWidth = false,
     this.mainAxisAlignment = MainAxisAlignment.start,
   });
 
@@ -48,7 +46,7 @@ class VolumeSlider extends StatelessWidget {
             onChanged: vol.setVolume,
           ),
         ),
-      ).paddingOnly(right: 24, left: 8);
+      ).paddingSymmetric(horizontal: 8);
       return Row(
         mainAxisAlignment: mainAxisAlignment,
         children: [
@@ -69,7 +67,7 @@ class VolumeSlider extends StatelessWidget {
               }
             },
           ),
-          if (isFullWidth) Expanded(child: slider) else slider,
+          slider,
         ],
       );
     });

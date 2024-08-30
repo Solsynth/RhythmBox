@@ -73,8 +73,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
           child: Row(
             children: [
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(vertical: 24),
                   children: [
                     Obx(
                       () => LimitedBox(
@@ -356,7 +356,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 )
             ],
           ),
-        ).marginAll(24),
+        ).marginSymmetric(horizontal: 24),
       ),
     );
   }

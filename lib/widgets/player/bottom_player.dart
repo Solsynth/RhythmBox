@@ -5,18 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rhythm_box/platform.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
-import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
+import 'package:rhythm_box/widgets/player/controls.dart';
 import 'package:rhythm_box/widgets/player/track_details.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:rhythm_box/widgets/volume_slider.dart';
+import 'package:window_manager/window_manager.dart';
 
 class BottomPlayer extends StatefulWidget {
   final bool usePop;
+  final bool isMiniPlayer;
+  final Function? onTap;
 
-  const BottomPlayer({super.key, this.usePop = false});
+  const BottomPlayer({
+    super.key,
+    this.usePop = false,
+    this.isMiniPlayer = false,
+    this.onTap,
+  });
 
   @override
   State<BottomPlayer> createState() => _BottomPlayerState();
@@ -42,18 +51,7 @@ class _BottomPlayerState extends State<BottomPlayer>
             (_playback.state.value.activeTrack?.album?.images?.length ?? 1) - 1,
       );
 
-  bool get _isPlaying => _playback.isPlaying.value;
-  bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
-
   List<StreamSubscription>? _subscriptions;
-
-  Future<void> _togglePlayState() async {
-    if (!audioPlayer.isPlaying) {
-      await audioPlayer.resume();
-    } else {
-      await audioPlayer.pause();
-    }
-  }
 
   bool _isLifted = false;
 
@@ -94,47 +92,6 @@ class _BottomPlayerState extends State<BottomPlayer>
 
   @override
   Widget build(BuildContext context) {
-    final controls = Obx(
-      () => Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MediaQuery.of(context).size.width >= 720
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.end,
-        children: [
-          if (MediaQuery.of(context).size.width >= 720)
-            IconButton(
-              icon: const Icon(Icons.skip_previous),
-              onPressed:
-                  _isFetchingActiveTrack ? null : audioPlayer.skipToPrevious,
-            )
-          else
-            IconButton(
-              icon: const Icon(Icons.skip_next),
-              onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
-            ),
-          IconButton.filled(
-            icon: _isFetchingActiveTrack
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                    ),
-                  )
-                : Icon(
-                    !_isPlaying ? Icons.play_arrow : Icons.pause,
-                  ),
-            onPressed: _isFetchingActiveTrack ? null : _togglePlayState,
-          ),
-          if (MediaQuery.of(context).size.width >= 720)
-            IconButton(
-              icon: const Icon(Icons.skip_next),
-              onPressed: _isFetchingActiveTrack ? null : audioPlayer.skipToNext,
-            )
-        ],
-      ),
-    );
-
     return SizeTransition(
       sizeFactor: _animation,
       axis: Axis.vertical,
@@ -197,19 +154,49 @@ class _BottomPlayerState extends State<BottomPlayer>
                   ),
                   const Gap(12),
                   if (MediaQuery.of(context).size.width >= 720)
-                    Expanded(child: controls)
+                    const Expanded(child: PlayerControls())
                   else
-                    controls,
+                    const PlayerControls(),
                   if (MediaQuery.of(context).size.width >= 720) const Gap(12),
                   if (MediaQuery.of(context).size.width >= 720)
-                    const Expanded(
+                    Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Expanded(
-                            child: VolumeSlider(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                          if (!widget.isMiniPlayer && PlatformInfo.isDesktop)
+                            IconButton(
+                              icon: const Icon(
+                                Icons.picture_in_picture,
+                                size: 18,
+                              ),
+                              onPressed: () async {
+                                if (!PlatformInfo.isDesktop) return;
+
+                                final prevSize = await windowManager.getSize();
+                                await windowManager.setMinimumSize(
+                                  const Size(300, 300),
+                                );
+                                await windowManager.setAlwaysOnTop(true);
+                                if (!PlatformInfo.isLinux) {
+                                  await windowManager.setHasShadow(false);
+                                }
+                                await windowManager
+                                    .setAlignment(Alignment.topRight);
+                                await windowManager
+                                    .setSize(const Size(400, 500));
+                                await Future.delayed(
+                                  const Duration(milliseconds: 100),
+                                  () async {
+                                    GoRouter.of(context).pushNamed(
+                                      'playerMini',
+                                      extra: prevSize,
+                                    );
+                                  },
+                                );
+                              },
                             ),
+                          const VolumeSlider(
+                            mainAxisAlignment: MainAxisAlignment.end,
                           )
                         ],
                       ),
@@ -220,6 +207,10 @@ class _BottomPlayerState extends State<BottomPlayer>
             ],
           ),
           onTap: () {
+            if (widget.onTap != null) {
+              widget.onTap!();
+              return;
+            }
             if (widget.usePop) {
               GoRouter.of(context).pop();
             } else {

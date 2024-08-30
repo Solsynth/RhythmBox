@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
@@ -112,6 +113,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
       cacheExtent: 10000,
       controller: _autoScrollController,
       slivers: [
+        const SliverGap(16),
         if (_lyric == null)
           const SliverFillRemaining(
             child: Center(
@@ -223,6 +225,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
               ),
             ),
           ),
+        const SliverGap(16),
       ],
     );
   }

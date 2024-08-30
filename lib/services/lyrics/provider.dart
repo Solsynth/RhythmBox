@@ -166,7 +166,13 @@ class SyncedLyricsProvider extends GetxController {
       return lyrics;
     } catch (e, stackTrace) {
       log('[Lyrics] Error: $e; Trace:\n$stackTrace');
-      rethrow;
+      return SubtitleSimple(
+        uri: Uri.parse('https://example.com/not-found'),
+        name: 'Lyrics Not Found',
+        lyrics: [],
+        rating: 0,
+        provider: 'Not Found',
+      );
     }
   }
 }

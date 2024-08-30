@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/recent_played.dart';
 import 'package:rhythm_box/providers/spotify.dart';
@@ -72,17 +73,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 title: 'New Releases',
                 list: _newReleasesPlaylist,
               ),
+            if (_newReleasesPlaylist?.isNotEmpty ?? false) const Gap(16),
             if (_recentlyPlaylist?.isNotEmpty ?? false)
               PlaylistSection(
                 isLoading: _isLoading['recently']!,
                 title: 'Recent Played',
                 list: _recentlyPlaylist,
               ),
+            if (_recentlyPlaylist?.isNotEmpty ?? false) const Gap(16),
             PlaylistSection(
               isLoading: _isLoading['featured']!,
               title: 'Featured',
               list: _featuredPlaylist,
             ),
+            const Gap(16),
           ],
         ),
       ),

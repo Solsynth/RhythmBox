@@ -6,6 +6,7 @@ import 'package:rhythm_box/screens/auth/mobile_login.dart';
 import 'package:rhythm_box/screens/explore.dart';
 import 'package:rhythm_box/screens/library/view.dart';
 import 'package:rhythm_box/screens/player/lyrics.dart';
+import 'package:rhythm_box/screens/player/mini.dart';
 import 'package:rhythm_box/screens/player/view.dart';
 import 'package:rhythm_box/screens/playlist/view.dart';
 import 'package:rhythm_box/screens/search/view.dart';
@@ -74,6 +75,18 @@ final router = GoRouter(routes: [
         path: '/player/lyrics',
         name: 'playerLyrics',
         builder: (context, state) => const LyricsScreen(),
+      ),
+    ],
+  ),
+  ShellRoute(
+    builder: (context, state, child) => child,
+    routes: [
+      GoRoute(
+        path: '/player/mini',
+        name: 'playerMini',
+        builder: (context, state) => MiniPlayerScreen(
+          prevSize: state.extra as Size,
+        ),
       ),
     ],
   ),
