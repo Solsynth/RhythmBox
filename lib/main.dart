@@ -52,11 +52,11 @@ Future<void> main(List<String> rawArgs) async {
   await KVStoreService.initialize();
   await EncryptedKvStoreService.initialize();
 
-  runApp(const MyApp());
+  runApp(const RhythmApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RhythmApp extends StatelessWidget {
+  const RhythmApp({super.key});
 
   @override
   Widget build(BuildContext context) {
