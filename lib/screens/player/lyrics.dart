@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/player/bottom_player.dart';
 
@@ -22,13 +25,15 @@ class LyricsScreen extends StatelessWidget {
             ),
           ],
         ),
-        bottomNavigationBar: const SizedBox(
-          height: 85,
+        bottomNavigationBar: SizedBox(
+          height: 85 + max(MediaQuery.of(context).padding.bottom, 16),
           child: Material(
             elevation: 2,
-            child: BottomPlayer(
+            child: const BottomPlayer(
               key: Key('lyrics-page-bottom-player'),
               usePop: true,
+            ).paddingOnly(
+              bottom: max(MediaQuery.of(context).padding.bottom, 16),
             ),
           ),
         ),

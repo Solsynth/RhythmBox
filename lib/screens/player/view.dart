@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/screens/player/queue.dart';
 import 'package:rhythm_box/screens/player/siblings.dart';
 import 'package:rhythm_box/services/artist.dart';
@@ -30,6 +31,7 @@ class PlayerScreen extends StatefulWidget {
 class _PlayerScreenState extends State<PlayerScreen> {
   late final AudioPlayerProvider _playback = Get.find();
   late final QueryingTrackInfoProvider _query = Get.find();
+  late final AuthenticationProvider _auth = Get.find();
 
   String? get _albumArt =>
       (_playback.state.value.activeTrack?.album?.images).asUrlString(
@@ -74,6 +76,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             children: [
               Expanded(
                 child: ListView(
+                  shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   children: [
                     Obx(
@@ -133,7 +136,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ],
                             ),
                           ),
-                          if (_playback.state.value.activeTrack != null)
+                          if (_playback.state.value.activeTrack != null &&
+                              _auth.auth.value != null)
                             TrackHeartButton(
                               trackId: _playback.state.value.activeTrack!.id!,
                             ),

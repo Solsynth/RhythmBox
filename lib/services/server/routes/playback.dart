@@ -7,7 +7,6 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
-import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
 import 'package:shelf/shelf.dart';
 
 class ServerPlaybackRoutesProvider {
@@ -21,10 +20,10 @@ class ServerPlaybackRoutesProvider {
 
       final ActiveSourcedTrackProvider activeSourcedTrack = Get.find();
       final sourcedTrack = activeSourcedTrack.state.value?.id == track.id
-          ? activeSourcedTrack
+          ? activeSourcedTrack.state.value
           : await Get.find<SourcedTrackProvider>().fetch(RhythmMedia(track));
 
-      activeSourcedTrack.updateTrack(sourcedTrack as SourcedTrack?);
+      activeSourcedTrack.updateTrack(sourcedTrack);
 
       final res = await Dio().get(
         sourcedTrack!.url,
