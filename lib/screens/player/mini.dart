@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/platform.dart';
+import 'package:rhythm_box/screens/player/queue.dart';
+import 'package:rhythm_box/screens/player/siblings.dart';
 import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/player/bottom_player.dart';
+import 'package:rhythm_box/widgets/player/devices.dart';
 import 'package:window_manager/window_manager.dart';
 
 class MiniPlayerScreen extends StatefulWidget {
@@ -94,6 +97,46 @@ class _MiniPlayerScreenState extends State<MiniPlayerScreen> {
                       onPressed: () => _exitMiniPlayer(),
                     ),
                     const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.speaker, size: 18),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          useRootNavigator: true,
+                          context: context,
+                          builder: (context) => const PlayerDevicePopup(),
+                        );
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.merge),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => const SiblingTracksPopup(),
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.queue_music),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          useRootNavigator: true,
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => const PlayerQueuePopup(),
+                        ).then((_) {
+                          if (mounted) {
+                            setState(() {});
+                          }
+                        });
+                      },
+                    ),
                     IconButton(
                       icon: _isHoverMode
                           ? const Icon(Icons.touch_app)

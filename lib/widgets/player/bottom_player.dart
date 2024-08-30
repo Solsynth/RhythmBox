@@ -113,7 +113,7 @@ class _BottomPlayerState extends State<BottomPlayer>
                 duration: const Duration(milliseconds: 1000),
                 builder: (context, value, _) => LinearProgressIndicator(
                   minHeight: 3,
-                  value: _isFetchingActiveTrack ? null : null,
+                  value: _isFetchingActiveTrack ? null : value,
                 ),
               ),
               Row(

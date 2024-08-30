@@ -85,15 +85,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
         body: CustomScrollView(
           slivers: [
-            if (_newReleasesPlaylist?.isNotEmpty ?? false)
-              SliverToBoxAdapter(
-                child: PlaylistSection(
-                  isLoading: _isLoading['newReleases']!,
-                  title: 'New Releases',
-                  list: _newReleasesPlaylist,
-                ),
-              ),
-            if (_newReleasesPlaylist?.isNotEmpty ?? false) const SliverGap(16),
             if (_recentlyPlaylist?.isNotEmpty ?? false)
               SliverToBoxAdapter(
                 child: PlaylistSection(
@@ -103,6 +94,15 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
               ),
             if (_recentlyPlaylist?.isNotEmpty ?? false) const SliverGap(16),
+            if (_newReleasesPlaylist?.isNotEmpty ?? false)
+              SliverToBoxAdapter(
+                child: PlaylistSection(
+                  isLoading: _isLoading['newReleases']!,
+                  title: 'New Releases',
+                  list: _newReleasesPlaylist,
+                ),
+              ),
+            if (_newReleasesPlaylist?.isNotEmpty ?? false) const SliverGap(16),
             SliverList.builder(
               itemCount: _forYouView?.length ?? 0,
               itemBuilder: (context, idx) {

@@ -139,6 +139,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           if (_playback.state.value.activeTrack != null &&
                               _auth.auth.value != null)
                             TrackHeartButton(
+                              key: ValueKey(
+                                _playback.state.value.activeTrack!.id!,
+                              ),
                               trackId: _playback.state.value.activeTrack!.id!,
                             ),
                         ],
@@ -178,7 +181,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               },
                               onChangeEnd: (value) {
                                 audioPlayer.seek(
-                                    Duration(milliseconds: value.toInt()));
+                                  Duration(milliseconds: value.toInt()),
+                                );
+                                setState(() => _draggingValue = null);
                               },
                             ),
                           ),
