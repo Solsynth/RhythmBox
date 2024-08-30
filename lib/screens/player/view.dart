@@ -240,7 +240,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             width: 56,
                             height: 56,
                             child: IconButton.filled(
-                              icon: (_isFetchingActiveTrack && _isPlaying)
+                              icon: _isFetchingActiveTrack
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,

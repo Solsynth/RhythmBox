@@ -46,6 +46,8 @@ class _BottomPlayerState extends State<BottomPlayer>
   late final AudioPlayerProvider _playback = Get.find();
   late final QueryingTrackInfoProvider _query = Get.find();
 
+  bool get _isFetchingActiveTrack => _query.isQueryingTrackInfo.value;
+
   String? get _albumArt =>
       (_playback.state.value.activeTrack?.album?.images).asUrlString(
         index:
@@ -102,19 +104,18 @@ class _BottomPlayerState extends State<BottomPlayer>
           behavior: HitTestBehavior.translucent,
           child: Column(
             children: [
-              if (_playback.durationCurrent.value != Duration.zero)
-                TweenAnimationBuilder<double>(
-                  tween: Tween(
-                    begin: 0,
-                    end: _playback.durationCurrent.value.inMilliseconds /
-                        max(_playback.durationTotal.value.inMilliseconds, 1),
-                  ),
-                  duration: const Duration(milliseconds: 1000),
-                  builder: (context, value, _) => LinearProgressIndicator(
-                    minHeight: 3,
-                    value: value,
-                  ),
+              TweenAnimationBuilder<double>(
+                tween: Tween(
+                  begin: 0,
+                  end: _playback.durationCurrent.value.inMilliseconds /
+                      max(_playback.durationTotal.value.inMilliseconds, 1),
                 ),
+                duration: const Duration(milliseconds: 1000),
+                builder: (context, value, _) => LinearProgressIndicator(
+                  minHeight: 3,
+                  value: _isFetchingActiveTrack ? null : null,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
