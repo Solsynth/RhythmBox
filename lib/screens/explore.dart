@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/recent_played.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/album.dart';
 import 'package:rhythm_box/services/database/database.dart';
+import 'package:rhythm_box/services/spotify/spotify_endpoints.dart';
 import 'package:rhythm_box/widgets/playlist/playlist_section.dart';
+import 'package:spotify/spotify.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -18,19 +22,23 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   late final SpotifyProvider _spotify = Get.find();
   late final RecentlyPlayedProvider _history = Get.find();
+  late final AuthenticationProvider _auth = Get.find();
 
   final Map<String, bool> _isLoading = {
     'featured': true,
     'recently': true,
     'newReleases': true,
+    'forYou': true,
   };
 
   List<Object>? _featuredPlaylist;
   List<Object>? _recentlyPlaylist;
   List<Object>? _newReleasesPlaylist;
+  List<dynamic>? _forYouView;
 
   Future<void> _pullPlaylist() async {
     final market = Get.find<UserPreferencesProvider>().state.value.market;
+    final locale = Get.find<UserPreferencesProvider>().state.value.locale;
 
     _featuredPlaylist =
         (await _spotify.api.playlists.featured.getPage(20)).items!.toList();
@@ -48,6 +56,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ?.map((album) => album.toAlbum())
             .toList();
     setState(() => _isLoading['newReleases'] = false);
+
+    final customEndpoint =
+        CustomSpotifyEndpoints(_auth.auth.value?.accessToken.value ?? '');
+    final forYouView = await customEndpoint.getView(
+      'made-for-x-hub',
+      market: market,
+      locale: Intl.canonicalizedLocale(locale.toString()),
+    );
+    _forYouView = forYouView['content']?['items'];
+    setState(() => _isLoading['forYou'] = false);
   }
 
   @override
@@ -65,28 +83,52 @@ class _ExploreScreenState extends State<ExploreScreen> {
           title: Text('explore'.tr),
           centerTitle: MediaQuery.of(context).size.width >= 720,
         ),
-        body: ListView(
-          children: [
+        body: CustomScrollView(
+          slivers: [
             if (_newReleasesPlaylist?.isNotEmpty ?? false)
-              PlaylistSection(
-                isLoading: _isLoading['newReleases']!,
-                title: 'New Releases',
-                list: _newReleasesPlaylist,
+              SliverToBoxAdapter(
+                child: PlaylistSection(
+                  isLoading: _isLoading['newReleases']!,
+                  title: 'New Releases',
+                  list: _newReleasesPlaylist,
+                ),
               ),
-            if (_newReleasesPlaylist?.isNotEmpty ?? false) const Gap(16),
+            if (_newReleasesPlaylist?.isNotEmpty ?? false) const SliverGap(16),
             if (_recentlyPlaylist?.isNotEmpty ?? false)
-              PlaylistSection(
-                isLoading: _isLoading['recently']!,
-                title: 'Recent Played',
-                list: _recentlyPlaylist,
+              SliverToBoxAdapter(
+                child: PlaylistSection(
+                  isLoading: _isLoading['recently']!,
+                  title: 'Recent Played',
+                  list: _recentlyPlaylist,
+                ),
               ),
-            if (_recentlyPlaylist?.isNotEmpty ?? false) const Gap(16),
-            PlaylistSection(
-              isLoading: _isLoading['featured']!,
-              title: 'Featured',
-              list: _featuredPlaylist,
+            if (_recentlyPlaylist?.isNotEmpty ?? false) const SliverGap(16),
+            SliverList.builder(
+              itemCount: _forYouView?.length ?? 0,
+              itemBuilder: (context, idx) {
+                final item = _forYouView![idx];
+                final playlists = item['content']?['items']
+                        ?.where((itemL2) => itemL2['type'] == 'playlist')
+                        .map((itemL2) => PlaylistSimple.fromJson(itemL2))
+                        .toList()
+                        .cast<PlaylistSimple>() ??
+                    <PlaylistSimple>[];
+                if (playlists.isEmpty) return const SizedBox.shrink();
+                return PlaylistSection(
+                  isLoading: false,
+                  title: item['name'] ?? '',
+                  list: playlists,
+                ).paddingOnly(bottom: 16);
+              },
             ),
-            const Gap(16),
+            SliverToBoxAdapter(
+              child: PlaylistSection(
+                isLoading: _isLoading['featured']!,
+                title: 'Featured',
+                list: _featuredPlaylist,
+              ),
+            ),
+            const SliverGap(16),
           ],
         ),
       ),

@@ -15,6 +15,8 @@ PODS:
   - flutter_inappwebview_ios/Core (0.0.1):
     - Flutter
     - OrderedSet (~> 5.0)
+  - flutter_native_splash (0.0.1):
+    - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
   - media_kit_libs_ios_audio (1.0.4):
@@ -61,6 +63,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_broadcasts (from `.symlinks/plugins/flutter_broadcasts/ios`)
   - flutter_inappwebview_ios (from `.symlinks/plugins/flutter_inappwebview_ios/ios`)
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - media_kit_libs_ios_audio (from `.symlinks/plugins/media_kit_libs_ios_audio/ios`)
   - media_kit_native_event_loop (from `.symlinks/plugins/media_kit_native_event_loop/ios`)
@@ -89,6 +92,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_broadcasts/ios"
   flutter_inappwebview_ios:
     :path: ".symlinks/plugins/flutter_inappwebview_ios/ios"
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   media_kit_libs_ios_audio:
@@ -115,6 +120,7 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_broadcasts: 3ece15b27d8ccbe2132c3df303e7c3401feab882
   flutter_inappwebview_ios: 97215cf7d4677db55df76782dbd2930c5e1c1ea0
+  flutter_native_splash: edf599c81f74d093a4daf8e17bd7a018854bc778
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   media_kit_libs_ios_audio: 8f39d96a9c630685dfb844c289bd1d114c486fb3
   media_kit_native_event_loop: 99111eded5acbdc9c2738021ea6550dd36ca8837

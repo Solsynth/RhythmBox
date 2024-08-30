@@ -44,7 +44,7 @@ class AlbumCard extends StatelessWidget {
           ],
         ).paddingSymmetric(horizontal: 8),
         onTap: () {
-          if (onTap != null) return;
+          if (onTap == null) return;
           onTap!();
         },
       ),
