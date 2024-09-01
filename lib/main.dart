@@ -24,11 +24,11 @@ import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/routes/playback.dart';
 import 'package:rhythm_box/services/server/server.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/services/wm_tools.dart';
 import 'package:rhythm_box/shells/system_shell.dart';
 import 'package:rhythm_box/translations.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
 import 'package:smtc_windows/smtc_windows.dart';
-import 'package:window_manager/window_manager.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains('web_view_title_bar')) {
@@ -42,13 +42,7 @@ Future<void> main(List<String> rawArgs) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (PlatformInfo.isDesktop) {
-    await windowManager.ensureInitialized();
-    await windowManager.setPreventClose(true);
-    if (PlatformInfo.isMacOS) {
-      await windowManager.setTitleBarStyle(TitleBarStyle.hidden);
-    } else {
-      await windowManager.setTitleBarStyle(TitleBarStyle.normal);
-    }
+    await WindowManagerTools.initialize();
   }
   if (PlatformInfo.isWindows) {
     await SMTCWindows.initialize();
