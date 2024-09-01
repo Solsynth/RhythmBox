@@ -39,11 +39,12 @@ class WindowManagerTools with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(instance);
 
     await windowManager.waitUntilReadyToShow(
-      const WindowOptions(
+      WindowOptions(
         title: 'RhythmBox',
         backgroundColor: Colors.transparent,
-        minimumSize: Size(300, 700),
-        titleBarStyle: TitleBarStyle.hidden,
+        minimumSize: const Size(300, 700),
+        titleBarStyle:
+            PlatformInfo.isMacOS ? TitleBarStyle.hidden : TitleBarStyle.normal,
         center: true,
       ),
       () async {
