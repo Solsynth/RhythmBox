@@ -1,9 +1,10 @@
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:flutter/foundation.dart';
 import 'package:rhythm_box/platform.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/audio_player/custom_player.dart';
 import 'package:rhythm_box/services/local_track.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
@@ -85,7 +86,7 @@ abstract class AudioPlayerInterface {
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {
-      log('[Playback] Error: $event');
+      Get.find<ErrorNotifier>().logError('[Playback] Error: $event');
     });
   }
 

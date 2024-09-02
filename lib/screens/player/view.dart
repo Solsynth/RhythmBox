@@ -102,11 +102,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         maxWidth: maxAlbumSize,
                         child: Hero(
                           tag: const Key('current-active-track-album-art'),
-                          child: ClipRRect(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
-                            child: AspectRatio(
-                              aspectRatio: 1,
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: ClipRRect(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
                               child: _albumArt != null
                                   ? AutoCacheImage(
                                       _albumArt!,
@@ -230,21 +230,23 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           stream: audioPlayer.shuffledStream,
                           builder: (context, snapshot) {
                             final shuffled = snapshot.data ?? false;
-                            return IconButton(
-                              icon: Icon(
-                                shuffled
-                                    ? Icons.shuffle_on_outlined
-                                    : Icons.shuffle,
+                            return Obx(
+                              () => IconButton(
+                                icon: Icon(
+                                  shuffled
+                                      ? Icons.shuffle_on_outlined
+                                      : Icons.shuffle,
+                                ),
+                                onPressed: _isFetchingActiveTrack
+                                    ? null
+                                    : () {
+                                        if (shuffled) {
+                                          audioPlayer.setShuffle(false);
+                                        } else {
+                                          audioPlayer.setShuffle(true);
+                                        }
+                                      },
                               ),
-                              onPressed: _isFetchingActiveTrack
-                                  ? null
-                                  : () {
-                                      if (shuffled) {
-                                        audioPlayer.setShuffle(false);
-                                      } else {
-                                        audioPlayer.setShuffle(true);
-                                      }
-                                    },
                             );
                           },
                         ),

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
@@ -8,6 +7,8 @@ import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:spotify/spotify.dart';
+
+import 'error_notifier.dart';
 
 class EndlessPlaybackProvider extends GetxController {
   late final _auth = Get.find<AuthenticationProvider>();
@@ -88,7 +89,8 @@ class EndlessPlaybackProvider extends GetxController {
             }),
         );
       } catch (e, stack) {
-        log('[EndlessPlayback] Error: $e; Trace:\n$stack');
+        Get.find<ErrorNotifier>()
+            .logError('[EndlessPlayback] Error: $e', trace: stack);
       }
     }
 

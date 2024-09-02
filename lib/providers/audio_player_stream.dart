@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/palette.dart';
 import 'package:rhythm_box/providers/scrobbler.dart';
@@ -126,7 +127,8 @@ class AudioPlayerStreamProvider extends GetxController {
             .addTrack(playback.state.value.activeTrack!);
         lastScrobbled = uid;
       } catch (e, stack) {
-        log('[Scrobbler] Error: $e; Trace:\n$stack');
+        Get.find<ErrorNotifier>()
+            .logError('[Scrobbler] Error: $e', trace: stack);
       }
     });
   }

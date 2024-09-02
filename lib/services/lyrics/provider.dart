@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:get/get.dart';
 import 'package:lrc/lrc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/lyrics/model.dart';
@@ -164,8 +163,8 @@ class SyncedLyricsProvider extends GetxController {
       }
 
       return lyrics;
-    } catch (e, stackTrace) {
-      log('[Lyrics] Error: $e; Trace:\n$stackTrace');
+    } catch (e, stack) {
+      Get.find<ErrorNotifier>().logError('[Lyrics] Error: $e', trace: stack);
       return SubtitleSimple(
         uri: Uri.parse('https://example.com/not-found'),
         name: 'Lyrics Not Found',

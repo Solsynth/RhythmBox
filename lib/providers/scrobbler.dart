@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:drift/drift.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/artist.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:scrobblenaut/scrobblenaut.dart';
@@ -44,7 +44,8 @@ class ScrobblerProvider extends GetxController {
             ),
           );
         } catch (e, stack) {
-          log('[Scrobble] Error: $e; Trace:\n$stack');
+          Get.find<ErrorNotifier>()
+              .logError('[Scrobbler] Error: $e', trace: stack);
           scrobbler.value = null;
         }
       } else {
@@ -63,8 +64,9 @@ class ScrobblerProvider extends GetxController {
           timestamp: DateTime.now().toUtc(),
           trackNumber: track.trackNumber,
         );
-      } catch (e, stackTrace) {
-        log('[Scrobble] Error: $e; Trace:\n$stackTrace');
+      } catch (e, stack) {
+        Get.find<ErrorNotifier>()
+            .logError('[Scrobbler] Error: $e', trace: stack);
       }
     });
 

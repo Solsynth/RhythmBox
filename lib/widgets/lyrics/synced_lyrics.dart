@@ -50,25 +50,27 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
       Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
 
   void _syncLyricsProgress() {
-    for (var idx = 0; idx < _lyric!.lyrics.length; idx++) {
-      final lyricSlice = _lyric!.lyrics[idx];
-      final lyricNextSlice =
-          idx + 1 < _lyric!.lyrics.length ? _lyric!.lyrics[idx + 1] : null;
-      final isActive = _playback.durationCurrent.value.inSeconds >=
-              lyricSlice.time.inSeconds &&
-          (lyricNextSlice == null ||
-              lyricNextSlice.time.inSeconds >
-                  _playback.durationCurrent.value.inSeconds);
-      if (isActive) {
-        _autoScrollController.scrollToIndex(
-          idx,
-          preferPosition: AutoScrollPosition.middle,
-        );
-        return;
+    if (_isLyricSynced) {
+      for (var idx = 0; idx < _lyric!.lyrics.length; idx++) {
+        final lyricSlice = _lyric!.lyrics[idx];
+        final lyricNextSlice =
+            idx + 1 < _lyric!.lyrics.length ? _lyric!.lyrics[idx + 1] : null;
+        final isActive = _playback.durationCurrent.value.inSeconds >=
+                lyricSlice.time.inSeconds &&
+            (lyricNextSlice == null ||
+                lyricNextSlice.time.inSeconds >
+                    _playback.durationCurrent.value.inSeconds);
+        if (isActive) {
+          _autoScrollController.scrollToIndex(
+            idx,
+            preferPosition: AutoScrollPosition.middle,
+          );
+          return;
+        }
       }
     }
 
-    if (_lyric!.lyrics.isNotEmpty) {
+    if (_lyric!.lyrics.isNotEmpty || !_isLyricSynced) {
       _autoScrollController.scrollToIndex(
         0,
         preferPosition: AutoScrollPosition.begin,
@@ -120,6 +122,18 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
               child: CircularProgressIndicator(),
             ),
           ),
+        if (_lyric != null && _lyric!.lyrics.isNotEmpty && !_isLyricSynced)
+          SliverToBoxAdapter(
+            child: Text(
+              'Lyrics isn\'t synced',
+              textAlign: MediaQuery.of(context).size.width >= 720
+                  ? TextAlign.center
+                  : TextAlign.left,
+            ).paddingSymmetric(
+              horizontal: 24,
+              vertical: 8,
+            ),
+          ),
         if (_lyric != null && _lyric!.lyrics.isNotEmpty)
           SliverList.builder(
             itemCount: _lyric!.lyrics.length,
@@ -132,7 +146,8 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                       lyricSlice.time.inSeconds &&
                   (lyricNextSlice == null ||
                       lyricNextSlice.time.inSeconds >
-                          _playback.durationCurrent.value.inSeconds);
+                          _playback.durationCurrent.value.inSeconds) &&
+                  _isLyricSynced;
 
               if (_playback.durationCurrent.value.inSeconds ==
                       lyricSlice.time.inSeconds &&
@@ -142,6 +157,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                   preferPosition: AutoScrollPosition.middle,
                 );
               }
+
               return AutoScrollTag(
                 key: ValueKey(idx),
                 index: idx,
@@ -215,6 +231,7 @@ class _SyncedLyricsState extends State<SyncedLyrics> {
                 children: [
                   Text(
                     'Lyrics Not Found',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const Text(

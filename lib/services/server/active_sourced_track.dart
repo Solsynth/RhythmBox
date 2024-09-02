@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/sourced_track/models/source_info.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
@@ -41,7 +40,9 @@ class ActiveSourcedTrackProvider extends GetxController {
       await audioPlayer.removeTrack(oldActiveIndex);
       await playback.jumpToTrack(newTrack);
     } catch (e, stack) {
-      log('[Playback] Failed to swap with siblings. Error: $e; Trace:\n$stack');
+      Get.find<ErrorNotifier>().logError(
+          '[Playback] Failed to swap with siblings. Error: $e',
+          trace: stack);
     } finally {
       query.isQueryingTrackInfo.value = false;
       await audioPlayer.resume();

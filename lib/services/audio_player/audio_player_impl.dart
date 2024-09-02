@@ -90,16 +90,28 @@ class RhythmAudioPlayer extends AudioPlayerInterface
 
   Future<void> skipToNext() async {
     Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
+    Get.find<AudioPlayerProvider>().durationBuffered.value =
+        const Duration(seconds: 0);
+    Get.find<AudioPlayerProvider>().durationCurrent.value =
+        const Duration(seconds: 0);
     await _mkPlayer.next();
   }
 
   Future<void> skipToPrevious() async {
     Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
+    Get.find<AudioPlayerProvider>().durationBuffered.value =
+        const Duration(seconds: 0);
+    Get.find<AudioPlayerProvider>().durationCurrent.value =
+        const Duration(seconds: 0);
     await _mkPlayer.previous();
   }
 
   Future<void> jumpTo(int index) async {
     Get.find<QueryingTrackInfoProvider>().isQueryingTrackInfo.value = true;
+    Get.find<AudioPlayerProvider>().durationBuffered.value =
+        const Duration(seconds: 0);
+    Get.find<AudioPlayerProvider>().durationCurrent.value =
+        const Duration(seconds: 0);
     await _mkPlayer.jump(index);
   }
 

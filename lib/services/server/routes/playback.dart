@@ -1,9 +1,8 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide Response;
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
@@ -57,8 +56,9 @@ class ServerPlaybackRoutesProvider {
         },
         headers: res.headers.map,
       );
-    } catch (e, stackTrace) {
-      log('[PlaybackSever] Error: $e; Trace:\n $stackTrace');
+    } catch (e, stack) {
+      Get.find<ErrorNotifier>()
+          .logError('[PlaybackSever] Error: $e', trace: stack);
       return Response.internalServerError();
     }
   }

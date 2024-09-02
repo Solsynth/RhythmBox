@@ -8,6 +8,7 @@ import 'package:rhythm_box/providers/audio_player_stream.dart';
 import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/endless_playback.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/history.dart';
 import 'package:rhythm_box/providers/palette.dart';
 import 'package:rhythm_box/providers/recent_played.dart';
@@ -84,8 +85,8 @@ class RhythmApp extends StatelessWidget {
       translations: AppTranslations(),
       onInit: () => _initializeProviders(context),
       builder: (context, child) {
-        return SystemShell(
-          child: ScaffoldMessenger(
+        return ScaffoldMessenger(
+          child: SystemShell(
             child: child ?? const SizedBox(),
           ),
         );
@@ -96,6 +97,8 @@ class RhythmApp extends StatelessWidget {
   void _initializeProviders(BuildContext context) async {
     Get.lazyPut(() => SpotifyProvider());
     Get.lazyPut(() => SyncedLyricsProvider());
+
+    Get.put(ErrorNotifier());
 
     Get.put(DatabaseProvider());
     Get.put(AuthenticationProvider());

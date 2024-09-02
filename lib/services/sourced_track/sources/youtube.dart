@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:get/get.dart' hide Value;
 import 'package:http/http.dart';
 import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/utils.dart';
 import 'package:spotify/spotify.dart';
@@ -242,7 +241,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
         ];
       } on VideoUnplayableException catch (e) {
         // Ignore this error and continue with the search
-        log('[Source][YoutubeMusic] Unable to search data: $e');
+        Get.find<ErrorNotifier>().logError(
+            '[Source][YoutubeMusic] Unable to play stream on youtube: $e');
       }
     }
 
@@ -250,7 +250,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
     final searchResults = await youtubeClient.search.search(
       query,
-      filter: const SearchFilter('CAMSAhAB'),
+      filter: TypeFilters.video,
     );
 
     if (ServiceUtils.onlyContainsEnglish(query)) {

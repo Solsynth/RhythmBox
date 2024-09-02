@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:rhythm_box/providers/database.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
@@ -72,7 +71,7 @@ Future<List<SkipSegmentTableData>> getAndCacheSkipSegments(String id) async {
           ..where((s) => s.trackId.equals(id)))
         .get();
   } catch (e, stack) {
-    log('[SkipSegment] Error: $e; Trace:\n$stack');
+    Get.find<ErrorNotifier>().logError('[SkipSegment] Error: $e', trace: stack);
     return List.castFrom<dynamic, SkipSegmentTableData>([]);
   }
 }

@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
+import 'package:get/get.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:flutter_broadcasts/flutter_broadcasts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:rhythm_box/platform.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 
 // ignore: implementation_imports
 import 'package:rhythm_box/services/audio_player/playback_state.dart';
@@ -49,7 +50,7 @@ class CustomPlayer extends Player {
         }
       }),
       stream.error.listen((event) {
-        log('[MediaKitError] $event');
+        Get.find<ErrorNotifier>().logError('[Playback] Error: $event');
       }),
     ];
     PackageInfo.fromPlatform().then((packageInfo) {
