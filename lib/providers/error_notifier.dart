@@ -13,6 +13,7 @@ class ErrorNotifier extends GetxController {
 
   void showError(String msg) {
     showing.value = MaterialBanner(
+      dividerColor: Colors.transparent,
       leading: const Icon(Icons.error),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

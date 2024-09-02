@@ -12,6 +12,7 @@ import 'package:spotify/spotify.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 typedef UserPreferences = PreferencesTableData;
 
@@ -47,6 +48,8 @@ class UserPreferencesProvider extends GetxController {
         .watchSingle()
         .listen((event) async {
       state.value = event;
+
+      await WakelockPlus.toggle(enable: state.value.playerWakelock);
 
       await audioPlayer.setAudioNormalization(state.value.normalizeAudio);
     });
@@ -173,5 +176,6 @@ class UserPreferencesProvider extends GetxController {
 
   void setPlayerWakelock(bool wakelock) {
     setData(PreferencesTableCompanion(playerWakelock: Value(wakelock)));
+    WakelockPlus.toggle(enable: wakelock);
   }
 }
