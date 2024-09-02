@@ -42,20 +42,34 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
     _featuredPlaylist =
         (await _spotify.api.playlists.featured.getPage(20)).items!.toList();
-    setState(() => _isLoading['featured'] = false);
+    if (mounted) {
+      setState(() => _isLoading['featured'] = false);
+    } else {
+      return;
+    }
 
+    final idxList = Set();
     _recentlyPlaylist = (await _history.fetch())
         .where((x) => x.playlist != null)
         .map((x) => x.playlist!)
-        .toList();
-    setState(() => _isLoading['recently'] = false);
+        .toList()
+      ..retainWhere((x) => idxList.add(x.id!));
+    if (mounted) {
+      setState(() => _isLoading['recently'] = false);
+    } else {
+      return;
+    }
 
     _newReleasesPlaylist =
         (await _spotify.api.browse.newReleases(country: market).getPage(20))
             .items
             ?.map((album) => album.toAlbum())
             .toList();
-    setState(() => _isLoading['newReleases'] = false);
+    if (mounted) {
+      setState(() => _isLoading['newReleases'] = false);
+    } else {
+      return;
+    }
 
     final customEndpoint =
         CustomSpotifyEndpoints(_auth.auth.value?.accessToken.value ?? '');
@@ -65,7 +79,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
       locale: Intl.canonicalizedLocale(locale.toString()),
     );
     _forYouView = forYouView['content']?['items'];
-    setState(() => _isLoading['forYou'] = false);
+    if (mounted) {
+      setState(() => _isLoading['forYou'] = false);
+    } else {
+      return;
+    }
   }
 
   @override

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/platform.dart';
+import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/screens/player/queue.dart';
 import 'package:rhythm_box/screens/player/siblings.dart';
 import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/player/bottom_player.dart';
 import 'package:rhythm_box/widgets/player/devices.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:window_manager/window_manager.dart';
 
 class MiniPlayerScreen extends StatefulWidget {
@@ -19,6 +21,8 @@ class MiniPlayerScreen extends StatefulWidget {
 }
 
 class _MiniPlayerScreenState extends State<MiniPlayerScreen> {
+  late final UserPreferencesProvider _preferences = Get.find();
+
   bool _wasMaximized = false;
 
   bool _areaActive = false;
@@ -49,6 +53,20 @@ class _MiniPlayerScreenState extends State<MiniPlayerScreen> {
         }
       }
     }
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    if (_preferences.state.value.playerWakelock) {
+      WakelockPlus.enable();
+    }
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    WakelockPlus.disable();
   }
 
   @override

@@ -34,7 +34,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
   late final AudioPlayerProvider _playback = Get.find();
   late final QueryingTrackInfoProvider _query = Get.find();
   late final AuthenticationProvider _auth = Get.find();
-
   late final UserPreferencesProvider _preferences = Get.find();
 
   String? get _albumArt =>
