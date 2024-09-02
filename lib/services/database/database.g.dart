@@ -317,16 +317,6 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("album_color_sync" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _amoledDarkThemeMeta =
-      const VerificationMeta('amoledDarkTheme');
-  @override
-  late final GeneratedColumn<bool> amoledDarkTheme = GeneratedColumn<bool>(
-      'amoled_dark_theme', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("amoled_dark_theme" IN (0, 1))'),
-      defaultValue: const Constant(false));
   static const VerificationMeta _checkUpdateMeta =
       const VerificationMeta('checkUpdate');
   @override
@@ -524,22 +514,21 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("endless_playback" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _enableConnectMeta =
-      const VerificationMeta('enableConnect');
+  static const VerificationMeta _playerWakelockMeta =
+      const VerificationMeta('playerWakelock');
   @override
-  late final GeneratedColumn<bool> enableConnect = GeneratedColumn<bool>(
-      'enable_connect', aliasedName, false,
+  late final GeneratedColumn<bool> playerWakelock = GeneratedColumn<bool>(
+      'player_wakelock', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("enable_connect" IN (0, 1))'),
-      defaultValue: const Constant(false));
+          'CHECK ("player_wakelock" IN (0, 1))'),
+      defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns => [
         id,
         audioQuality,
         albumColorSync,
-        amoledDarkTheme,
         checkUpdate,
         normalizeAudio,
         showSystemTrayIcon,
@@ -560,7 +549,7 @@ class $PreferencesTableTable extends PreferencesTable
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        playerWakelock
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -582,12 +571,6 @@ class $PreferencesTableTable extends PreferencesTable
           _albumColorSyncMeta,
           albumColorSync.isAcceptableOrUnknown(
               data['album_color_sync']!, _albumColorSyncMeta));
-    }
-    if (data.containsKey('amoled_dark_theme')) {
-      context.handle(
-          _amoledDarkThemeMeta,
-          amoledDarkTheme.isAcceptableOrUnknown(
-              data['amoled_dark_theme']!, _amoledDarkThemeMeta));
     }
     if (data.containsKey('check_update')) {
       context.handle(
@@ -655,11 +638,11 @@ class $PreferencesTableTable extends PreferencesTable
           endlessPlayback.isAcceptableOrUnknown(
               data['endless_playback']!, _endlessPlaybackMeta));
     }
-    if (data.containsKey('enable_connect')) {
+    if (data.containsKey('player_wakelock')) {
       context.handle(
-          _enableConnectMeta,
-          enableConnect.isAcceptableOrUnknown(
-              data['enable_connect']!, _enableConnectMeta));
+          _playerWakelockMeta,
+          playerWakelock.isAcceptableOrUnknown(
+              data['player_wakelock']!, _playerWakelockMeta));
     }
     return context;
   }
@@ -677,8 +660,6 @@ class $PreferencesTableTable extends PreferencesTable
               DriftSqlType.string, data['${effectivePrefix}audio_quality'])!),
       albumColorSync: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}album_color_sync'])!,
-      amoledDarkTheme: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}amoled_dark_theme'])!,
       checkUpdate: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}check_update'])!,
       normalizeAudio: attachedDatabase.typeMapping
@@ -731,8 +712,8 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.bool, data['${effectivePrefix}discord_presence'])!,
       endlessPlayback: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
-      enableConnect: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}enable_connect'])!,
+      playerWakelock: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}player_wakelock'])!,
     );
   }
 
@@ -776,7 +757,6 @@ class PreferencesTableData extends DataClass
   final int id;
   final SourceQualities audioQuality;
   final bool albumColorSync;
-  final bool amoledDarkTheme;
   final bool checkUpdate;
   final bool normalizeAudio;
   final bool showSystemTrayIcon;
@@ -797,12 +777,11 @@ class PreferencesTableData extends DataClass
   final SourceCodecs downloadMusicCodec;
   final bool discordPresence;
   final bool endlessPlayback;
-  final bool enableConnect;
+  final bool playerWakelock;
   const PreferencesTableData(
       {required this.id,
       required this.audioQuality,
       required this.albumColorSync,
-      required this.amoledDarkTheme,
       required this.checkUpdate,
       required this.normalizeAudio,
       required this.showSystemTrayIcon,
@@ -823,7 +802,7 @@ class PreferencesTableData extends DataClass
       required this.downloadMusicCodec,
       required this.discordPresence,
       required this.endlessPlayback,
-      required this.enableConnect});
+      required this.playerWakelock});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -833,7 +812,6 @@ class PreferencesTableData extends DataClass
           $PreferencesTableTable.$converteraudioQuality.toSql(audioQuality));
     }
     map['album_color_sync'] = Variable<bool>(albumColorSync);
-    map['amoled_dark_theme'] = Variable<bool>(amoledDarkTheme);
     map['check_update'] = Variable<bool>(checkUpdate);
     map['normalize_audio'] = Variable<bool>(normalizeAudio);
     map['show_system_tray_icon'] = Variable<bool>(showSystemTrayIcon);
@@ -891,7 +869,7 @@ class PreferencesTableData extends DataClass
     }
     map['discord_presence'] = Variable<bool>(discordPresence);
     map['endless_playback'] = Variable<bool>(endlessPlayback);
-    map['enable_connect'] = Variable<bool>(enableConnect);
+    map['player_wakelock'] = Variable<bool>(playerWakelock);
     return map;
   }
 
@@ -900,7 +878,6 @@ class PreferencesTableData extends DataClass
       id: Value(id),
       audioQuality: Value(audioQuality),
       albumColorSync: Value(albumColorSync),
-      amoledDarkTheme: Value(amoledDarkTheme),
       checkUpdate: Value(checkUpdate),
       normalizeAudio: Value(normalizeAudio),
       showSystemTrayIcon: Value(showSystemTrayIcon),
@@ -921,7 +898,7 @@ class PreferencesTableData extends DataClass
       downloadMusicCodec: Value(downloadMusicCodec),
       discordPresence: Value(discordPresence),
       endlessPlayback: Value(endlessPlayback),
-      enableConnect: Value(enableConnect),
+      playerWakelock: Value(playerWakelock),
     );
   }
 
@@ -933,7 +910,6 @@ class PreferencesTableData extends DataClass
       audioQuality: $PreferencesTableTable.$converteraudioQuality
           .fromJson(serializer.fromJson<String>(json['audioQuality'])),
       albumColorSync: serializer.fromJson<bool>(json['albumColorSync']),
-      amoledDarkTheme: serializer.fromJson<bool>(json['amoledDarkTheme']),
       checkUpdate: serializer.fromJson<bool>(json['checkUpdate']),
       normalizeAudio: serializer.fromJson<bool>(json['normalizeAudio']),
       showSystemTrayIcon: serializer.fromJson<bool>(json['showSystemTrayIcon']),
@@ -964,7 +940,7 @@ class PreferencesTableData extends DataClass
           .fromJson(serializer.fromJson<String>(json['downloadMusicCodec'])),
       discordPresence: serializer.fromJson<bool>(json['discordPresence']),
       endlessPlayback: serializer.fromJson<bool>(json['endlessPlayback']),
-      enableConnect: serializer.fromJson<bool>(json['enableConnect']),
+      playerWakelock: serializer.fromJson<bool>(json['playerWakelock']),
     );
   }
   @override
@@ -975,7 +951,6 @@ class PreferencesTableData extends DataClass
       'audioQuality': serializer.toJson<String>(
           $PreferencesTableTable.$converteraudioQuality.toJson(audioQuality)),
       'albumColorSync': serializer.toJson<bool>(albumColorSync),
-      'amoledDarkTheme': serializer.toJson<bool>(amoledDarkTheme),
       'checkUpdate': serializer.toJson<bool>(checkUpdate),
       'normalizeAudio': serializer.toJson<bool>(normalizeAudio),
       'showSystemTrayIcon': serializer.toJson<bool>(showSystemTrayIcon),
@@ -1007,7 +982,7 @@ class PreferencesTableData extends DataClass
           .toJson(downloadMusicCodec)),
       'discordPresence': serializer.toJson<bool>(discordPresence),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
-      'enableConnect': serializer.toJson<bool>(enableConnect),
+      'playerWakelock': serializer.toJson<bool>(playerWakelock),
     };
   }
 
@@ -1015,7 +990,6 @@ class PreferencesTableData extends DataClass
           {int? id,
           SourceQualities? audioQuality,
           bool? albumColorSync,
-          bool? amoledDarkTheme,
           bool? checkUpdate,
           bool? normalizeAudio,
           bool? showSystemTrayIcon,
@@ -1036,12 +1010,11 @@ class PreferencesTableData extends DataClass
           SourceCodecs? downloadMusicCodec,
           bool? discordPresence,
           bool? endlessPlayback,
-          bool? enableConnect}) =>
+          bool? playerWakelock}) =>
       PreferencesTableData(
         id: id ?? this.id,
         audioQuality: audioQuality ?? this.audioQuality,
         albumColorSync: albumColorSync ?? this.albumColorSync,
-        amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
         checkUpdate: checkUpdate ?? this.checkUpdate,
         normalizeAudio: normalizeAudio ?? this.normalizeAudio,
         showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
@@ -1062,7 +1035,7 @@ class PreferencesTableData extends DataClass
         downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
         discordPresence: discordPresence ?? this.discordPresence,
         endlessPlayback: endlessPlayback ?? this.endlessPlayback,
-        enableConnect: enableConnect ?? this.enableConnect,
+        playerWakelock: playerWakelock ?? this.playerWakelock,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -1073,9 +1046,6 @@ class PreferencesTableData extends DataClass
       albumColorSync: data.albumColorSync.present
           ? data.albumColorSync.value
           : this.albumColorSync,
-      amoledDarkTheme: data.amoledDarkTheme.present
-          ? data.amoledDarkTheme.value
-          : this.amoledDarkTheme,
       checkUpdate:
           data.checkUpdate.present ? data.checkUpdate.value : this.checkUpdate,
       normalizeAudio: data.normalizeAudio.present
@@ -1126,9 +1096,9 @@ class PreferencesTableData extends DataClass
       endlessPlayback: data.endlessPlayback.present
           ? data.endlessPlayback.value
           : this.endlessPlayback,
-      enableConnect: data.enableConnect.present
-          ? data.enableConnect.value
-          : this.enableConnect,
+      playerWakelock: data.playerWakelock.present
+          ? data.playerWakelock.value
+          : this.playerWakelock,
     );
   }
 
@@ -1138,7 +1108,6 @@ class PreferencesTableData extends DataClass
           ..write('id: $id, ')
           ..write('audioQuality: $audioQuality, ')
           ..write('albumColorSync: $albumColorSync, ')
-          ..write('amoledDarkTheme: $amoledDarkTheme, ')
           ..write('checkUpdate: $checkUpdate, ')
           ..write('normalizeAudio: $normalizeAudio, ')
           ..write('showSystemTrayIcon: $showSystemTrayIcon, ')
@@ -1159,7 +1128,7 @@ class PreferencesTableData extends DataClass
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('playerWakelock: $playerWakelock')
           ..write(')'))
         .toString();
   }
@@ -1169,7 +1138,6 @@ class PreferencesTableData extends DataClass
         id,
         audioQuality,
         albumColorSync,
-        amoledDarkTheme,
         checkUpdate,
         normalizeAudio,
         showSystemTrayIcon,
@@ -1190,7 +1158,7 @@ class PreferencesTableData extends DataClass
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        playerWakelock
       ]);
   @override
   bool operator ==(Object other) =>
@@ -1199,7 +1167,6 @@ class PreferencesTableData extends DataClass
           other.id == this.id &&
           other.audioQuality == this.audioQuality &&
           other.albumColorSync == this.albumColorSync &&
-          other.amoledDarkTheme == this.amoledDarkTheme &&
           other.checkUpdate == this.checkUpdate &&
           other.normalizeAudio == this.normalizeAudio &&
           other.showSystemTrayIcon == this.showSystemTrayIcon &&
@@ -1220,14 +1187,13 @@ class PreferencesTableData extends DataClass
           other.downloadMusicCodec == this.downloadMusicCodec &&
           other.discordPresence == this.discordPresence &&
           other.endlessPlayback == this.endlessPlayback &&
-          other.enableConnect == this.enableConnect);
+          other.playerWakelock == this.playerWakelock);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<int> id;
   final Value<SourceQualities> audioQuality;
   final Value<bool> albumColorSync;
-  final Value<bool> amoledDarkTheme;
   final Value<bool> checkUpdate;
   final Value<bool> normalizeAudio;
   final Value<bool> showSystemTrayIcon;
@@ -1248,12 +1214,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<SourceCodecs> downloadMusicCodec;
   final Value<bool> discordPresence;
   final Value<bool> endlessPlayback;
-  final Value<bool> enableConnect;
+  final Value<bool> playerWakelock;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.audioQuality = const Value.absent(),
     this.albumColorSync = const Value.absent(),
-    this.amoledDarkTheme = const Value.absent(),
     this.checkUpdate = const Value.absent(),
     this.normalizeAudio = const Value.absent(),
     this.showSystemTrayIcon = const Value.absent(),
@@ -1274,13 +1239,12 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadMusicCodec = const Value.absent(),
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
-    this.enableConnect = const Value.absent(),
+    this.playerWakelock = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
     this.audioQuality = const Value.absent(),
     this.albumColorSync = const Value.absent(),
-    this.amoledDarkTheme = const Value.absent(),
     this.checkUpdate = const Value.absent(),
     this.normalizeAudio = const Value.absent(),
     this.showSystemTrayIcon = const Value.absent(),
@@ -1301,13 +1265,12 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadMusicCodec = const Value.absent(),
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
-    this.enableConnect = const Value.absent(),
+    this.playerWakelock = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
     Expression<String>? audioQuality,
     Expression<bool>? albumColorSync,
-    Expression<bool>? amoledDarkTheme,
     Expression<bool>? checkUpdate,
     Expression<bool>? normalizeAudio,
     Expression<bool>? showSystemTrayIcon,
@@ -1328,13 +1291,12 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<String>? downloadMusicCodec,
     Expression<bool>? discordPresence,
     Expression<bool>? endlessPlayback,
-    Expression<bool>? enableConnect,
+    Expression<bool>? playerWakelock,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (audioQuality != null) 'audio_quality': audioQuality,
       if (albumColorSync != null) 'album_color_sync': albumColorSync,
-      if (amoledDarkTheme != null) 'amoled_dark_theme': amoledDarkTheme,
       if (checkUpdate != null) 'check_update': checkUpdate,
       if (normalizeAudio != null) 'normalize_audio': normalizeAudio,
       if (showSystemTrayIcon != null)
@@ -1358,7 +1320,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
         'download_music_codec': downloadMusicCodec,
       if (discordPresence != null) 'discord_presence': discordPresence,
       if (endlessPlayback != null) 'endless_playback': endlessPlayback,
-      if (enableConnect != null) 'enable_connect': enableConnect,
+      if (playerWakelock != null) 'player_wakelock': playerWakelock,
     });
   }
 
@@ -1366,7 +1328,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       {Value<int>? id,
       Value<SourceQualities>? audioQuality,
       Value<bool>? albumColorSync,
-      Value<bool>? amoledDarkTheme,
       Value<bool>? checkUpdate,
       Value<bool>? normalizeAudio,
       Value<bool>? showSystemTrayIcon,
@@ -1387,12 +1348,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<SourceCodecs>? downloadMusicCodec,
       Value<bool>? discordPresence,
       Value<bool>? endlessPlayback,
-      Value<bool>? enableConnect}) {
+      Value<bool>? playerWakelock}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       audioQuality: audioQuality ?? this.audioQuality,
       albumColorSync: albumColorSync ?? this.albumColorSync,
-      amoledDarkTheme: amoledDarkTheme ?? this.amoledDarkTheme,
       checkUpdate: checkUpdate ?? this.checkUpdate,
       normalizeAudio: normalizeAudio ?? this.normalizeAudio,
       showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
@@ -1413,7 +1373,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
       discordPresence: discordPresence ?? this.discordPresence,
       endlessPlayback: endlessPlayback ?? this.endlessPlayback,
-      enableConnect: enableConnect ?? this.enableConnect,
+      playerWakelock: playerWakelock ?? this.playerWakelock,
     );
   }
 
@@ -1430,9 +1390,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     }
     if (albumColorSync.present) {
       map['album_color_sync'] = Variable<bool>(albumColorSync.value);
-    }
-    if (amoledDarkTheme.present) {
-      map['amoled_dark_theme'] = Variable<bool>(amoledDarkTheme.value);
     }
     if (checkUpdate.present) {
       map['check_update'] = Variable<bool>(checkUpdate.value);
@@ -1511,8 +1468,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (endlessPlayback.present) {
       map['endless_playback'] = Variable<bool>(endlessPlayback.value);
     }
-    if (enableConnect.present) {
-      map['enable_connect'] = Variable<bool>(enableConnect.value);
+    if (playerWakelock.present) {
+      map['player_wakelock'] = Variable<bool>(playerWakelock.value);
     }
     return map;
   }
@@ -1523,7 +1480,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('id: $id, ')
           ..write('audioQuality: $audioQuality, ')
           ..write('albumColorSync: $albumColorSync, ')
-          ..write('amoledDarkTheme: $amoledDarkTheme, ')
           ..write('checkUpdate: $checkUpdate, ')
           ..write('normalizeAudio: $normalizeAudio, ')
           ..write('showSystemTrayIcon: $showSystemTrayIcon, ')
@@ -1544,7 +1500,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('playerWakelock: $playerWakelock')
           ..write(')'))
         .toString();
   }
@@ -3980,7 +3936,6 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<int> id,
   Value<SourceQualities> audioQuality,
   Value<bool> albumColorSync,
-  Value<bool> amoledDarkTheme,
   Value<bool> checkUpdate,
   Value<bool> normalizeAudio,
   Value<bool> showSystemTrayIcon,
@@ -4001,14 +3956,13 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<SourceCodecs> downloadMusicCodec,
   Value<bool> discordPresence,
   Value<bool> endlessPlayback,
-  Value<bool> enableConnect,
+  Value<bool> playerWakelock,
 });
 typedef $$PreferencesTableTableUpdateCompanionBuilder
     = PreferencesTableCompanion Function({
   Value<int> id,
   Value<SourceQualities> audioQuality,
   Value<bool> albumColorSync,
-  Value<bool> amoledDarkTheme,
   Value<bool> checkUpdate,
   Value<bool> normalizeAudio,
   Value<bool> showSystemTrayIcon,
@@ -4029,7 +3983,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<SourceCodecs> downloadMusicCodec,
   Value<bool> discordPresence,
   Value<bool> endlessPlayback,
-  Value<bool> enableConnect,
+  Value<bool> playerWakelock,
 });
 
 class $$PreferencesTableTableTableManager extends RootTableManager<
@@ -4053,7 +4007,6 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<SourceQualities> audioQuality = const Value.absent(),
             Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
             Value<bool> checkUpdate = const Value.absent(),
             Value<bool> normalizeAudio = const Value.absent(),
             Value<bool> showSystemTrayIcon = const Value.absent(),
@@ -4074,13 +4027,12 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
             Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
+            Value<bool> playerWakelock = const Value.absent(),
           }) =>
               PreferencesTableCompanion(
             id: id,
             audioQuality: audioQuality,
             albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
             checkUpdate: checkUpdate,
             normalizeAudio: normalizeAudio,
             showSystemTrayIcon: showSystemTrayIcon,
@@ -4101,13 +4053,12 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadMusicCodec: downloadMusicCodec,
             discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
+            playerWakelock: playerWakelock,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<SourceQualities> audioQuality = const Value.absent(),
             Value<bool> albumColorSync = const Value.absent(),
-            Value<bool> amoledDarkTheme = const Value.absent(),
             Value<bool> checkUpdate = const Value.absent(),
             Value<bool> normalizeAudio = const Value.absent(),
             Value<bool> showSystemTrayIcon = const Value.absent(),
@@ -4128,13 +4079,12 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
             Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
-            Value<bool> enableConnect = const Value.absent(),
+            Value<bool> playerWakelock = const Value.absent(),
           }) =>
               PreferencesTableCompanion.insert(
             id: id,
             audioQuality: audioQuality,
             albumColorSync: albumColorSync,
-            amoledDarkTheme: amoledDarkTheme,
             checkUpdate: checkUpdate,
             normalizeAudio: normalizeAudio,
             showSystemTrayIcon: showSystemTrayIcon,
@@ -4155,7 +4105,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadMusicCodec: downloadMusicCodec,
             discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
-            enableConnect: enableConnect,
+            playerWakelock: playerWakelock,
           ),
         ));
 }
@@ -4177,11 +4127,6 @@ class $$PreferencesTableTableFilterComposer
 
   ColumnFilters<bool> get albumColorSync => $state.composableBuilder(
       column: $state.table.albumColorSync,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get amoledDarkTheme => $state.composableBuilder(
-      column: $state.table.amoledDarkTheme,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -4307,8 +4252,8 @@ class $$PreferencesTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<bool> get enableConnect => $state.composableBuilder(
-      column: $state.table.enableConnect,
+  ColumnFilters<bool> get playerWakelock => $state.composableBuilder(
+      column: $state.table.playerWakelock,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 }
@@ -4328,11 +4273,6 @@ class $$PreferencesTableTableOrderingComposer
 
   ColumnOrderings<bool> get albumColorSync => $state.composableBuilder(
       column: $state.table.albumColorSync,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get amoledDarkTheme => $state.composableBuilder(
-      column: $state.table.amoledDarkTheme,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -4436,8 +4376,8 @@ class $$PreferencesTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<bool> get enableConnect => $state.composableBuilder(
-      column: $state.table.enableConnect,
+  ColumnOrderings<bool> get playerWakelock => $state.composableBuilder(
+      column: $state.table.playerWakelock,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }

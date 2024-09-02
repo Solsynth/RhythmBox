@@ -9,7 +9,6 @@ import 'package:rhythm_box/services/color.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/sourced_track/enums.dart';
 import 'package:spotify/spotify.dart';
-import 'package:window_manager/window_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,14 +47,6 @@ class UserPreferencesProvider extends GetxController {
         .watchSingle()
         .listen((event) async {
       state.value = event;
-
-      if (PlatformInfo.isDesktop) {
-        await windowManager.setTitleBarStyle(
-          state.value.systemTitleBar
-              ? TitleBarStyle.normal
-              : TitleBarStyle.hidden,
-        );
-      }
 
       await audioPlayer.setAudioNormalization(state.value.normalizeAudio);
     });
@@ -171,10 +162,6 @@ class UserPreferencesProvider extends GetxController {
     setData(PreferencesTableCompanion(discordPresence: Value(discordPresence)));
   }
 
-  void setAmoledDarkTheme(bool isAmoled) {
-    setData(PreferencesTableCompanion(amoledDarkTheme: Value(isAmoled)));
-  }
-
   void setNormalizeAudio(bool normalize) {
     setData(PreferencesTableCompanion(normalizeAudio: Value(normalize)));
     audioPlayer.setAudioNormalization(normalize);
@@ -184,7 +171,7 @@ class UserPreferencesProvider extends GetxController {
     setData(PreferencesTableCompanion(endlessPlayback: Value(endless)));
   }
 
-  void setEnableConnect(bool enable) {
-    setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  void setPlayerWakelock(bool wakelock) {
+    setData(PreferencesTableCompanion(playerWakelock: Value(wakelock)));
   }
 }

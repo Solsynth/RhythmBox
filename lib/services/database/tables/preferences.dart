@@ -45,8 +45,6 @@ class PreferencesTable extends Table {
       .withDefault(Constant(SourceQualities.high.name))();
   BoolColumn get albumColorSync =>
       boolean().withDefault(const Constant(true))();
-  BoolColumn get amoledDarkTheme =>
-      boolean().withDefault(const Constant(false))();
   BoolColumn get checkUpdate => boolean().withDefault(const Constant(true))();
   BoolColumn get normalizeAudio =>
       boolean().withDefault(const Constant(false))();
@@ -88,8 +86,8 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get endlessPlayback =>
       boolean().withDefault(const Constant(true))();
-  BoolColumn get enableConnect =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get playerWakelock =>
+      boolean().withDefault(const Constant(true))();
 
   // Default values as PreferencesTableData
   static PreferencesTableData defaults() {
@@ -97,7 +95,6 @@ class PreferencesTable extends Table {
       id: 0,
       audioQuality: SourceQualities.high,
       albumColorSync: true,
-      amoledDarkTheme: false,
       checkUpdate: true,
       normalizeAudio: false,
       showSystemTrayIcon: false,
@@ -118,7 +115,7 @@ class PreferencesTable extends Table {
       downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
       endlessPlayback: true,
-      enableConnect: false,
+      playerWakelock: true,
     );
   }
 }

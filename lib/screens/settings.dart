@@ -123,6 +123,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onChanged: _preferences.setNormalizeAudio,
                 ),
               ),
+              Obx(
+                () => SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  secondary: const Icon(Icons.screen_lock_portrait),
+                  title: const Text('Player Wakelock'),
+                  subtitle: const Text(
+                      'Keep your screen doesn\'t lock in player screen'),
+                  value: _preferences.state.value.playerWakelock,
+                  onChanged: _preferences.setPlayerWakelock,
+                ),
+              ),
               const Divider(thickness: 0.3, height: 1),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),

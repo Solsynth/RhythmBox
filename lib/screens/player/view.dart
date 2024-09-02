@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/auth.dart';
+import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/screens/player/queue.dart';
 import 'package:rhythm_box/screens/player/siblings.dart';
 import 'package:rhythm_box/services/artist.dart';
@@ -20,6 +21,7 @@ import 'package:rhythm_box/services/audio_services/image.dart';
 import 'package:rhythm_box/widgets/lyrics/synced_lyrics.dart';
 import 'package:rhythm_box/widgets/tracks/heart_button.dart';
 import 'package:rhythm_box/widgets/tracks/querying_track_info.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -32,6 +34,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
   late final AudioPlayerProvider _playback = Get.find();
   late final QueryingTrackInfoProvider _query = Get.find();
   late final AuthenticationProvider _auth = Get.find();
+
+  late final UserPreferencesProvider _preferences = Get.find();
 
   String? get _albumArt =>
       (_playback.state.value.activeTrack?.album?.images).asUrlString(
@@ -55,6 +59,20 @@ class _PlayerScreenState extends State<PlayerScreen> {
   double? _draggingValue;
 
   static const double maxAlbumSize = 360;
+
+  @override
+  void activate() {
+    super.activate();
+    if (_preferences.state.value.playerWakelock) {
+      WakelockPlus.enable();
+    }
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    WakelockPlus.disable();
+  }
 
   @override
   Widget build(BuildContext context) {
