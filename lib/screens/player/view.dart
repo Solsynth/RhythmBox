@@ -12,6 +12,7 @@ import 'package:rhythm_box/providers/audio_player.dart';
 import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/screens/player/queue.dart';
 import 'package:rhythm_box/screens/player/siblings.dart';
+import 'package:rhythm_box/screens/player/source_details.dart';
 import 'package:rhythm_box/services/artist.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/duration.dart';
@@ -308,12 +309,18 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         ],
                       ),
                       const Gap(20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextButton.icon(
+                      SizedBox(
+                        height: 40,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            TextButton.icon(
                               icon: const Icon(Icons.queue_music),
-                              label: const Text('Queue'),
+                              label: const Text(
+                                'Queue',
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ),
                               onPressed: () {
                                 showModalBottomSheet(
                                   useRootNavigator: true,
@@ -328,24 +335,28 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 });
                               },
                             ),
-                          ),
-                          if (!isLargeScreen) const Gap(4),
-                          if (!isLargeScreen)
-                            Expanded(
-                              child: TextButton.icon(
+                            if (!isLargeScreen) const Gap(4),
+                            if (!isLargeScreen)
+                              TextButton.icon(
                                 icon: const Icon(Icons.lyrics),
-                                label: const Text('Lyrics'),
+                                label: const Text(
+                                  'Lyrics',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                ),
                                 onPressed: () {
                                   GoRouter.of(context)
                                       .pushNamed('playerLyrics');
                                 },
                               ),
-                            ),
-                          const Gap(4),
-                          Expanded(
-                            child: TextButton.icon(
+                            const Gap(4),
+                            TextButton.icon(
                               icon: const Icon(Icons.merge),
-                              label: const Text('Sources'),
+                              label: const Text(
+                                'Sources',
+                                maxLines: 1,
+                                overflow: TextOverflow.fade,
+                              ),
                               onPressed: () {
                                 showModalBottomSheet(
                                   useRootNavigator: true,
@@ -360,8 +371,25 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                 });
                               },
                             ),
-                          ),
-                        ],
+                            const Gap(4),
+                            TextButton.icon(
+                              label: const Text('Info'),
+                              icon: const Icon(Icons.info),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  useRootNavigator: true,
+                                  context: context,
+                                  builder: (context) =>
+                                      const SourceDetailsPopup(),
+                                ).then((_) {
+                                  if (mounted) {
+                                    setState(() {});
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
