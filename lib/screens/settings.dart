@@ -34,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           centerTitle: MediaQuery.of(context).size.width >= 720,
         ),
         body: CenteredContainer(
-          child: Column(
+          child: ListView(
             children: [
               Obx(() {
                 if (_authenticate.auth.value == null) {
