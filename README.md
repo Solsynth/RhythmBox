@@ -9,6 +9,9 @@ Their original app is good enough. But I just want to redesign the user interfac
 
 - [x] Playing music
     - [x] Add netease music as source
+    - [ ] Add bilibili as source
+    - [ ] Add kuwo music as source
+    - [ ] Add kugo music as source
 - [x] Re-design user interface
     - [x] Simplified UI and UX
     - [x] Support for large screen device

@@ -12,6 +12,7 @@ import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/sourced_track/models/source_info.dart';
 import 'package:rhythm_box/services/sourced_track/models/video_info.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
+import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/sourced_track/sources/piped.dart';
 import 'package:rhythm_box/services/sourced_track/sources/youtube.dart';
 import 'package:rhythm_box/services/artist.dart';
@@ -42,6 +43,7 @@ class _SiblingTracksState extends State<SiblingTracks> {
   final sourceInfoToLabelMap = {
     YoutubeSourceInfo: 'YouTube',
     PipedSourceInfo: 'Piped',
+    NeteaseSourceInfo: 'Netease',
   };
 
   List<StreamSubscription>? _subscriptions;
@@ -97,6 +99,25 @@ class _SiblingTracksState extends State<SiblingTracks> {
           return siblingType.info;
         }),
       );
+      final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
+      _siblings = List.from(
+        searchResults
+          ..removeWhere((element) => element.id == activeSourceInfo.id)
+          ..insert(
+            0,
+            activeSourceInfo,
+          ),
+        growable: true,
+      );
+    } else if (preferences.audioSource == AudioSource.netease) {
+      final client = NeteaseSourcedTrack.getClient();
+      final resp = await client
+          .get('/search?keywords=${Uri.encodeComponent(searchTerm)}');
+      final searchResults = resp.body['result']['songs']
+          .map(NeteaseSourcedTrack.toSiblingType)
+          .map((x) => x.info)
+          .toList();
+
       final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
       _siblings = List.from(
         searchResults

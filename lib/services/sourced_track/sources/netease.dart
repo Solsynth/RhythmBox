@@ -32,14 +32,14 @@ class NeteaseSourcedTrack extends SourcedTrack {
     required super.track,
   });
 
-  static String _getBaseUrl() {
+  static String getBaseUrl() {
     final preferences = Get.find<UserPreferencesProvider>().state.value;
     return preferences.neteaseApiInstance;
   }
 
-  static GetConnect _getClient() {
+  static GetConnect getClient() {
     final client = GetConnect();
-    client.baseUrl = _getBaseUrl();
+    client.baseUrl = getBaseUrl();
     client.timeout = const Duration(seconds: 30);
     return client;
   }
@@ -91,7 +91,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
       );
     }
 
-    final client = _getClient();
+    final client = getClient();
     final resp = await client.get('/song/detail?ids=${cachedSource.sourceId}');
     final item = resp.body['songs'][0];
 
@@ -113,7 +113,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
   }
 
   static SourceMap toSourceMap(dynamic manifest) {
-    final baseUrl = _getBaseUrl();
+    final baseUrl = getBaseUrl();
 
     // Due to netease may provide m4a, mp3 and others, we cannot decide this so mock this data.
     return SourceMap(
@@ -135,7 +135,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
   }) async {
     final query = SourcedTrack.getSearchTerm(track);
 
-    final client = _getClient();
+    final client = getClient();
     final resp =
         await client.get('/search?keywords=${Uri.encodeComponent(query)}');
     final results = resp.body['result']['songs'];
@@ -181,7 +181,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
-    final client = _getClient();
+    final client = getClient();
     final resp = await client.get('/song/detail?ids=${newSourceInfo.id}');
     final item = resp.body['songs'][0];
 
