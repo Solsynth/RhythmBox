@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/screens/auth/login.dart';
+import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/widgets/sized_container.dart';
 
@@ -100,6 +102,53 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 );
               }),
+              const Divider(thickness: 0.3, height: 1),
+              Obx(
+                () => ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  leading: const Icon(Icons.audio_file),
+                  title: const Text('Audio Source'),
+                  subtitle:
+                      const Text('Choose who to provide the songs you played.'),
+                  trailing: DropdownButtonHideUnderline(
+                    child: DropdownButton2<AudioSource>(
+                      isExpanded: true,
+                      hint: Text(
+                        'Select Item',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
+                        ),
+                      ),
+                      items: AudioSource.values
+                          .map((AudioSource item) =>
+                              DropdownMenuItem<AudioSource>(
+                                value: item,
+                                child: Text(
+                                  item.label,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                      value: _preferences.state.value.audioSource,
+                      onChanged: (AudioSource? value) {
+                        _preferences
+                            .setAudioSource(value ?? AudioSource.youtube);
+                      },
+                      buttonStyleData: const ButtonStyleData(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        height: 40,
+                        width: 140,
+                      ),
+                      menuItemStyleData: const MenuItemStyleData(
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               const Divider(thickness: 0.3, height: 1),
               Obx(
                 () => SwitchListTile(

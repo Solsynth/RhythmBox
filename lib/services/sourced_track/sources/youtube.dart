@@ -85,7 +85,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
           cachedSource.sourceId,
         )
         .timeout(
-          const Duration(seconds: 5),
+          const Duration(seconds: 30),
           onTimeout: () => throw ClientException('Timeout'),
         );
     return YoutubeSourcedTrack(
@@ -140,7 +140,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     if (index == 0) {
       final manifest =
           await youtubeClient.videos.streamsClient.getManifest(item.id).timeout(
-                const Duration(seconds: 5),
+                const Duration(seconds: 30),
                 onTimeout: () => throw ClientException('Timeout'),
               );
       sourceMap = toSourceMap(manifest);
@@ -285,7 +285,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final manifest = await youtubeClient.videos.streamsClient
         .getManifest(newSourceInfo.id)
         .timeout(
-          const Duration(seconds: 5),
+          const Duration(seconds: 30),
           onTimeout: () => throw ClientException('Timeout'),
         );
 

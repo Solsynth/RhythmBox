@@ -71,14 +71,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
       return;
     }
 
-    final customEndpoint =
-        CustomSpotifyEndpoints(_auth.auth.value?.accessToken.value ?? '');
-    final forYouView = await customEndpoint.getView(
-      'made-for-x-hub',
-      market: market,
-      locale: Intl.canonicalizedLocale(locale.toString()),
-    );
-    _forYouView = forYouView['content']?['items'];
+    if (_auth.auth.value != null) {
+      final customEndpoint =
+          CustomSpotifyEndpoints(_auth.auth.value?.accessToken.value ?? '');
+      final forYouView = await customEndpoint.getView(
+        'made-for-x-hub',
+        market: market,
+        locale: Intl.canonicalizedLocale(locale.toString()),
+      );
+      _forYouView = forYouView['content']?['items'];
+    }
     if (mounted) {
       setState(() => _isLoading['forYou'] = false);
     } else {

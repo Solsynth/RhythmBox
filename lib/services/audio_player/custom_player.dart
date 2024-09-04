@@ -50,7 +50,8 @@ class CustomPlayer extends Player {
         }
       }),
       stream.error.listen((event) {
-        Get.find<ErrorNotifier>().logError('[Playback] Error: $event');
+        Get.find<ErrorNotifier>()
+            .logError('[Playback][CustomLayer] Error: $event');
       }),
     ];
     PackageInfo.fromPlatform().then((packageInfo) {

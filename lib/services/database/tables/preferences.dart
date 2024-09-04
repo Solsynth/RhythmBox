@@ -13,7 +13,8 @@ enum CloseBehavior {
 
 enum AudioSource {
   youtube,
-  piped;
+  piped,
+  netease;
 
   String get label => name[0].toUpperCase() + name.substring(1);
 }
@@ -74,6 +75,8 @@ class PreferencesTable extends Table {
       text().withDefault(const Constant('')).map(const StringListConverter())();
   TextColumn get pipedInstance =>
       text().withDefault(const Constant('https://pipedapi.kavin.rocks'))();
+  TextColumn get neteaseApiInstance => text().withDefault(
+      const Constant('https://rhythmbox-netease-music-api.vercel.app'))();
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSource =>
@@ -82,8 +85,6 @@ class PreferencesTable extends Table {
       textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.weba.name))();
   TextColumn get downloadMusicCodec =>
       textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.m4a.name))();
-  BoolColumn get discordPresence =>
-      boolean().withDefault(const Constant(true))();
   BoolColumn get endlessPlayback =>
       boolean().withDefault(const Constant(true))();
   BoolColumn get playerWakelock =>
@@ -108,12 +109,12 @@ class PreferencesTable extends Table {
       searchMode: SearchMode.youtube,
       downloadLocation: '',
       localLibraryLocation: [],
+      neteaseApiInstance: 'https://rhythmbox-netease-music-api.vercel.app',
       pipedInstance: 'https://pipedapi.kavin.rocks',
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
       streamMusicCodec: SourceCodecs.weba,
       downloadMusicCodec: SourceCodecs.m4a,
-      discordPresence: true,
       endlessPlayback: true,
       playerWakelock: true,
     );

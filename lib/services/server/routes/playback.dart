@@ -6,6 +6,7 @@ import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:shelf/shelf.dart';
 
 class ServerPlaybackRoutesProvider {
@@ -24,14 +25,25 @@ class ServerPlaybackRoutesProvider {
 
       activeSourcedTrack.updateTrack(sourcedTrack);
 
+      var url = sourcedTrack!.url;
+
+      if (sourcedTrack is NeteaseSourcedTrack) {
+        // Special processing for netease to get real assets url
+        final resp = await GetConnect(timeout: const Duration(seconds: 30)).get(
+          '${sourcedTrack.url}&realIP=${await NeteaseSourcedTrack.lookupRealIp()}',
+        );
+        final realUrl = resp.body['data'][0]['url'];
+        url = realUrl;
+      }
+
       final res = await Dio().get(
-        sourcedTrack!.url,
+        url,
         options: Options(
           headers: {
             ...request.headers,
             'User-Agent':
                 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-            'host': Uri.parse(sourcedTrack.url).host,
+            'host': Uri.parse(url).host,
             'Cache-Control': 'max-age=0',
             'Connection': 'keep-alive',
           },

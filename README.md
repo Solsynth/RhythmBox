@@ -8,10 +8,10 @@ Their original app is good enough. But I just want to redesign the user interfac
 ## Roadmap
 
 - [x] Playing music
-    - [ ] Add netease music as source
+    - [x] Add netease music as source
 - [x] Re-design user interface
     - [x] Simplified UI and UX
-    - [ ] Support for large screen device
+    - [x] Support for large screen device
 
 ## License
 

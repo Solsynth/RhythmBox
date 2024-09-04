@@ -86,7 +86,7 @@ abstract class AudioPlayerInterface {
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {
-      Get.find<ErrorNotifier>().logError('[Playback] Error: $event');
+      Get.find<ErrorNotifier>().logError('[Playback][Media] Error: $event');
     });
   }
 

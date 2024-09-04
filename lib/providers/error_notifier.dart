@@ -7,7 +7,7 @@ class ErrorNotifier extends GetxController {
   Rx<MaterialBanner?> showing = Rx(null);
 
   void logError(String msg, {StackTrace? trace}) {
-    log('$msg${trace != null ? '\nTrace:\ntrace' : ''}');
+    log('$msg${trace != null ? '\nTrace:\n$trace' : ''}');
     showError(msg);
   }
 

@@ -141,6 +141,10 @@ class UserPreferencesProvider extends GetxController {
     setData(PreferencesTableCompanion(locale: Value(locale)));
   }
 
+  void setNeteaseApiInstance(String instance) {
+    setData(PreferencesTableCompanion(neteaseApiInstance: Value(instance)));
+  }
+
   void setPipedInstance(String instance) {
     setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
   }
@@ -159,10 +163,6 @@ class UserPreferencesProvider extends GetxController {
 
   void setSystemTitleBar(bool isSystemTitleBar) {
     setData(PreferencesTableCompanion(systemTitleBar: Value(isSystemTitleBar)));
-  }
-
-  void setDiscordPresence(bool discordPresence) {
-    setData(PreferencesTableCompanion(discordPresence: Value(discordPresence)));
   }
 
   void setNormalizeAudio(bool normalize) {

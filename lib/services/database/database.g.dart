@@ -453,6 +453,15 @@ class $PreferencesTableTable extends PreferencesTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant('https://pipedapi.kavin.rocks'));
+  static const VerificationMeta _neteaseApiInstanceMeta =
+      const VerificationMeta('neteaseApiInstance');
+  @override
+  late final GeneratedColumn<String> neteaseApiInstance =
+      GeneratedColumn<String>('netease_api_instance', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue:
+              const Constant('https://rhythmbox-netease-music-api.vercel.app'));
   static const VerificationMeta _themeModeMeta =
       const VerificationMeta('themeMode');
   @override
@@ -494,16 +503,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(SourceCodecs.m4a.name))
           .withConverter<SourceCodecs>(
               $PreferencesTableTable.$converterdownloadMusicCodec);
-  static const VerificationMeta _discordPresenceMeta =
-      const VerificationMeta('discordPresence');
-  @override
-  late final GeneratedColumn<bool> discordPresence = GeneratedColumn<bool>(
-      'discord_presence', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("discord_presence" IN (0, 1))'),
-      defaultValue: const Constant(true));
   static const VerificationMeta _endlessPlaybackMeta =
       const VerificationMeta('endlessPlayback');
   @override
@@ -543,11 +542,11 @@ class $PreferencesTableTable extends PreferencesTable
         downloadLocation,
         localLibraryLocation,
         pipedInstance,
+        neteaseApiInstance,
         themeMode,
         audioSource,
         streamMusicCodec,
         downloadMusicCodec,
-        discordPresence,
         endlessPlayback,
         playerWakelock
       ];
@@ -622,16 +621,16 @@ class $PreferencesTableTable extends PreferencesTable
           pipedInstance.isAcceptableOrUnknown(
               data['piped_instance']!, _pipedInstanceMeta));
     }
+    if (data.containsKey('netease_api_instance')) {
+      context.handle(
+          _neteaseApiInstanceMeta,
+          neteaseApiInstance.isAcceptableOrUnknown(
+              data['netease_api_instance']!, _neteaseApiInstanceMeta));
+    }
     context.handle(_themeModeMeta, const VerificationResult.success());
     context.handle(_audioSourceMeta, const VerificationResult.success());
     context.handle(_streamMusicCodecMeta, const VerificationResult.success());
     context.handle(_downloadMusicCodecMeta, const VerificationResult.success());
-    if (data.containsKey('discord_presence')) {
-      context.handle(
-          _discordPresenceMeta,
-          discordPresence.isAcceptableOrUnknown(
-              data['discord_presence']!, _discordPresenceMeta));
-    }
     if (data.containsKey('endless_playback')) {
       context.handle(
           _endlessPlaybackMeta,
@@ -696,6 +695,8 @@ class $PreferencesTableTable extends PreferencesTable
               data['${effectivePrefix}local_library_location'])!),
       pipedInstance: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}piped_instance'])!,
+      neteaseApiInstance: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}netease_api_instance'])!,
       themeMode: $PreferencesTableTable.$converterthemeMode.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}theme_mode'])!),
@@ -708,8 +709,6 @@ class $PreferencesTableTable extends PreferencesTable
       downloadMusicCodec: $PreferencesTableTable.$converterdownloadMusicCodec
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}download_music_codec'])!),
-      discordPresence: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}discord_presence'])!,
       endlessPlayback: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
       playerWakelock: attachedDatabase.typeMapping
@@ -771,11 +770,11 @@ class PreferencesTableData extends DataClass
   final String downloadLocation;
   final List<String> localLibraryLocation;
   final String pipedInstance;
+  final String neteaseApiInstance;
   final ThemeMode themeMode;
   final AudioSource audioSource;
   final SourceCodecs streamMusicCodec;
   final SourceCodecs downloadMusicCodec;
-  final bool discordPresence;
   final bool endlessPlayback;
   final bool playerWakelock;
   const PreferencesTableData(
@@ -796,11 +795,11 @@ class PreferencesTableData extends DataClass
       required this.downloadLocation,
       required this.localLibraryLocation,
       required this.pipedInstance,
+      required this.neteaseApiInstance,
       required this.themeMode,
       required this.audioSource,
       required this.streamMusicCodec,
       required this.downloadMusicCodec,
-      required this.discordPresence,
       required this.endlessPlayback,
       required this.playerWakelock});
   @override
@@ -849,6 +848,7 @@ class PreferencesTableData extends DataClass
           .toSql(localLibraryLocation));
     }
     map['piped_instance'] = Variable<String>(pipedInstance);
+    map['netease_api_instance'] = Variable<String>(neteaseApiInstance);
     {
       map['theme_mode'] = Variable<String>(
           $PreferencesTableTable.$converterthemeMode.toSql(themeMode));
@@ -867,7 +867,6 @@ class PreferencesTableData extends DataClass
           .$converterdownloadMusicCodec
           .toSql(downloadMusicCodec));
     }
-    map['discord_presence'] = Variable<bool>(discordPresence);
     map['endless_playback'] = Variable<bool>(endlessPlayback);
     map['player_wakelock'] = Variable<bool>(playerWakelock);
     return map;
@@ -892,11 +891,11 @@ class PreferencesTableData extends DataClass
       downloadLocation: Value(downloadLocation),
       localLibraryLocation: Value(localLibraryLocation),
       pipedInstance: Value(pipedInstance),
+      neteaseApiInstance: Value(neteaseApiInstance),
       themeMode: Value(themeMode),
       audioSource: Value(audioSource),
       streamMusicCodec: Value(streamMusicCodec),
       downloadMusicCodec: Value(downloadMusicCodec),
-      discordPresence: Value(discordPresence),
       endlessPlayback: Value(endlessPlayback),
       playerWakelock: Value(playerWakelock),
     );
@@ -930,6 +929,8 @@ class PreferencesTableData extends DataClass
       localLibraryLocation:
           serializer.fromJson<List<String>>(json['localLibraryLocation']),
       pipedInstance: serializer.fromJson<String>(json['pipedInstance']),
+      neteaseApiInstance:
+          serializer.fromJson<String>(json['neteaseApiInstance']),
       themeMode: $PreferencesTableTable.$converterthemeMode
           .fromJson(serializer.fromJson<String>(json['themeMode'])),
       audioSource: $PreferencesTableTable.$converteraudioSource
@@ -938,7 +939,6 @@ class PreferencesTableData extends DataClass
           .fromJson(serializer.fromJson<String>(json['streamMusicCodec'])),
       downloadMusicCodec: $PreferencesTableTable.$converterdownloadMusicCodec
           .fromJson(serializer.fromJson<String>(json['downloadMusicCodec'])),
-      discordPresence: serializer.fromJson<bool>(json['discordPresence']),
       endlessPlayback: serializer.fromJson<bool>(json['endlessPlayback']),
       playerWakelock: serializer.fromJson<bool>(json['playerWakelock']),
     );
@@ -970,6 +970,7 @@ class PreferencesTableData extends DataClass
       'localLibraryLocation':
           serializer.toJson<List<String>>(localLibraryLocation),
       'pipedInstance': serializer.toJson<String>(pipedInstance),
+      'neteaseApiInstance': serializer.toJson<String>(neteaseApiInstance),
       'themeMode': serializer.toJson<String>(
           $PreferencesTableTable.$converterthemeMode.toJson(themeMode)),
       'audioSource': serializer.toJson<String>(
@@ -980,7 +981,6 @@ class PreferencesTableData extends DataClass
       'downloadMusicCodec': serializer.toJson<String>($PreferencesTableTable
           .$converterdownloadMusicCodec
           .toJson(downloadMusicCodec)),
-      'discordPresence': serializer.toJson<bool>(discordPresence),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
       'playerWakelock': serializer.toJson<bool>(playerWakelock),
     };
@@ -1004,11 +1004,11 @@ class PreferencesTableData extends DataClass
           String? downloadLocation,
           List<String>? localLibraryLocation,
           String? pipedInstance,
+          String? neteaseApiInstance,
           ThemeMode? themeMode,
           AudioSource? audioSource,
           SourceCodecs? streamMusicCodec,
           SourceCodecs? downloadMusicCodec,
-          bool? discordPresence,
           bool? endlessPlayback,
           bool? playerWakelock}) =>
       PreferencesTableData(
@@ -1029,11 +1029,11 @@ class PreferencesTableData extends DataClass
         downloadLocation: downloadLocation ?? this.downloadLocation,
         localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
         pipedInstance: pipedInstance ?? this.pipedInstance,
+        neteaseApiInstance: neteaseApiInstance ?? this.neteaseApiInstance,
         themeMode: themeMode ?? this.themeMode,
         audioSource: audioSource ?? this.audioSource,
         streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
         downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
-        discordPresence: discordPresence ?? this.discordPresence,
         endlessPlayback: endlessPlayback ?? this.endlessPlayback,
         playerWakelock: playerWakelock ?? this.playerWakelock,
       );
@@ -1081,6 +1081,9 @@ class PreferencesTableData extends DataClass
       pipedInstance: data.pipedInstance.present
           ? data.pipedInstance.value
           : this.pipedInstance,
+      neteaseApiInstance: data.neteaseApiInstance.present
+          ? data.neteaseApiInstance.value
+          : this.neteaseApiInstance,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
       audioSource:
           data.audioSource.present ? data.audioSource.value : this.audioSource,
@@ -1090,9 +1093,6 @@ class PreferencesTableData extends DataClass
       downloadMusicCodec: data.downloadMusicCodec.present
           ? data.downloadMusicCodec.value
           : this.downloadMusicCodec,
-      discordPresence: data.discordPresence.present
-          ? data.discordPresence.value
-          : this.discordPresence,
       endlessPlayback: data.endlessPlayback.present
           ? data.endlessPlayback.value
           : this.endlessPlayback,
@@ -1122,11 +1122,11 @@ class PreferencesTableData extends DataClass
           ..write('downloadLocation: $downloadLocation, ')
           ..write('localLibraryLocation: $localLibraryLocation, ')
           ..write('pipedInstance: $pipedInstance, ')
+          ..write('neteaseApiInstance: $neteaseApiInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSource: $audioSource, ')
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
-          ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
           ..write('playerWakelock: $playerWakelock')
           ..write(')'))
@@ -1152,11 +1152,11 @@ class PreferencesTableData extends DataClass
         downloadLocation,
         localLibraryLocation,
         pipedInstance,
+        neteaseApiInstance,
         themeMode,
         audioSource,
         streamMusicCodec,
         downloadMusicCodec,
-        discordPresence,
         endlessPlayback,
         playerWakelock
       ]);
@@ -1181,11 +1181,11 @@ class PreferencesTableData extends DataClass
           other.downloadLocation == this.downloadLocation &&
           other.localLibraryLocation == this.localLibraryLocation &&
           other.pipedInstance == this.pipedInstance &&
+          other.neteaseApiInstance == this.neteaseApiInstance &&
           other.themeMode == this.themeMode &&
           other.audioSource == this.audioSource &&
           other.streamMusicCodec == this.streamMusicCodec &&
           other.downloadMusicCodec == this.downloadMusicCodec &&
-          other.discordPresence == this.discordPresence &&
           other.endlessPlayback == this.endlessPlayback &&
           other.playerWakelock == this.playerWakelock);
 }
@@ -1208,11 +1208,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<String> downloadLocation;
   final Value<List<String>> localLibraryLocation;
   final Value<String> pipedInstance;
+  final Value<String> neteaseApiInstance;
   final Value<ThemeMode> themeMode;
   final Value<AudioSource> audioSource;
   final Value<SourceCodecs> streamMusicCodec;
   final Value<SourceCodecs> downloadMusicCodec;
-  final Value<bool> discordPresence;
   final Value<bool> endlessPlayback;
   final Value<bool> playerWakelock;
   const PreferencesTableCompanion({
@@ -1233,11 +1233,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadLocation = const Value.absent(),
     this.localLibraryLocation = const Value.absent(),
     this.pipedInstance = const Value.absent(),
+    this.neteaseApiInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSource = const Value.absent(),
     this.streamMusicCodec = const Value.absent(),
     this.downloadMusicCodec = const Value.absent(),
-    this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.playerWakelock = const Value.absent(),
   });
@@ -1259,11 +1259,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadLocation = const Value.absent(),
     this.localLibraryLocation = const Value.absent(),
     this.pipedInstance = const Value.absent(),
+    this.neteaseApiInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSource = const Value.absent(),
     this.streamMusicCodec = const Value.absent(),
     this.downloadMusicCodec = const Value.absent(),
-    this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.playerWakelock = const Value.absent(),
   });
@@ -1285,11 +1285,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<String>? downloadLocation,
     Expression<String>? localLibraryLocation,
     Expression<String>? pipedInstance,
+    Expression<String>? neteaseApiInstance,
     Expression<String>? themeMode,
     Expression<String>? audioSource,
     Expression<String>? streamMusicCodec,
     Expression<String>? downloadMusicCodec,
-    Expression<bool>? discordPresence,
     Expression<bool>? endlessPlayback,
     Expression<bool>? playerWakelock,
   }) {
@@ -1313,12 +1313,13 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (localLibraryLocation != null)
         'local_library_location': localLibraryLocation,
       if (pipedInstance != null) 'piped_instance': pipedInstance,
+      if (neteaseApiInstance != null)
+        'netease_api_instance': neteaseApiInstance,
       if (themeMode != null) 'theme_mode': themeMode,
       if (audioSource != null) 'audio_source': audioSource,
       if (streamMusicCodec != null) 'stream_music_codec': streamMusicCodec,
       if (downloadMusicCodec != null)
         'download_music_codec': downloadMusicCodec,
-      if (discordPresence != null) 'discord_presence': discordPresence,
       if (endlessPlayback != null) 'endless_playback': endlessPlayback,
       if (playerWakelock != null) 'player_wakelock': playerWakelock,
     });
@@ -1342,11 +1343,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<String>? downloadLocation,
       Value<List<String>>? localLibraryLocation,
       Value<String>? pipedInstance,
+      Value<String>? neteaseApiInstance,
       Value<ThemeMode>? themeMode,
       Value<AudioSource>? audioSource,
       Value<SourceCodecs>? streamMusicCodec,
       Value<SourceCodecs>? downloadMusicCodec,
-      Value<bool>? discordPresence,
       Value<bool>? endlessPlayback,
       Value<bool>? playerWakelock}) {
     return PreferencesTableCompanion(
@@ -1367,11 +1368,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       downloadLocation: downloadLocation ?? this.downloadLocation,
       localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
       pipedInstance: pipedInstance ?? this.pipedInstance,
+      neteaseApiInstance: neteaseApiInstance ?? this.neteaseApiInstance,
       themeMode: themeMode ?? this.themeMode,
       audioSource: audioSource ?? this.audioSource,
       streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
       downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
-      discordPresence: discordPresence ?? this.discordPresence,
       endlessPlayback: endlessPlayback ?? this.endlessPlayback,
       playerWakelock: playerWakelock ?? this.playerWakelock,
     );
@@ -1443,6 +1444,9 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (pipedInstance.present) {
       map['piped_instance'] = Variable<String>(pipedInstance.value);
     }
+    if (neteaseApiInstance.present) {
+      map['netease_api_instance'] = Variable<String>(neteaseApiInstance.value);
+    }
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(
           $PreferencesTableTable.$converterthemeMode.toSql(themeMode.value));
@@ -1461,9 +1465,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       map['download_music_codec'] = Variable<String>($PreferencesTableTable
           .$converterdownloadMusicCodec
           .toSql(downloadMusicCodec.value));
-    }
-    if (discordPresence.present) {
-      map['discord_presence'] = Variable<bool>(discordPresence.value);
     }
     if (endlessPlayback.present) {
       map['endless_playback'] = Variable<bool>(endlessPlayback.value);
@@ -1494,11 +1495,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('downloadLocation: $downloadLocation, ')
           ..write('localLibraryLocation: $localLibraryLocation, ')
           ..write('pipedInstance: $pipedInstance, ')
+          ..write('neteaseApiInstance: $neteaseApiInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSource: $audioSource, ')
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
-          ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
           ..write('playerWakelock: $playerWakelock')
           ..write(')'))
@@ -3950,11 +3951,11 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<String> downloadLocation,
   Value<List<String>> localLibraryLocation,
   Value<String> pipedInstance,
+  Value<String> neteaseApiInstance,
   Value<ThemeMode> themeMode,
   Value<AudioSource> audioSource,
   Value<SourceCodecs> streamMusicCodec,
   Value<SourceCodecs> downloadMusicCodec,
-  Value<bool> discordPresence,
   Value<bool> endlessPlayback,
   Value<bool> playerWakelock,
 });
@@ -3977,11 +3978,11 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<String> downloadLocation,
   Value<List<String>> localLibraryLocation,
   Value<String> pipedInstance,
+  Value<String> neteaseApiInstance,
   Value<ThemeMode> themeMode,
   Value<AudioSource> audioSource,
   Value<SourceCodecs> streamMusicCodec,
   Value<SourceCodecs> downloadMusicCodec,
-  Value<bool> discordPresence,
   Value<bool> endlessPlayback,
   Value<bool> playerWakelock,
 });
@@ -4021,11 +4022,11 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<String> downloadLocation = const Value.absent(),
             Value<List<String>> localLibraryLocation = const Value.absent(),
             Value<String> pipedInstance = const Value.absent(),
+            Value<String> neteaseApiInstance = const Value.absent(),
             Value<ThemeMode> themeMode = const Value.absent(),
             Value<AudioSource> audioSource = const Value.absent(),
             Value<SourceCodecs> streamMusicCodec = const Value.absent(),
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> playerWakelock = const Value.absent(),
           }) =>
@@ -4047,11 +4048,11 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadLocation: downloadLocation,
             localLibraryLocation: localLibraryLocation,
             pipedInstance: pipedInstance,
+            neteaseApiInstance: neteaseApiInstance,
             themeMode: themeMode,
             audioSource: audioSource,
             streamMusicCodec: streamMusicCodec,
             downloadMusicCodec: downloadMusicCodec,
-            discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
             playerWakelock: playerWakelock,
           ),
@@ -4073,11 +4074,11 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<String> downloadLocation = const Value.absent(),
             Value<List<String>> localLibraryLocation = const Value.absent(),
             Value<String> pipedInstance = const Value.absent(),
+            Value<String> neteaseApiInstance = const Value.absent(),
             Value<ThemeMode> themeMode = const Value.absent(),
             Value<AudioSource> audioSource = const Value.absent(),
             Value<SourceCodecs> streamMusicCodec = const Value.absent(),
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
-            Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> playerWakelock = const Value.absent(),
           }) =>
@@ -4099,11 +4100,11 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadLocation: downloadLocation,
             localLibraryLocation: localLibraryLocation,
             pipedInstance: pipedInstance,
+            neteaseApiInstance: neteaseApiInstance,
             themeMode: themeMode,
             audioSource: audioSource,
             streamMusicCodec: streamMusicCodec,
             downloadMusicCodec: downloadMusicCodec,
-            discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
             playerWakelock: playerWakelock,
           ),
@@ -4214,6 +4215,11 @@ class $$PreferencesTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<String> get neteaseApiInstance => $state.composableBuilder(
+      column: $state.table.neteaseApiInstance,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnWithTypeConverterFilters<ThemeMode, ThemeMode, String> get themeMode =>
       $state.composableBuilder(
           column: $state.table.themeMode,
@@ -4241,11 +4247,6 @@ class $$PreferencesTableTableFilterComposer
           builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
               column,
               joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get discordPresence => $state.composableBuilder(
-      column: $state.table.discordPresence,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
 
   ColumnFilters<bool> get endlessPlayback => $state.composableBuilder(
       column: $state.table.endlessPlayback,
@@ -4346,6 +4347,11 @@ class $$PreferencesTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<String> get neteaseApiInstance => $state.composableBuilder(
+      column: $state.table.neteaseApiInstance,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<String> get themeMode => $state.composableBuilder(
       column: $state.table.themeMode,
       builder: (column, joinBuilders) =>
@@ -4363,11 +4369,6 @@ class $$PreferencesTableTableOrderingComposer
 
   ColumnOrderings<String> get downloadMusicCodec => $state.composableBuilder(
       column: $state.table.downloadMusicCodec,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get discordPresence => $state.composableBuilder(
-      column: $state.table.discordPresence,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

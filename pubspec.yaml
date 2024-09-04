@@ -101,6 +101,7 @@ dependencies:
   timezone: ^0.9.4
   url_launcher: ^6.3.0
   wakelock_plus: ^1.2.8
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
