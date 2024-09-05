@@ -75,7 +75,12 @@ class NeteaseSourcedTrack extends SourcedTrack {
         throw TrackNotFoundError(track);
       }
 
-      await db.database.into(db.database.sourceMatchTable).insert(
+      final client = getClient();
+      final checkResp =
+          await client.get('/check/music?id=${siblings.first.info.id}');
+      if (checkResp.body['success'] != true) throw TrackNotFoundError(track);
+
+      await await db.database.into(db.database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
               trackId: track.id!,
               sourceId: siblings.first.info.id,
