@@ -47,7 +47,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
     client.baseUrl = getBaseUrl();
     client.httpClient.addRequestModifier((Request request) async {
       final AuthenticationProvider auth = Get.find();
-      if (auth.auth.value!.neteaseCookie != null) {
+      if (auth.auth.value?.neteaseCookie != null) {
         final cookie =
             'MUSIC_U=${auth.auth.value!.getNeteaseCookie('MUSIC_U')}';
         if (request.headers['Cookie'] == null) {
@@ -87,16 +87,11 @@ class NeteaseSourcedTrack extends SourcedTrack {
         .get()
         .then((s) => s.firstOrNull);
 
-    if (cachedSource == null) {
+    if (cachedSource == null || cachedSource.sourceType != SourceType.netease) {
       final siblings = await fetchSiblings(track: track);
       if (siblings.isEmpty) {
         throw TrackNotFoundError(track);
       }
-
-      final client = getClient();
-      final checkResp =
-          await client.get('/check/music?id=${siblings.first.info.id}');
-      if (checkResp.body['success'] != true) throw TrackNotFoundError(track);
 
       await db.database.into(db.database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
@@ -116,6 +111,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
 
     final client = getClient();
     final resp = await client.get('/song/detail?ids=${cachedSource.sourceId}');
+    print(resp.body);
     final item = resp.body['songs'][0];
 
     return NeteaseSourcedTrack(

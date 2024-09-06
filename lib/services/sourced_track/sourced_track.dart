@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:get/get.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
@@ -107,7 +108,9 @@ abstract class SourcedTrack extends Track {
           await PipedSourcedTrack.fetchFromTrack(track: track),
         _ => await YoutubeSourcedTrack.fetchFromTrack(track: track),
       };
-    } on TrackNotFoundError catch (_) {
+    } on TrackNotFoundError catch (err) {
+      Get.find<ErrorNotifier>()
+          .showError('${err.toString()} via ${preferences.audioSource.label}');
       return switch (preferences.audioSource) {
         AudioSource.piped ||
         AudioSource.youtube =>
