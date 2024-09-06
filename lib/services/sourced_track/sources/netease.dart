@@ -247,7 +247,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
         title: item['name'],
         duration: item['dt'] != null
             ? Duration(milliseconds: item['dt'])
-            : Duration.zero,
+            : Duration(milliseconds: item['duration']),
         album: item['al']?['name'],
       ),
       source: toSourceMap(item),
