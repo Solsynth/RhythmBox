@@ -69,6 +69,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
               sourceId: siblings.first.info.id,
               sourceType: const Value(SourceType.youtube),
             ),
+            mode: InsertMode.insertOrReplace,
           );
 
       return YoutubeSourcedTrack(

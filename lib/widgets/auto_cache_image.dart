@@ -5,8 +5,10 @@ import 'package:rhythm_box/platform.dart';
 class AutoCacheImage extends StatelessWidget {
   final String url;
   final double? width, height;
+  final BoxFit? fit;
 
-  const AutoCacheImage(this.url, {super.key, this.width, this.height});
+  const AutoCacheImage(this.url,
+      {super.key, this.width, this.height, this.fit});
 
   @override
   Widget build(BuildContext context) {
@@ -15,12 +17,14 @@ class AutoCacheImage extends StatelessWidget {
         imageUrl: url,
         width: width,
         height: height,
+        fit: fit,
       );
     }
     return Image.network(
       url,
       width: width,
       height: height,
+      fit: fit,
     );
   }
 

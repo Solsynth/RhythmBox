@@ -82,34 +82,38 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     children: [
                       Obx(
-                        () => LimitedBox(
-                          maxHeight: maxAlbumSize,
-                          maxWidth: maxAlbumSize,
-                          child: Hero(
-                            tag: const Key('current-active-track-album-art'),
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: ClipRRect(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(16)),
-                                child: _albumArt != null
-                                    ? AutoCacheImage(
-                                        _albumArt!,
-                                        width: albumSize,
-                                        height: albumSize,
-                                      )
-                                    : Container(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .surfaceContainerHigh,
-                                        width: 64,
-                                        height: 64,
-                                        child: const Center(
-                                          child: Icon(Icons.image),
+                        () => Center(
+                          child: LimitedBox(
+                            maxHeight: maxAlbumSize,
+                            maxWidth: maxAlbumSize,
+                            child: Hero(
+                              tag: const Key('current-active-track-album-art'),
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: ClipRRect(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(16),
+                                  ),
+                                  child: _albumArt != null
+                                      ? AutoCacheImage(
+                                          _albumArt!,
+                                          width: albumSize,
+                                          height: albumSize,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Container(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .surfaceContainerHigh,
+                                          width: 64,
+                                          height: 64,
+                                          child: const Center(
+                                            child: Icon(Icons.image),
+                                          ),
                                         ),
-                                      ),
-                              ),
-                            ).marginSymmetric(horizontal: 24),
+                                ),
+                              ).marginSymmetric(horizontal: 24),
+                            ),
                           ),
                         ),
                       ),

@@ -167,8 +167,11 @@ class NeteaseSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final client = getClient();
-    final resp =
-        await client.get('/search?keywords=${Uri.encodeComponent(query)}');
+    final resp = await client.get(
+      '/search?keywords=${Uri.encodeComponent(query)}&realIP=${NeteaseSourcedTrack.lookupRealIp()}',
+    );
+    if (resp.body?['code'] == 405) throw TrackNotFoundError(track);
+    print(resp.body);
     final results = resp.body['result']['songs'];
 
     // We can just trust netease music for now
@@ -239,25 +242,29 @@ class NeteaseSourcedTrack extends SourcedTrack {
     );
   }
 
-  static SiblingType toSiblingType(dynamic item) {
+  static NeteaseSourceInfo toSourceInfo(dynamic item) {
     final firstArtist = item['ar'] != null ? item['ar'][0] : item['artists'][0];
 
+    return NeteaseSourceInfo(
+      id: item['id'].toString(),
+      artist: item['ar'] != null
+          ? item['ar'].map((x) => x['name']).join(',')
+          : item['artists'].map((x) => x['name']).toString(),
+      artistUrl: 'https://music.163.com/#/artist?id=${firstArtist['id']}',
+      pageUrl: 'https://music.163.com/#/song?id=${item['id']}',
+      thumbnail: item['al']?['picUrl'] ??
+          'https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg',
+      title: item['name'],
+      duration: item['dt'] != null
+          ? Duration(milliseconds: item['dt'])
+          : Duration(milliseconds: item['duration']),
+      album: item['al']?['name'],
+    );
+  }
+
+  static SiblingType toSiblingType(dynamic item) {
     final SiblingType sibling = (
-      info: NeteaseSourceInfo(
-        id: item['id'].toString(),
-        artist: item['ar'] != null
-            ? item['ar'].map((x) => x['name']).join(',')
-            : item['artists'].map((x) => x['name']).toString(),
-        artistUrl: 'https://music.163.com/#/artist?id=${firstArtist['id']}',
-        pageUrl: 'https://music.163.com/#/song?id=${item['id']}',
-        thumbnail: item['al']?['picUrl'] ??
-            'https://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg',
-        title: item['name'],
-        duration: item['dt'] != null
-            ? Duration(milliseconds: item['dt'])
-            : Duration(milliseconds: item['duration']),
-        album: item['al']?['name'],
-      ),
+      info: toSourceInfo(item),
       source: toSourceMap(item),
     );
 
