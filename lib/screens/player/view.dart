@@ -311,8 +311,10 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       const Gap(20),
                       SizedBox(
                         height: 40,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
+                        child: Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 4,
+                          runSpacing: 4,
                           children: [
                             TextButton.icon(
                               icon: const Icon(Icons.queue_music),

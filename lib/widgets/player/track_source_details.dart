@@ -4,10 +4,9 @@ import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/sourced_track/sources/piped.dart';
 import 'package:rhythm_box/services/sourced_track/sources/youtube.dart';
-import 'package:spotify/spotify.dart';
 
 class TrackSourceDetails extends StatelessWidget {
-  final Track track;
+  final SourcedTrack track;
 
   const TrackSourceDetails({super.key, required this.track});
 
@@ -25,14 +24,11 @@ class TrackSourceDetails extends StatelessWidget {
       'Title': track.name!,
       'Artist': track.artists?.map((x) => x.name).join(', '),
       'Album': track.album!.name!,
-      'Duration': (track is SourcedTrack
-              ? (track as SourcedTrack).sourceInfo.duration
-              : track.duration!)
-          .toHumanReadableString(),
+      'Duration': track.sourceInfo.duration.toHumanReadableString(),
       if (track.album!.releaseDate != null)
         'Released': track.album!.releaseDate,
       'Popularity': track.popularity?.toString() ?? '0',
-      'Provider': sourceInfoToLabelMap[track.runtimeType],
+      'Provider': sourceInfoToLabelMap[track.sourceInfo.runtimeType],
     };
 
     return Table(
