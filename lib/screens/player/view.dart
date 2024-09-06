@@ -309,87 +309,89 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         ],
                       ),
                       const Gap(20),
-                      SizedBox(
-                        height: 40,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          children: [
-                            TextButton.icon(
-                              icon: const Icon(Icons.queue_music),
-                              label: const Text(
-                                'Queue',
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  useRootNavigator: true,
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      const PlayerQueuePopup(),
-                                ).then((_) {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                            ),
-                            if (!isLargeScreen) const Gap(4),
-                            if (!isLargeScreen)
+                      Center(
+                        child: SizedBox(
+                          height: 40,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            children: [
                               TextButton.icon(
-                                icon: const Icon(Icons.lyrics),
+                                icon: const Icon(Icons.queue_music),
                                 label: const Text(
-                                  'Lyrics',
+                                  'Queue',
                                   maxLines: 1,
                                   overflow: TextOverflow.fade,
                                 ),
                                 onPressed: () {
-                                  GoRouter.of(context)
-                                      .pushNamed('playerLyrics');
+                                  showModalBottomSheet(
+                                    useRootNavigator: true,
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) =>
+                                        const PlayerQueuePopup(),
+                                  ).then((_) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  });
                                 },
                               ),
-                            const Gap(4),
-                            TextButton.icon(
-                              icon: const Icon(Icons.merge),
-                              label: const Text(
-                                'Sources',
-                                maxLines: 1,
-                                overflow: TextOverflow.fade,
+                              if (!isLargeScreen) const Gap(4),
+                              if (!isLargeScreen)
+                                TextButton.icon(
+                                  icon: const Icon(Icons.lyrics),
+                                  label: const Text(
+                                    'Lyrics',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.fade,
+                                  ),
+                                  onPressed: () {
+                                    GoRouter.of(context)
+                                        .pushNamed('playerLyrics');
+                                  },
+                                ),
+                              const Gap(4),
+                              TextButton.icon(
+                                icon: const Icon(Icons.merge),
+                                label: const Text(
+                                  'Sources',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.fade,
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    useRootNavigator: true,
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) =>
+                                        const SiblingTracksPopup(),
+                                  ).then((_) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  });
+                                },
                               ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  useRootNavigator: true,
-                                  isScrollControlled: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      const SiblingTracksPopup(),
-                                ).then((_) {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                            ),
-                            const Gap(4),
-                            TextButton.icon(
-                              label: const Text('Info'),
-                              icon: const Icon(Icons.info),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  useRootNavigator: true,
-                                  context: context,
-                                  builder: (context) =>
-                                      const SourceDetailsPopup(),
-                                ).then((_) {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                            ),
-                          ],
+                              const Gap(4),
+                              TextButton.icon(
+                                label: const Text('Info'),
+                                icon: const Icon(Icons.info),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    useRootNavigator: true,
+                                    context: context,
+                                    builder: (context) =>
+                                        const SourceDetailsPopup(),
+                                  ).then((_) {
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],

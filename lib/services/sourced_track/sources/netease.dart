@@ -111,7 +111,6 @@ class NeteaseSourcedTrack extends SourcedTrack {
 
     final client = getClient();
     final resp = await client.get('/song/detail?ids=${cachedSource.sourceId}');
-    print(resp.body);
     final item = resp.body['songs'][0];
 
     return NeteaseSourcedTrack(
