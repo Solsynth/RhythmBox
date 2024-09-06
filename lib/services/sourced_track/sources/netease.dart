@@ -171,7 +171,6 @@ class NeteaseSourcedTrack extends SourcedTrack {
       '/search?keywords=${Uri.encodeComponent(query)}&realIP=${NeteaseSourcedTrack.lookupRealIp()}',
     );
     if (resp.body?['code'] == 405) throw TrackNotFoundError(track);
-    print(resp.body);
     final results = resp.body['result']['songs'];
 
     // We can just trust netease music for now

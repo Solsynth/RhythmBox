@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
+import 'package:rhythm_box/services/sourced_track/sources/kugou.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/utils.dart';
 import 'package:spotify/spotify.dart';
@@ -104,6 +105,8 @@ abstract class SourcedTrack extends Track {
       return switch (audioSource) {
         AudioSource.netease =>
           await NeteaseSourcedTrack.fetchFromTrack(track: track),
+        AudioSource.kugou =>
+          await KugouSourcedTrack.fetchFromTrack(track: track),
         AudioSource.piped =>
           await PipedSourcedTrack.fetchFromTrack(track: track),
         _ => await YoutubeSourcedTrack.fetchFromTrack(track: track),
@@ -117,6 +120,8 @@ abstract class SourcedTrack extends Track {
         AudioSource.youtube =>
           await NeteaseSourcedTrack.fetchFromTrack(track: track),
         AudioSource.netease =>
+          await KugouSourcedTrack.fetchFromTrack(track: track),
+        AudioSource.kugou =>
           await YoutubeSourcedTrack.fetchFromTrack(track: track),
       };
     } on HttpClientClosedException catch (_) {

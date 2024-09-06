@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' hide Response;
@@ -6,6 +8,7 @@ import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/services/audio_player/audio_player.dart';
 import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/server/sourced_track.dart';
+import 'package:rhythm_box/services/sourced_track/sources/kugou.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:shelf/shelf.dart';
 
@@ -33,6 +36,13 @@ class ServerPlaybackRoutesProvider {
           '${sourcedTrack.url}&realIP=${await NeteaseSourcedTrack.lookupRealIp()}',
         );
         final realUrl = resp.body['data'][0]['url'];
+        url = realUrl;
+      } else if (sourcedTrack is KugouSourcedTrack) {
+        // Special processing for kugou to get real assets url
+        final resp = await GetConnect(timeout: const Duration(seconds: 30))
+            .get(sourcedTrack.url);
+        final realUrl =
+            KugouSourcedTrack.unescapeUrl(jsonDecode(resp.body)['url'][0]);
         url = realUrl;
       }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rhythm_box/services/duration.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
+import 'package:rhythm_box/services/sourced_track/sources/kugou.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/sourced_track/sources/piped.dart';
 import 'package:rhythm_box/services/sourced_track/sources/youtube.dart';
@@ -14,6 +15,7 @@ class TrackSourceDetails extends StatelessWidget {
     YoutubeSourceInfo: 'YouTube',
     PipedSourceInfo: 'Piped',
     NeteaseSourceInfo: 'Netease',
+    KugouSourceInfo: 'Kugou',
   };
 
   @override

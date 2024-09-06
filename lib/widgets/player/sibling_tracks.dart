@@ -13,6 +13,7 @@ import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/sourced_track/models/source_info.dart';
 import 'package:rhythm_box/services/sourced_track/models/video_info.dart';
 import 'package:rhythm_box/services/sourced_track/sourced_track.dart';
+import 'package:rhythm_box/services/sourced_track/sources/kugou.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/sourced_track/sources/piped.dart';
 import 'package:rhythm_box/services/sourced_track/sources/youtube.dart';
@@ -45,6 +46,7 @@ class _SiblingTracksState extends State<SiblingTracks> {
     YoutubeSourceInfo: 'YouTube',
     PipedSourceInfo: 'Piped',
     NeteaseSourceInfo: 'Netease',
+    KugouSourceInfo: 'Kugou',
   };
 
   List<StreamSubscription>? _subscriptions;

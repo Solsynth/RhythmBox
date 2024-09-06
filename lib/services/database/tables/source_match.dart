@@ -3,7 +3,8 @@ part of '../database.dart';
 enum SourceType {
   youtube._('YouTube'),
   youtubeMusic._('YouTube Music'),
-  netease._('Netease Music');
+  netease._('Netease Music'),
+  kugou._('Kugou Music');
 
   final String label;
 
