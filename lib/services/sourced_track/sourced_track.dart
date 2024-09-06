@@ -109,8 +109,9 @@ abstract class SourcedTrack extends Track {
         _ => await YoutubeSourcedTrack.fetchFromTrack(track: track),
       };
     } on TrackNotFoundError catch (err) {
-      Get.find<ErrorNotifier>()
-          .showError('${err.toString()} via ${preferences.audioSource.label}');
+      Get.find<ErrorNotifier>().showError(
+        '${err.toString()} via ${preferences.audioSource.label}, querying in fallback sources...',
+      );
       return switch (preferences.audioSource) {
         AudioSource.piped ||
         AudioSource.youtube =>

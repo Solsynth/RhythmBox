@@ -93,6 +93,12 @@ class NeteaseSourcedTrack extends SourcedTrack {
         throw TrackNotFoundError(track);
       }
 
+      final client = getClient();
+      final checkResp = await client.get(
+        '/check/music?id=${siblings.first.info.id}&realIP=${await lookupRealIp()}',
+      );
+      if (checkResp.body['success'] != true) throw TrackNotFoundError(track);
+
       await db.database.into(db.database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
               trackId: track.id!,
@@ -111,7 +117,14 @@ class NeteaseSourcedTrack extends SourcedTrack {
 
     final client = getClient();
     final resp = await client.get('/song/detail?ids=${cachedSource.sourceId}');
-    final item = resp.body['songs'][0];
+    final item = (resp.body['songs'] as List<dynamic>).firstOrNull;
+
+    if (item == null) throw TrackNotFoundError(track);
+
+    final checkResp = await client.get(
+      '/check/music?id=${item['id']}&realIP=${await lookupRealIp()}',
+    );
+    if (checkResp.body['success'] != true) throw TrackNotFoundError(track);
 
     return NeteaseSourcedTrack(
       siblings: [],
@@ -201,7 +214,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
 
     final client = getClient();
     final resp = await client.get('/song/detail?ids=${newSourceInfo.id}');
-    final item = resp.body['songs'][0];
+    final item = (resp.body['songs'] as List<dynamic>).first;
 
     final (:info, :source) = toSiblingType(item);
 

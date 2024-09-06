@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rhythm_box/providers/audio_player.dart';
+import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
 import 'package:rhythm_box/services/duration.dart';
@@ -89,48 +90,55 @@ class _SiblingTracksState extends State<SiblingTracks> {
     final preferences = Get.find<UserPreferencesProvider>().state.value;
     final searchTerm = _searchTermController.text.trim();
 
-    if (preferences.audioSource == AudioSource.youtube ||
-        preferences.audioSource == AudioSource.piped) {
-      final resultsYt = await youtubeClient.search.search(searchTerm.trim());
+    try {
+      if (preferences.audioSource == AudioSource.youtube ||
+          preferences.audioSource == AudioSource.piped) {
+        final resultsYt = await youtubeClient.search.search(searchTerm.trim());
 
-      final searchResults = await Future.wait(
-        resultsYt.map(YoutubeVideoInfo.fromVideo).mapIndexed((i, video) async {
-          final siblingType = await YoutubeSourcedTrack.toSiblingType(i, video);
-          return siblingType.info;
-        }),
-      );
-      final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
-      _siblings = List.from(
-        searchResults
-          ..removeWhere((element) => element.id == activeSourceInfo.id)
-          ..insert(
-            0,
-            activeSourceInfo,
-          ),
-        growable: true,
-      );
-    } else if (preferences.audioSource == AudioSource.netease) {
-      final client = NeteaseSourcedTrack.getClient();
-      final resp = await client
-          .get('/search?keywords=${Uri.encodeComponent(searchTerm)}');
-      final searchResults = resp.body['result']['songs']
-          .map(NeteaseSourcedTrack.toSiblingType)
-          .map((x) => x.info)
-          .toList();
+        final searchResults = await Future.wait(
+          resultsYt
+              .map(YoutubeVideoInfo.fromVideo)
+              .mapIndexed((i, video) async {
+            final siblingType =
+                await YoutubeSourcedTrack.toSiblingType(i, video);
+            return siblingType.info;
+          }),
+        );
+        final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
+        _siblings = List.from(
+          searchResults
+            ..removeWhere((element) => element.id == activeSourceInfo.id)
+            ..insert(
+              0,
+              activeSourceInfo,
+            ),
+          growable: true,
+        );
+      } else if (preferences.audioSource == AudioSource.netease) {
+        final client = NeteaseSourcedTrack.getClient();
+        final resp = await client
+            .get('/search?keywords=${Uri.encodeComponent(searchTerm)}');
+        final searchResults = resp.body['result']['songs']
+            .map(NeteaseSourcedTrack.toSiblingType)
+            .map((x) => x.info)
+            .toList();
 
-      final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
-      _siblings = List.from(
-        searchResults
-          ..removeWhere((element) => element.id == activeSourceInfo.id)
-          ..insert(
-            0,
-            activeSourceInfo,
-          ),
-        growable: true,
-      );
+        final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
+        _siblings = List.from(
+          searchResults
+            ..removeWhere((element) => element.id == activeSourceInfo.id)
+            ..insert(
+              0,
+              activeSourceInfo,
+            ),
+          growable: true,
+        );
+      }
+    } catch (err) {
+      Get.find<ErrorNotifier>().showError(err.toString());
+    } finally {
+      setState(() => _isSearching = false);
     }
-
-    setState(() => _isSearching = false);
   }
 
   @override
