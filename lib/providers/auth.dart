@@ -9,10 +9,18 @@ import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/services/database/database.dart';
 
 extension ExpirationAuthenticationTableData on AuthenticationTableData {
-  bool get isExpired => DateTime.now().isAfter(expiration);
+  bool get isExpired => DateTime.now().isAfter(spotifyExpiration);
 
-  String? getCookie(String key) => cookie.value
+  String? getCookie(String key) => spotifyCookie.value
       .split('; ')
+      .firstWhereOrNull((c) => c.trim().startsWith('$key='))
+      ?.trim()
+      .split('=')
+      .last
+      .replaceAll(';', '');
+
+  String? getNeteaseCookie(String key) => neteaseCookie?.value
+      .split(';')
       .firstWhereOrNull((c) => c.trim().startsWith('$key='))
       ?.trim()
       .split('=')
@@ -55,18 +63,18 @@ class AuthenticationProvider extends GetxController {
   void _setRefreshTimer() {
     refreshTimer?.cancel();
     if (auth.value != null && auth.value!.isExpired) {
-      refreshCredentials();
+      refreshSpotifyCredentials();
     }
     refreshTimer = Timer(
-      auth.value!.expiration.difference(DateTime.now()),
-      () => refreshCredentials(),
+      auth.value!.spotifyExpiration.difference(DateTime.now()),
+      () => refreshSpotifyCredentials(),
     );
   }
 
-  Future<void> refreshCredentials() async {
+  Future<void> refreshSpotifyCredentials() async {
     final database = Get.find<DatabaseProvider>().database;
     final refreshedCredentials =
-        await credentialsFromCookie(auth.value!.cookie.value);
+        await credentialsFromCookie(auth.value!.spotifyCookie.value);
 
     await database
         .update(database.authenticationTable)
@@ -112,15 +120,31 @@ class AuthenticationProvider extends GetxController {
 
       return AuthenticationTableCompanion.insert(
         id: const Value(0),
-        cookie: DecryptedText("${res.headers["set-cookie"]?.join(";")}; $spDc"),
-        accessToken: DecryptedText(body['accessToken']),
-        expiration: DateTime.fromMillisecondsSinceEpoch(
+        spotifyCookie:
+            DecryptedText("${res.headers["set-cookie"]?.join(";")}; $spDc"),
+        spotifyAccessToken: DecryptedText(body['accessToken']),
+        spotifyExpiration: DateTime.fromMillisecondsSinceEpoch(
             body['accessTokenExpirationTimestampMs']),
       );
     } catch (e) {
       // Handle error
       rethrow;
     }
+  }
+
+  Future<void> setNeteaseCredentials(String cookie) async {
+    final database = Get.find<DatabaseProvider>().database;
+    await database.update(database.authenticationTable).replace(
+          AuthenticationTableCompanion.insert(
+            id: const Value(0),
+            spotifyCookie: auth.value!.spotifyCookie,
+            spotifyAccessToken: auth.value!.spotifyAccessToken,
+            spotifyExpiration: auth.value!.spotifyExpiration,
+            neteaseCookie: Value(DecryptedText(cookie)),
+            neteaseExpiration: const Value(null),
+          ),
+        );
+    await loadAuthenticationData();
   }
 
   Future<void> logout() async {
@@ -130,6 +154,21 @@ class AuthenticationProvider extends GetxController {
           ..where((s) => s.id.equals(0)))
         .go();
     // Additional cleanup if necessary
+  }
+
+  Future<void> logoutNetease() async {
+    final database = Get.find<DatabaseProvider>().database;
+    await database.update(database.authenticationTable).replace(
+          AuthenticationTableCompanion.insert(
+            id: const Value(0),
+            spotifyCookie: auth.value!.spotifyCookie,
+            spotifyAccessToken: auth.value!.spotifyAccessToken,
+            spotifyExpiration: auth.value!.spotifyExpiration,
+            neteaseCookie: const Value(null),
+            neteaseExpiration: const Value(null),
+          ),
+        );
+    await loadAuthenticationData();
   }
 
   @override

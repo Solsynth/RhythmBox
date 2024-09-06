@@ -44,7 +44,7 @@ class SpotifyProvider extends GetxController {
     log('[SpotifyApi] Using user credentials...');
     final AuthenticationProvider authenticate = Get.find();
     return SpotifyApi.withAccessToken(
-        authenticate.auth.value!.accessToken.value);
+        authenticate.auth.value!.spotifyAccessToken.value);
   }
 
   @override

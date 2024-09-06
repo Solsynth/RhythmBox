@@ -7,6 +7,7 @@ import 'package:rhythm_box/providers/spotify.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/screens/auth/login.dart';
 import 'package:rhythm_box/services/database/database.dart';
+import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/widgets/auto_cache_image.dart';
 import 'package:rhythm_box/widgets/sized_container.dart';
 
@@ -90,12 +91,81 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 if (_authenticate.auth.value == null) {
                   return const SizedBox();
                 }
+                if (_authenticate.auth.value?.neteaseCookie == null) {
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                    leading: const Icon(Icons.cloud_outlined),
+                    title: const Text('Connect with Netease Cloud Music'),
+                    subtitle: const Text(
+                        'Make us able to play more music from Netease Cloud Music'),
+                    trailing: const Icon(Icons.chevron_right),
+                    enabled: !_isLoggingIn,
+                    onTap: () async {
+                      setState(() => _isLoggingIn = true);
+                      await GoRouter.of(context)
+                          .pushNamed('authMobileLoginNetease');
+                      setState(() => _isLoggingIn = false);
+                    },
+                  );
+                }
+
+                return FutureBuilder(
+                  future: NeteaseSourcedTrack.getClient().get('/user/account'),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 24),
+                        leading: const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 3,
+                          ),
+                        ),
+                        title: const Text('Loading...'),
+                        trailing: IconButton(
+                          onPressed: () {
+                            _authenticate.logoutNetease();
+                          },
+                          icon: const Icon(Icons.link_off),
+                        ),
+                      );
+                    }
+
+                    return ListTile(
+                      leading:
+                          snapshot.data!.body['profile']['avatarUrl'] != null
+                              ? CircleAvatar(
+                                  backgroundImage: AutoCacheImage.provider(
+                                    snapshot.data!.body['profile']['avatarUrl'],
+                                  ),
+                                )
+                              : const Icon(Icons.account_circle),
+                      title: Text(snapshot.data!.body['profile']['nickname']),
+                      subtitle: const Text(
+                        'Connected with your Netease Cloud Music account',
+                      ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          _authenticate.logoutNetease();
+                        },
+                        icon: const Icon(Icons.link_off),
+                      ),
+                    );
+                  },
+                );
+              }),
+              Obx(() {
+                if (_authenticate.auth.value == null) {
+                  return const SizedBox();
+                }
 
                 return ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                   leading: const Icon(Icons.logout),
                   title: const Text('Log out'),
-                  subtitle: const Text('Disconnect with this Spotify account'),
+                  subtitle: const Text('Disconnect with every account'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () async {
                     _authenticate.logout();

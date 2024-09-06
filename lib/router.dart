@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rhythm_box/screens/about.dart';
 import 'package:rhythm_box/screens/album/view.dart';
+import 'package:rhythm_box/screens/auth/login_netease.dart';
 import 'package:rhythm_box/screens/auth/mobile_login.dart';
 import 'package:rhythm_box/screens/explore.dart';
 import 'package:rhythm_box/screens/library/view.dart';
@@ -103,6 +104,11 @@ final router = GoRouter(routes: [
         path: '/auth/mobile-login',
         name: 'authMobileLogin',
         builder: (context, state) => const MobileLogin(),
+      ),
+      GoRoute(
+        path: '/auth/netease/login',
+        name: 'authMobileLoginNetease',
+        builder: (context, state) => const LoginNeteaseScreen(),
       ),
     ],
   ),

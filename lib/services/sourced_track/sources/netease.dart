@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:get/get.dart' hide Value;
+import 'package:get/get_connect/http/src/request/request.dart';
+import 'package:rhythm_box/providers/auth.dart';
 import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
@@ -38,9 +40,25 @@ class NeteaseSourcedTrack extends SourcedTrack {
   }
 
   static GetConnect getClient() {
-    final client = GetConnect();
+    final client = GetConnect(
+      withCredentials: true,
+      timeout: const Duration(seconds: 30),
+    );
     client.baseUrl = getBaseUrl();
-    client.timeout = const Duration(seconds: 30);
+    client.httpClient.addRequestModifier((Request request) async {
+      final AuthenticationProvider auth = Get.find();
+      if (auth.auth.value!.neteaseCookie != null) {
+        final cookie =
+            'MUSIC_U=${auth.auth.value!.getNeteaseCookie('MUSIC_U')}';
+        if (request.headers['Cookie'] == null) {
+          request.headers['Cookie'] = cookie;
+        } else {
+          request.headers['Cookie'] = request.headers['Cookie']! + cookie;
+        }
+      }
+
+      return request;
+    });
     return client;
   }
 
@@ -80,7 +98,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
           await client.get('/check/music?id=${siblings.first.info.id}');
       if (checkResp.body['success'] != true) throw TrackNotFoundError(track);
 
-      await await db.database.into(db.database.sourceMatchTable).insert(
+      await db.database.into(db.database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
               trackId: track.id!,
               sourceId: siblings.first.info.id,

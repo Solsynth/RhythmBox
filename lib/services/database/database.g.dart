@@ -18,29 +18,54 @@ class $AuthenticationTableTable extends AuthenticationTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _cookieMeta = const VerificationMeta('cookie');
-  @override
-  late final GeneratedColumnWithTypeConverter<DecryptedText, String> cookie =
-      GeneratedColumn<String>('cookie', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<DecryptedText>(
-              $AuthenticationTableTable.$convertercookie);
-  static const VerificationMeta _accessTokenMeta =
-      const VerificationMeta('accessToken');
+  static const VerificationMeta _spotifyCookieMeta =
+      const VerificationMeta('spotifyCookie');
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String>
-      accessToken = GeneratedColumn<String>('access_token', aliasedName, false,
+      spotifyCookie = GeneratedColumn<String>(
+              'spotify_cookie', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DecryptedText>(
-              $AuthenticationTableTable.$converteraccessToken);
-  static const VerificationMeta _expirationMeta =
-      const VerificationMeta('expiration');
+              $AuthenticationTableTable.$converterspotifyCookie);
+  static const VerificationMeta _spotifyAccessTokenMeta =
+      const VerificationMeta('spotifyAccessToken');
   @override
-  late final GeneratedColumn<DateTime> expiration = GeneratedColumn<DateTime>(
-      'expiration', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumnWithTypeConverter<DecryptedText, String>
+      spotifyAccessToken = GeneratedColumn<String>(
+              'spotify_access_token', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<DecryptedText>(
+              $AuthenticationTableTable.$converterspotifyAccessToken);
+  static const VerificationMeta _spotifyExpirationMeta =
+      const VerificationMeta('spotifyExpiration');
   @override
-  List<GeneratedColumn> get $columns => [id, cookie, accessToken, expiration];
+  late final GeneratedColumn<DateTime> spotifyExpiration =
+      GeneratedColumn<DateTime>('spotify_expiration', aliasedName, false,
+          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _neteaseCookieMeta =
+      const VerificationMeta('neteaseCookie');
+  @override
+  late final GeneratedColumnWithTypeConverter<DecryptedText?, String>
+      neteaseCookie = GeneratedColumn<String>(
+              'netease_cookie', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<DecryptedText?>(
+              $AuthenticationTableTable.$converterneteaseCookien);
+  static const VerificationMeta _neteaseExpirationMeta =
+      const VerificationMeta('neteaseExpiration');
+  @override
+  late final GeneratedColumn<DateTime> neteaseExpiration =
+      GeneratedColumn<DateTime>('netease_expiration', aliasedName, true,
+          type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        spotifyCookie,
+        spotifyAccessToken,
+        spotifyExpiration,
+        neteaseCookie,
+        neteaseExpiration
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -55,15 +80,22 @@ class $AuthenticationTableTable extends AuthenticationTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_cookieMeta, const VerificationResult.success());
-    context.handle(_accessTokenMeta, const VerificationResult.success());
-    if (data.containsKey('expiration')) {
+    context.handle(_spotifyCookieMeta, const VerificationResult.success());
+    context.handle(_spotifyAccessTokenMeta, const VerificationResult.success());
+    if (data.containsKey('spotify_expiration')) {
       context.handle(
-          _expirationMeta,
-          expiration.isAcceptableOrUnknown(
-              data['expiration']!, _expirationMeta));
+          _spotifyExpirationMeta,
+          spotifyExpiration.isAcceptableOrUnknown(
+              data['spotify_expiration']!, _spotifyExpirationMeta));
     } else if (isInserting) {
-      context.missing(_expirationMeta);
+      context.missing(_spotifyExpirationMeta);
+    }
+    context.handle(_neteaseCookieMeta, const VerificationResult.success());
+    if (data.containsKey('netease_expiration')) {
+      context.handle(
+          _neteaseExpirationMeta,
+          neteaseExpiration.isAcceptableOrUnknown(
+              data['netease_expiration']!, _neteaseExpirationMeta));
     }
     return context;
   }
@@ -77,14 +109,19 @@ class $AuthenticationTableTable extends AuthenticationTable
     return AuthenticationTableData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      cookie: $AuthenticationTableTable.$convertercookie.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}cookie'])!),
-      accessToken: $AuthenticationTableTable.$converteraccessToken.fromSql(
+      spotifyCookie: $AuthenticationTableTable.$converterspotifyCookie.fromSql(
           attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}access_token'])!),
-      expiration: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}expiration'])!,
+              DriftSqlType.string, data['${effectivePrefix}spotify_cookie'])!),
+      spotifyAccessToken: $AuthenticationTableTable.$converterspotifyAccessToken
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}spotify_access_token'])!),
+      spotifyExpiration: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}spotify_expiration'])!,
+      neteaseCookie: $AuthenticationTableTable.$converterneteaseCookien.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}netease_cookie'])),
+      neteaseExpiration: attachedDatabase.typeMapping.read(
+          DriftSqlType.dateTime, data['${effectivePrefix}netease_expiration']),
     );
   }
 
@@ -93,45 +130,69 @@ class $AuthenticationTableTable extends AuthenticationTable
     return $AuthenticationTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<DecryptedText, String> $convertercookie =
+  static TypeConverter<DecryptedText, String> $converterspotifyCookie =
       EncryptedTextConverter();
-  static TypeConverter<DecryptedText, String> $converteraccessToken =
+  static TypeConverter<DecryptedText, String> $converterspotifyAccessToken =
       EncryptedTextConverter();
+  static TypeConverter<DecryptedText, String> $converterneteaseCookie =
+      EncryptedTextConverter();
+  static TypeConverter<DecryptedText?, String?> $converterneteaseCookien =
+      NullAwareTypeConverter.wrap($converterneteaseCookie);
 }
 
 class AuthenticationTableData extends DataClass
     implements Insertable<AuthenticationTableData> {
   final int id;
-  final DecryptedText cookie;
-  final DecryptedText accessToken;
-  final DateTime expiration;
+  final DecryptedText spotifyCookie;
+  final DecryptedText spotifyAccessToken;
+  final DateTime spotifyExpiration;
+  final DecryptedText? neteaseCookie;
+  final DateTime? neteaseExpiration;
   const AuthenticationTableData(
       {required this.id,
-      required this.cookie,
-      required this.accessToken,
-      required this.expiration});
+      required this.spotifyCookie,
+      required this.spotifyAccessToken,
+      required this.spotifyExpiration,
+      this.neteaseCookie,
+      this.neteaseExpiration});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     {
-      map['cookie'] = Variable<String>(
-          $AuthenticationTableTable.$convertercookie.toSql(cookie));
+      map['spotify_cookie'] = Variable<String>($AuthenticationTableTable
+          .$converterspotifyCookie
+          .toSql(spotifyCookie));
     }
     {
-      map['access_token'] = Variable<String>(
-          $AuthenticationTableTable.$converteraccessToken.toSql(accessToken));
+      map['spotify_access_token'] = Variable<String>($AuthenticationTableTable
+          .$converterspotifyAccessToken
+          .toSql(spotifyAccessToken));
     }
-    map['expiration'] = Variable<DateTime>(expiration);
+    map['spotify_expiration'] = Variable<DateTime>(spotifyExpiration);
+    if (!nullToAbsent || neteaseCookie != null) {
+      map['netease_cookie'] = Variable<String>($AuthenticationTableTable
+          .$converterneteaseCookien
+          .toSql(neteaseCookie));
+    }
+    if (!nullToAbsent || neteaseExpiration != null) {
+      map['netease_expiration'] = Variable<DateTime>(neteaseExpiration);
+    }
     return map;
   }
 
   AuthenticationTableCompanion toCompanion(bool nullToAbsent) {
     return AuthenticationTableCompanion(
       id: Value(id),
-      cookie: Value(cookie),
-      accessToken: Value(accessToken),
-      expiration: Value(expiration),
+      spotifyCookie: Value(spotifyCookie),
+      spotifyAccessToken: Value(spotifyAccessToken),
+      spotifyExpiration: Value(spotifyExpiration),
+      neteaseCookie: neteaseCookie == null && nullToAbsent
+          ? const Value.absent()
+          : Value(neteaseCookie),
+      neteaseExpiration: neteaseExpiration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(neteaseExpiration),
     );
   }
 
@@ -140,9 +201,14 @@ class AuthenticationTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AuthenticationTableData(
       id: serializer.fromJson<int>(json['id']),
-      cookie: serializer.fromJson<DecryptedText>(json['cookie']),
-      accessToken: serializer.fromJson<DecryptedText>(json['accessToken']),
-      expiration: serializer.fromJson<DateTime>(json['expiration']),
+      spotifyCookie: serializer.fromJson<DecryptedText>(json['spotifyCookie']),
+      spotifyAccessToken:
+          serializer.fromJson<DecryptedText>(json['spotifyAccessToken']),
+      spotifyExpiration:
+          serializer.fromJson<DateTime>(json['spotifyExpiration']),
+      neteaseCookie: serializer.fromJson<DecryptedText?>(json['neteaseCookie']),
+      neteaseExpiration:
+          serializer.fromJson<DateTime?>(json['neteaseExpiration']),
     );
   }
   @override
@@ -150,31 +216,51 @@ class AuthenticationTableData extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'cookie': serializer.toJson<DecryptedText>(cookie),
-      'accessToken': serializer.toJson<DecryptedText>(accessToken),
-      'expiration': serializer.toJson<DateTime>(expiration),
+      'spotifyCookie': serializer.toJson<DecryptedText>(spotifyCookie),
+      'spotifyAccessToken':
+          serializer.toJson<DecryptedText>(spotifyAccessToken),
+      'spotifyExpiration': serializer.toJson<DateTime>(spotifyExpiration),
+      'neteaseCookie': serializer.toJson<DecryptedText?>(neteaseCookie),
+      'neteaseExpiration': serializer.toJson<DateTime?>(neteaseExpiration),
     };
   }
 
   AuthenticationTableData copyWith(
           {int? id,
-          DecryptedText? cookie,
-          DecryptedText? accessToken,
-          DateTime? expiration}) =>
+          DecryptedText? spotifyCookie,
+          DecryptedText? spotifyAccessToken,
+          DateTime? spotifyExpiration,
+          Value<DecryptedText?> neteaseCookie = const Value.absent(),
+          Value<DateTime?> neteaseExpiration = const Value.absent()}) =>
       AuthenticationTableData(
         id: id ?? this.id,
-        cookie: cookie ?? this.cookie,
-        accessToken: accessToken ?? this.accessToken,
-        expiration: expiration ?? this.expiration,
+        spotifyCookie: spotifyCookie ?? this.spotifyCookie,
+        spotifyAccessToken: spotifyAccessToken ?? this.spotifyAccessToken,
+        spotifyExpiration: spotifyExpiration ?? this.spotifyExpiration,
+        neteaseCookie:
+            neteaseCookie.present ? neteaseCookie.value : this.neteaseCookie,
+        neteaseExpiration: neteaseExpiration.present
+            ? neteaseExpiration.value
+            : this.neteaseExpiration,
       );
   AuthenticationTableData copyWithCompanion(AuthenticationTableCompanion data) {
     return AuthenticationTableData(
       id: data.id.present ? data.id.value : this.id,
-      cookie: data.cookie.present ? data.cookie.value : this.cookie,
-      accessToken:
-          data.accessToken.present ? data.accessToken.value : this.accessToken,
-      expiration:
-          data.expiration.present ? data.expiration.value : this.expiration,
+      spotifyCookie: data.spotifyCookie.present
+          ? data.spotifyCookie.value
+          : this.spotifyCookie,
+      spotifyAccessToken: data.spotifyAccessToken.present
+          ? data.spotifyAccessToken.value
+          : this.spotifyAccessToken,
+      spotifyExpiration: data.spotifyExpiration.present
+          ? data.spotifyExpiration.value
+          : this.spotifyExpiration,
+      neteaseCookie: data.neteaseCookie.present
+          ? data.neteaseCookie.value
+          : this.neteaseCookie,
+      neteaseExpiration: data.neteaseExpiration.present
+          ? data.neteaseExpiration.value
+          : this.neteaseExpiration,
     );
   }
 
@@ -182,69 +268,89 @@ class AuthenticationTableData extends DataClass
   String toString() {
     return (StringBuffer('AuthenticationTableData(')
           ..write('id: $id, ')
-          ..write('cookie: $cookie, ')
-          ..write('accessToken: $accessToken, ')
-          ..write('expiration: $expiration')
+          ..write('spotifyCookie: $spotifyCookie, ')
+          ..write('spotifyAccessToken: $spotifyAccessToken, ')
+          ..write('spotifyExpiration: $spotifyExpiration, ')
+          ..write('neteaseCookie: $neteaseCookie, ')
+          ..write('neteaseExpiration: $neteaseExpiration')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, cookie, accessToken, expiration);
+  int get hashCode => Object.hash(id, spotifyCookie, spotifyAccessToken,
+      spotifyExpiration, neteaseCookie, neteaseExpiration);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AuthenticationTableData &&
           other.id == this.id &&
-          other.cookie == this.cookie &&
-          other.accessToken == this.accessToken &&
-          other.expiration == this.expiration);
+          other.spotifyCookie == this.spotifyCookie &&
+          other.spotifyAccessToken == this.spotifyAccessToken &&
+          other.spotifyExpiration == this.spotifyExpiration &&
+          other.neteaseCookie == this.neteaseCookie &&
+          other.neteaseExpiration == this.neteaseExpiration);
 }
 
 class AuthenticationTableCompanion
     extends UpdateCompanion<AuthenticationTableData> {
   final Value<int> id;
-  final Value<DecryptedText> cookie;
-  final Value<DecryptedText> accessToken;
-  final Value<DateTime> expiration;
+  final Value<DecryptedText> spotifyCookie;
+  final Value<DecryptedText> spotifyAccessToken;
+  final Value<DateTime> spotifyExpiration;
+  final Value<DecryptedText?> neteaseCookie;
+  final Value<DateTime?> neteaseExpiration;
   const AuthenticationTableCompanion({
     this.id = const Value.absent(),
-    this.cookie = const Value.absent(),
-    this.accessToken = const Value.absent(),
-    this.expiration = const Value.absent(),
+    this.spotifyCookie = const Value.absent(),
+    this.spotifyAccessToken = const Value.absent(),
+    this.spotifyExpiration = const Value.absent(),
+    this.neteaseCookie = const Value.absent(),
+    this.neteaseExpiration = const Value.absent(),
   });
   AuthenticationTableCompanion.insert({
     this.id = const Value.absent(),
-    required DecryptedText cookie,
-    required DecryptedText accessToken,
-    required DateTime expiration,
-  })  : cookie = Value(cookie),
-        accessToken = Value(accessToken),
-        expiration = Value(expiration);
+    required DecryptedText spotifyCookie,
+    required DecryptedText spotifyAccessToken,
+    required DateTime spotifyExpiration,
+    this.neteaseCookie = const Value.absent(),
+    this.neteaseExpiration = const Value.absent(),
+  })  : spotifyCookie = Value(spotifyCookie),
+        spotifyAccessToken = Value(spotifyAccessToken),
+        spotifyExpiration = Value(spotifyExpiration);
   static Insertable<AuthenticationTableData> custom({
     Expression<int>? id,
-    Expression<String>? cookie,
-    Expression<String>? accessToken,
-    Expression<DateTime>? expiration,
+    Expression<String>? spotifyCookie,
+    Expression<String>? spotifyAccessToken,
+    Expression<DateTime>? spotifyExpiration,
+    Expression<String>? neteaseCookie,
+    Expression<DateTime>? neteaseExpiration,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (cookie != null) 'cookie': cookie,
-      if (accessToken != null) 'access_token': accessToken,
-      if (expiration != null) 'expiration': expiration,
+      if (spotifyCookie != null) 'spotify_cookie': spotifyCookie,
+      if (spotifyAccessToken != null)
+        'spotify_access_token': spotifyAccessToken,
+      if (spotifyExpiration != null) 'spotify_expiration': spotifyExpiration,
+      if (neteaseCookie != null) 'netease_cookie': neteaseCookie,
+      if (neteaseExpiration != null) 'netease_expiration': neteaseExpiration,
     });
   }
 
   AuthenticationTableCompanion copyWith(
       {Value<int>? id,
-      Value<DecryptedText>? cookie,
-      Value<DecryptedText>? accessToken,
-      Value<DateTime>? expiration}) {
+      Value<DecryptedText>? spotifyCookie,
+      Value<DecryptedText>? spotifyAccessToken,
+      Value<DateTime>? spotifyExpiration,
+      Value<DecryptedText?>? neteaseCookie,
+      Value<DateTime?>? neteaseExpiration}) {
     return AuthenticationTableCompanion(
       id: id ?? this.id,
-      cookie: cookie ?? this.cookie,
-      accessToken: accessToken ?? this.accessToken,
-      expiration: expiration ?? this.expiration,
+      spotifyCookie: spotifyCookie ?? this.spotifyCookie,
+      spotifyAccessToken: spotifyAccessToken ?? this.spotifyAccessToken,
+      spotifyExpiration: spotifyExpiration ?? this.spotifyExpiration,
+      neteaseCookie: neteaseCookie ?? this.neteaseCookie,
+      neteaseExpiration: neteaseExpiration ?? this.neteaseExpiration,
     );
   }
 
@@ -254,17 +360,26 @@ class AuthenticationTableCompanion
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (cookie.present) {
-      map['cookie'] = Variable<String>(
-          $AuthenticationTableTable.$convertercookie.toSql(cookie.value));
+    if (spotifyCookie.present) {
+      map['spotify_cookie'] = Variable<String>($AuthenticationTableTable
+          .$converterspotifyCookie
+          .toSql(spotifyCookie.value));
     }
-    if (accessToken.present) {
-      map['access_token'] = Variable<String>($AuthenticationTableTable
-          .$converteraccessToken
-          .toSql(accessToken.value));
+    if (spotifyAccessToken.present) {
+      map['spotify_access_token'] = Variable<String>($AuthenticationTableTable
+          .$converterspotifyAccessToken
+          .toSql(spotifyAccessToken.value));
     }
-    if (expiration.present) {
-      map['expiration'] = Variable<DateTime>(expiration.value);
+    if (spotifyExpiration.present) {
+      map['spotify_expiration'] = Variable<DateTime>(spotifyExpiration.value);
+    }
+    if (neteaseCookie.present) {
+      map['netease_cookie'] = Variable<String>($AuthenticationTableTable
+          .$converterneteaseCookien
+          .toSql(neteaseCookie.value));
+    }
+    if (neteaseExpiration.present) {
+      map['netease_expiration'] = Variable<DateTime>(neteaseExpiration.value);
     }
     return map;
   }
@@ -273,9 +388,11 @@ class AuthenticationTableCompanion
   String toString() {
     return (StringBuffer('AuthenticationTableCompanion(')
           ..write('id: $id, ')
-          ..write('cookie: $cookie, ')
-          ..write('accessToken: $accessToken, ')
-          ..write('expiration: $expiration')
+          ..write('spotifyCookie: $spotifyCookie, ')
+          ..write('spotifyAccessToken: $spotifyAccessToken, ')
+          ..write('spotifyExpiration: $spotifyExpiration, ')
+          ..write('neteaseCookie: $neteaseCookie, ')
+          ..write('neteaseExpiration: $neteaseExpiration')
           ..write(')'))
         .toString();
   }
@@ -3824,16 +3941,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$AuthenticationTableTableCreateCompanionBuilder
     = AuthenticationTableCompanion Function({
   Value<int> id,
-  required DecryptedText cookie,
-  required DecryptedText accessToken,
-  required DateTime expiration,
+  required DecryptedText spotifyCookie,
+  required DecryptedText spotifyAccessToken,
+  required DateTime spotifyExpiration,
+  Value<DecryptedText?> neteaseCookie,
+  Value<DateTime?> neteaseExpiration,
 });
 typedef $$AuthenticationTableTableUpdateCompanionBuilder
     = AuthenticationTableCompanion Function({
   Value<int> id,
-  Value<DecryptedText> cookie,
-  Value<DecryptedText> accessToken,
-  Value<DateTime> expiration,
+  Value<DecryptedText> spotifyCookie,
+  Value<DecryptedText> spotifyAccessToken,
+  Value<DateTime> spotifyExpiration,
+  Value<DecryptedText?> neteaseCookie,
+  Value<DateTime?> neteaseExpiration,
 });
 
 class $$AuthenticationTableTableTableManager extends RootTableManager<
@@ -3855,27 +3976,35 @@ class $$AuthenticationTableTableTableManager extends RootTableManager<
               ComposerState(db, table)),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            Value<DecryptedText> cookie = const Value.absent(),
-            Value<DecryptedText> accessToken = const Value.absent(),
-            Value<DateTime> expiration = const Value.absent(),
+            Value<DecryptedText> spotifyCookie = const Value.absent(),
+            Value<DecryptedText> spotifyAccessToken = const Value.absent(),
+            Value<DateTime> spotifyExpiration = const Value.absent(),
+            Value<DecryptedText?> neteaseCookie = const Value.absent(),
+            Value<DateTime?> neteaseExpiration = const Value.absent(),
           }) =>
               AuthenticationTableCompanion(
             id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
+            spotifyCookie: spotifyCookie,
+            spotifyAccessToken: spotifyAccessToken,
+            spotifyExpiration: spotifyExpiration,
+            neteaseCookie: neteaseCookie,
+            neteaseExpiration: neteaseExpiration,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
-            required DecryptedText cookie,
-            required DecryptedText accessToken,
-            required DateTime expiration,
+            required DecryptedText spotifyCookie,
+            required DecryptedText spotifyAccessToken,
+            required DateTime spotifyExpiration,
+            Value<DecryptedText?> neteaseCookie = const Value.absent(),
+            Value<DateTime?> neteaseExpiration = const Value.absent(),
           }) =>
               AuthenticationTableCompanion.insert(
             id: id,
-            cookie: cookie,
-            accessToken: accessToken,
-            expiration: expiration,
+            spotifyCookie: spotifyCookie,
+            spotifyAccessToken: spotifyAccessToken,
+            spotifyExpiration: spotifyExpiration,
+            neteaseCookie: neteaseCookie,
+            neteaseExpiration: neteaseExpiration,
           ),
         ));
 }
@@ -3889,21 +4018,33 @@ class $$AuthenticationTableTableFilterComposer
           ColumnFilters(column, joinBuilders: joinBuilders));
 
   ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
-      get cookie => $state.composableBuilder(
-          column: $state.table.cookie,
+      get spotifyCookie => $state.composableBuilder(
+          column: $state.table.spotifyCookie,
           builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
               column,
               joinBuilders: joinBuilders));
 
   ColumnWithTypeConverterFilters<DecryptedText, DecryptedText, String>
-      get accessToken => $state.composableBuilder(
-          column: $state.table.accessToken,
+      get spotifyAccessToken => $state.composableBuilder(
+          column: $state.table.spotifyAccessToken,
           builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
               column,
               joinBuilders: joinBuilders));
 
-  ColumnFilters<DateTime> get expiration => $state.composableBuilder(
-      column: $state.table.expiration,
+  ColumnFilters<DateTime> get spotifyExpiration => $state.composableBuilder(
+      column: $state.table.spotifyExpiration,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<DecryptedText?, DecryptedText, String>
+      get neteaseCookie => $state.composableBuilder(
+          column: $state.table.neteaseCookie,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get neteaseExpiration => $state.composableBuilder(
+      column: $state.table.neteaseExpiration,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 }
@@ -3916,18 +4057,28 @@ class $$AuthenticationTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<String> get cookie => $state.composableBuilder(
-      column: $state.table.cookie,
+  ColumnOrderings<String> get spotifyCookie => $state.composableBuilder(
+      column: $state.table.spotifyCookie,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<String> get accessToken => $state.composableBuilder(
-      column: $state.table.accessToken,
+  ColumnOrderings<String> get spotifyAccessToken => $state.composableBuilder(
+      column: $state.table.spotifyAccessToken,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<DateTime> get expiration => $state.composableBuilder(
-      column: $state.table.expiration,
+  ColumnOrderings<DateTime> get spotifyExpiration => $state.composableBuilder(
+      column: $state.table.spotifyExpiration,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get neteaseCookie => $state.composableBuilder(
+      column: $state.table.neteaseCookie,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get neteaseExpiration => $state.composableBuilder(
+      column: $state.table.neteaseExpiration,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }

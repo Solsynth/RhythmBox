@@ -55,7 +55,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration {
@@ -63,18 +63,7 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (Migrator m) async {
         await m.createAll();
       },
-      onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 2) {
-          await m.addColumn(preferencesTable, preferencesTable.playerWakelock);
-        }
-        if (from > 3) {
-          await m.addColumn(
-              preferencesTable, preferencesTable.neteaseApiInstance);
-          await m.dropColumn(
-              preferencesTable, preferencesTable.audioSource.name);
-          await m.addColumn(preferencesTable, preferencesTable.audioSource);
-        }
-      },
+      onUpgrade: (Migrator m, int from, int to) async {},
     );
   }
 }

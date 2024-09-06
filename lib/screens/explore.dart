@@ -72,8 +72,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
     }
 
     if (_auth.auth.value != null) {
-      final customEndpoint =
-          CustomSpotifyEndpoints(_auth.auth.value?.accessToken.value ?? '');
+      final customEndpoint = CustomSpotifyEndpoints(
+          _auth.auth.value?.spotifyAccessToken.value ?? '');
       final forYouView = await customEndpoint.getView(
         'made-for-x-hub',
         market: market,
