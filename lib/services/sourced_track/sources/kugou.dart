@@ -109,7 +109,9 @@ class KugouSourcedTrack extends SourcedTrack {
 
     final hash = manifest is SourceMatchTableData
         ? manifest.sourceId
-        : manifest?['hash'];
+        : manifest is KugouSourceInfo
+            ? manifest.id
+            : manifest?['hash'];
     final key = md5.convert(utf8.encode('${hash}kgcloudv2')).toString();
     final url =
         '$baseUrl/song/url?key=$key&hash=$hash&appid=1005&pid=2&cmd=25&behavior=play';
@@ -142,7 +144,8 @@ class KugouSourcedTrack extends SourcedTrack {
     // We can just trust kugou music for now
     // If we need to check is the result correct, refer to this code
     // https://github.com/KRTirtho/spotube/blob/9b024120601c0d381edeab4460cb22f87149d0f8/lib/services/sourced_track/sources/jiosaavn.dart#L129
-    final matchedResults = results.map(toSiblingType).toList();
+    final matchedResults =
+        results.where((x) => x['pay_type'] == 0).map(toSiblingType).toList();
 
     return matchedResults.cast<SiblingType>();
   }
@@ -166,7 +169,12 @@ class KugouSourcedTrack extends SourcedTrack {
   }
 
   @override
-  Future<KugouSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+  Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+    if (sibling is! KugouSourceInfo) {
+      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
+          .swapWithSibling(sibling);
+    }
+
     if (sibling.id == sourceInfo.id) {
       return null;
     }
@@ -181,7 +189,7 @@ class KugouSourcedTrack extends SourcedTrack {
       ..insert(0, sourceInfo);
 
     final info = newSourceInfo as KugouSourceInfo;
-    final source = toSourceMap(newSourceInfo.id);
+    final source = toSourceMap(newSourceInfo);
 
     final db = Get.find<DatabaseProvider>();
     await db.database.into(db.database.sourceMatchTable).insert(

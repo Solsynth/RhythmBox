@@ -269,7 +269,12 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }
 
   @override
-  Future<YoutubeSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+  Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+    if (sibling is! YoutubeSourceInfo) {
+      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
+          .swapWithSibling(sibling);
+    }
+
     if (sibling.id == sourceInfo.id) {
       return null;
     }

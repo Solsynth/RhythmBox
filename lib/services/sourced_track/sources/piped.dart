@@ -255,6 +255,11 @@ class PipedSourcedTrack extends SourcedTrack {
 
   @override
   Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+    if (sibling is! PipedSourceInfo) {
+      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
+          .swapWithSibling(sibling);
+    }
+
     if (sibling.id == sourceInfo.id) {
       return null;
     }

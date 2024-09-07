@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -122,6 +123,27 @@ class _SiblingTracksState extends State<SiblingTracks> {
             '/search?keywords=${Uri.encodeComponent(searchTerm)}&realIP=${NeteaseSourcedTrack.lookupRealIp()}');
         final searchResults = resp.body['result']['songs']
             .map(NeteaseSourcedTrack.toSourceInfo)
+            .toList();
+
+        final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;
+        _siblings = List.from(
+          searchResults
+            ..removeWhere((element) => element.id == activeSourceInfo.id)
+            ..insert(
+              0,
+              activeSourceInfo,
+            ),
+          growable: true,
+        );
+      } else if (preferences.audioSource == AudioSource.kugou) {
+        final client = KugouSourcedTrack.getClient();
+        final resp = await client.get(
+          '/api/v3/search/song?keyword=${Uri.encodeComponent(searchTerm)}&page=1&pagesize=10',
+        );
+        final results = jsonDecode(resp.body)['data']['info'];
+        final searchResults = results
+            .where((x) => x['pay_type'] == 0)
+            .map(KugouSourcedTrack.toSourceInfo)
             .toList();
 
         final activeSourceInfo = (_activeTrack! as SourcedTrack).sourceInfo;

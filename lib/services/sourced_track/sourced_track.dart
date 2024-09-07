@@ -81,6 +81,16 @@ abstract class SourcedTrack extends Track {
     };
   }
 
+  static Type getTrackBySourceInfo(SourceInfo info) {
+    final sourceInfoTrackMap = {
+      YoutubeSourceInfo: YoutubeSourcedTrack,
+      PipedSourceInfo: PipedSourcedTrack,
+      NeteaseSourceInfo: NeteaseSourcedTrack,
+      KugouSourceInfo: KugouSourcedTrack,
+    };
+    return sourceInfoTrackMap[info.runtimeType]!;
+  }
+
   static String getSearchTerm(Track track) {
     final artists = (track.artists ?? [])
         .map((ar) => ar.name)

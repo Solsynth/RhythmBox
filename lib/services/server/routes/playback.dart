@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart' hide Response;
 import 'package:flutter/foundation.dart';
@@ -41,8 +42,17 @@ class ServerPlaybackRoutesProvider {
         // Special processing for kugou to get real assets url
         final resp = await GetConnect(timeout: const Duration(seconds: 30))
             .get(sourcedTrack.url);
-        final realUrl =
-            KugouSourcedTrack.unescapeUrl(jsonDecode(resp.body)['url'][0]);
+        final urls = jsonDecode(resp.body)['url'];
+        if (urls?.isEmpty ?? true) {
+          Get.find<ErrorNotifier>().showError(
+            '[PlaybackServer] Unable get audio source via Kugou, probably cause by paid needed resources.',
+          );
+          return Response(
+            HttpStatus.notFound,
+            body: 'Unable get audio source via Kugou',
+          );
+        }
+        final realUrl = KugouSourcedTrack.unescapeUrl(urls.first);
         url = realUrl;
       }
 

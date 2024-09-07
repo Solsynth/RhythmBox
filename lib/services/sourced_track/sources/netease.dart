@@ -200,7 +200,12 @@ class NeteaseSourcedTrack extends SourcedTrack {
   }
 
   @override
-  Future<NeteaseSourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+  Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
+    if (sibling is! NeteaseSourceInfo) {
+      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
+          .swapWithSibling(sibling);
+    }
+
     if (sibling.id == sourceInfo.id) {
       return null;
     }
