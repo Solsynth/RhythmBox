@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:get/get.dart';
+import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
@@ -97,9 +99,43 @@ abstract class SourcedTrack extends Track {
 
   static Future<SourcedTrack> fetchFromTrack({
     required Track track,
+    AudioSource? fallbackTo,
   }) async {
     final preferences = Get.find<UserPreferencesProvider>().state.value;
-    final audioSource = preferences.audioSource;
+    var audioSource = preferences.audioSource;
+
+    if (!preferences.overrideCacheProvider && fallbackTo == null) {
+      final DatabaseProvider db = Get.find();
+      final cachedSource =
+          await (db.database.select(db.database.sourceMatchTable)
+                ..where((s) => s.trackId.equals(track.id!))
+                ..limit(1)
+                ..orderBy([
+                  (s) => OrderingTerm(
+                      expression: s.createdAt, mode: OrderingMode.desc),
+                ]))
+              .get()
+              .then((s) => s.firstOrNull);
+
+      final ytOrPiped = preferences.audioSource == AudioSource.youtube
+          ? AudioSource.youtube
+          : AudioSource.piped;
+      final sourceTypeTrackMap = {
+        SourceType.youtube: ytOrPiped,
+        SourceType.youtubeMusic: ytOrPiped,
+        SourceType.netease: AudioSource.netease,
+        SourceType.kugou: AudioSource.kugou,
+      };
+
+      if (cachedSource != null) {
+        final cachedAudioSource = sourceTypeTrackMap[cachedSource.sourceType]!;
+        audioSource = cachedAudioSource;
+      }
+    }
+
+    if (fallbackTo != null) {
+      audioSource = fallbackTo;
+    }
 
     try {
       return switch (audioSource) {
@@ -115,14 +151,20 @@ abstract class SourcedTrack extends Track {
       Get.find<ErrorNotifier>().showError(
         '${err.toString()} via ${preferences.audioSource.label}, querying in fallback sources...',
       );
-      return switch (preferences.audioSource) {
-        AudioSource.piped ||
-        AudioSource.youtube =>
-          await NeteaseSourcedTrack.fetchFromTrack(track: track),
+
+      if (fallbackTo != null) {
+        // Prevent infinite fallback
+        if (audioSource == AudioSource.youtube ||
+            audioSource == AudioSource.piped) rethrow;
+      }
+
+      return switch (audioSource) {
         AudioSource.netease =>
-          await KugouSourcedTrack.fetchFromTrack(track: track),
+          await fetchFromTrack(track: track, fallbackTo: AudioSource.kugou),
         AudioSource.kugou =>
-          await YoutubeSourcedTrack.fetchFromTrack(track: track),
+          await fetchFromTrack(track: track, fallbackTo: AudioSource.youtube),
+        _ =>
+          await fetchFromTrack(track: track, fallbackTo: AudioSource.netease),
       };
     } on HttpClientClosedException catch (_) {
       return await PipedSourcedTrack.fetchFromTrack(track: track);

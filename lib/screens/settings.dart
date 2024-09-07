@@ -221,6 +221,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const Divider(thickness: 0.3, height: 1),
               Obx(
+                () => CheckboxListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  secondary: const Icon(Icons.all_inclusive),
+                  title: const Text('Override Cache Provider'),
+                  subtitle: const Text(
+                      'Decide whether use original cached source or query a new one from current audio provider'),
+                  value: _preferences.state.value.endlessPlayback,
+                  onChanged: (value) =>
+                      _preferences.setOverrideCacheProvider(value ?? false),
+                ),
+              ),
+              const Divider(thickness: 0.3, height: 1),
+              Obx(
                 () => SwitchListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                   secondary: const Icon(Icons.all_inclusive),

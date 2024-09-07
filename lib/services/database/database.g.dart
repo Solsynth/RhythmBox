@@ -640,6 +640,16 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("player_wakelock" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _overrideCacheProviderMeta =
+      const VerificationMeta('overrideCacheProvider');
+  @override
+  late final GeneratedColumn<bool> overrideCacheProvider =
+      GeneratedColumn<bool>('override_cache_provider', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("override_cache_provider" IN (0, 1))'),
+          defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -665,7 +675,8 @@ class $PreferencesTableTable extends PreferencesTable
         streamMusicCodec,
         downloadMusicCodec,
         endlessPlayback,
-        playerWakelock
+        playerWakelock,
+        overrideCacheProvider
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -760,6 +771,12 @@ class $PreferencesTableTable extends PreferencesTable
           playerWakelock.isAcceptableOrUnknown(
               data['player_wakelock']!, _playerWakelockMeta));
     }
+    if (data.containsKey('override_cache_provider')) {
+      context.handle(
+          _overrideCacheProviderMeta,
+          overrideCacheProvider.isAcceptableOrUnknown(
+              data['override_cache_provider']!, _overrideCacheProviderMeta));
+    }
     return context;
   }
 
@@ -830,6 +847,9 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
       playerWakelock: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}player_wakelock'])!,
+      overrideCacheProvider: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}override_cache_provider'])!,
     );
   }
 
@@ -894,6 +914,7 @@ class PreferencesTableData extends DataClass
   final SourceCodecs downloadMusicCodec;
   final bool endlessPlayback;
   final bool playerWakelock;
+  final bool overrideCacheProvider;
   const PreferencesTableData(
       {required this.id,
       required this.audioQuality,
@@ -918,7 +939,8 @@ class PreferencesTableData extends DataClass
       required this.streamMusicCodec,
       required this.downloadMusicCodec,
       required this.endlessPlayback,
-      required this.playerWakelock});
+      required this.playerWakelock,
+      required this.overrideCacheProvider});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -986,6 +1008,7 @@ class PreferencesTableData extends DataClass
     }
     map['endless_playback'] = Variable<bool>(endlessPlayback);
     map['player_wakelock'] = Variable<bool>(playerWakelock);
+    map['override_cache_provider'] = Variable<bool>(overrideCacheProvider);
     return map;
   }
 
@@ -1015,6 +1038,7 @@ class PreferencesTableData extends DataClass
       downloadMusicCodec: Value(downloadMusicCodec),
       endlessPlayback: Value(endlessPlayback),
       playerWakelock: Value(playerWakelock),
+      overrideCacheProvider: Value(overrideCacheProvider),
     );
   }
 
@@ -1058,6 +1082,8 @@ class PreferencesTableData extends DataClass
           .fromJson(serializer.fromJson<String>(json['downloadMusicCodec'])),
       endlessPlayback: serializer.fromJson<bool>(json['endlessPlayback']),
       playerWakelock: serializer.fromJson<bool>(json['playerWakelock']),
+      overrideCacheProvider:
+          serializer.fromJson<bool>(json['overrideCacheProvider']),
     );
   }
   @override
@@ -1100,6 +1126,7 @@ class PreferencesTableData extends DataClass
           .toJson(downloadMusicCodec)),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
       'playerWakelock': serializer.toJson<bool>(playerWakelock),
+      'overrideCacheProvider': serializer.toJson<bool>(overrideCacheProvider),
     };
   }
 
@@ -1127,7 +1154,8 @@ class PreferencesTableData extends DataClass
           SourceCodecs? streamMusicCodec,
           SourceCodecs? downloadMusicCodec,
           bool? endlessPlayback,
-          bool? playerWakelock}) =>
+          bool? playerWakelock,
+          bool? overrideCacheProvider}) =>
       PreferencesTableData(
         id: id ?? this.id,
         audioQuality: audioQuality ?? this.audioQuality,
@@ -1153,6 +1181,8 @@ class PreferencesTableData extends DataClass
         downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
         endlessPlayback: endlessPlayback ?? this.endlessPlayback,
         playerWakelock: playerWakelock ?? this.playerWakelock,
+        overrideCacheProvider:
+            overrideCacheProvider ?? this.overrideCacheProvider,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -1216,6 +1246,9 @@ class PreferencesTableData extends DataClass
       playerWakelock: data.playerWakelock.present
           ? data.playerWakelock.value
           : this.playerWakelock,
+      overrideCacheProvider: data.overrideCacheProvider.present
+          ? data.overrideCacheProvider.value
+          : this.overrideCacheProvider,
     );
   }
 
@@ -1245,7 +1278,8 @@ class PreferencesTableData extends DataClass
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('playerWakelock: $playerWakelock')
+          ..write('playerWakelock: $playerWakelock, ')
+          ..write('overrideCacheProvider: $overrideCacheProvider')
           ..write(')'))
         .toString();
   }
@@ -1275,7 +1309,8 @@ class PreferencesTableData extends DataClass
         streamMusicCodec,
         downloadMusicCodec,
         endlessPlayback,
-        playerWakelock
+        playerWakelock,
+        overrideCacheProvider
       ]);
   @override
   bool operator ==(Object other) =>
@@ -1304,7 +1339,8 @@ class PreferencesTableData extends DataClass
           other.streamMusicCodec == this.streamMusicCodec &&
           other.downloadMusicCodec == this.downloadMusicCodec &&
           other.endlessPlayback == this.endlessPlayback &&
-          other.playerWakelock == this.playerWakelock);
+          other.playerWakelock == this.playerWakelock &&
+          other.overrideCacheProvider == this.overrideCacheProvider);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
@@ -1332,6 +1368,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<SourceCodecs> downloadMusicCodec;
   final Value<bool> endlessPlayback;
   final Value<bool> playerWakelock;
+  final Value<bool> overrideCacheProvider;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.audioQuality = const Value.absent(),
@@ -1357,6 +1394,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadMusicCodec = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.playerWakelock = const Value.absent(),
+    this.overrideCacheProvider = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
@@ -1383,6 +1421,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.downloadMusicCodec = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.playerWakelock = const Value.absent(),
+    this.overrideCacheProvider = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
@@ -1409,6 +1448,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<String>? downloadMusicCodec,
     Expression<bool>? endlessPlayback,
     Expression<bool>? playerWakelock,
+    Expression<bool>? overrideCacheProvider,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1439,6 +1479,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
         'download_music_codec': downloadMusicCodec,
       if (endlessPlayback != null) 'endless_playback': endlessPlayback,
       if (playerWakelock != null) 'player_wakelock': playerWakelock,
+      if (overrideCacheProvider != null)
+        'override_cache_provider': overrideCacheProvider,
     });
   }
 
@@ -1466,7 +1508,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<SourceCodecs>? streamMusicCodec,
       Value<SourceCodecs>? downloadMusicCodec,
       Value<bool>? endlessPlayback,
-      Value<bool>? playerWakelock}) {
+      Value<bool>? playerWakelock,
+      Value<bool>? overrideCacheProvider}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       audioQuality: audioQuality ?? this.audioQuality,
@@ -1492,6 +1535,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
       endlessPlayback: endlessPlayback ?? this.endlessPlayback,
       playerWakelock: playerWakelock ?? this.playerWakelock,
+      overrideCacheProvider:
+          overrideCacheProvider ?? this.overrideCacheProvider,
     );
   }
 
@@ -1589,6 +1634,10 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (playerWakelock.present) {
       map['player_wakelock'] = Variable<bool>(playerWakelock.value);
     }
+    if (overrideCacheProvider.present) {
+      map['override_cache_provider'] =
+          Variable<bool>(overrideCacheProvider.value);
+    }
     return map;
   }
 
@@ -1618,7 +1667,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('playerWakelock: $playerWakelock')
+          ..write('playerWakelock: $playerWakelock, ')
+          ..write('overrideCacheProvider: $overrideCacheProvider')
           ..write(')'))
         .toString();
   }
@@ -4109,6 +4159,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<SourceCodecs> downloadMusicCodec,
   Value<bool> endlessPlayback,
   Value<bool> playerWakelock,
+  Value<bool> overrideCacheProvider,
 });
 typedef $$PreferencesTableTableUpdateCompanionBuilder
     = PreferencesTableCompanion Function({
@@ -4136,6 +4187,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<SourceCodecs> downloadMusicCodec,
   Value<bool> endlessPlayback,
   Value<bool> playerWakelock,
+  Value<bool> overrideCacheProvider,
 });
 
 class $$PreferencesTableTableTableManager extends RootTableManager<
@@ -4180,6 +4232,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> playerWakelock = const Value.absent(),
+            Value<bool> overrideCacheProvider = const Value.absent(),
           }) =>
               PreferencesTableCompanion(
             id: id,
@@ -4206,6 +4259,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadMusicCodec: downloadMusicCodec,
             endlessPlayback: endlessPlayback,
             playerWakelock: playerWakelock,
+            overrideCacheProvider: overrideCacheProvider,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -4232,6 +4286,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<SourceCodecs> downloadMusicCodec = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> playerWakelock = const Value.absent(),
+            Value<bool> overrideCacheProvider = const Value.absent(),
           }) =>
               PreferencesTableCompanion.insert(
             id: id,
@@ -4258,6 +4313,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             downloadMusicCodec: downloadMusicCodec,
             endlessPlayback: endlessPlayback,
             playerWakelock: playerWakelock,
+            overrideCacheProvider: overrideCacheProvider,
           ),
         ));
 }
@@ -4408,6 +4464,11 @@ class $$PreferencesTableTableFilterComposer
       column: $state.table.playerWakelock,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get overrideCacheProvider => $state.composableBuilder(
+      column: $state.table.overrideCacheProvider,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
 }
 
 class $$PreferencesTableTableOrderingComposer
@@ -4530,6 +4591,11 @@ class $$PreferencesTableTableOrderingComposer
 
   ColumnOrderings<bool> get playerWakelock => $state.composableBuilder(
       column: $state.table.playerWakelock,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get overrideCacheProvider => $state.composableBuilder(
+      column: $state.table.overrideCacheProvider,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }

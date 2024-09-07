@@ -90,6 +90,8 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get playerWakelock =>
       boolean().withDefault(const Constant(true))();
+  BoolColumn get overrideCacheProvider =>
+      boolean().withDefault(const Constant(true))();
 
   // Default values as PreferencesTableData
   static PreferencesTableData defaults() {
@@ -118,6 +120,7 @@ class PreferencesTable extends Table {
       downloadMusicCodec: SourceCodecs.m4a,
       endlessPlayback: true,
       playerWakelock: true,
+      overrideCacheProvider: true,
     );
   }
 }

@@ -178,4 +178,8 @@ class UserPreferencesProvider extends GetxController {
     setData(PreferencesTableCompanion(playerWakelock: Value(wakelock)));
     WakelockPlus.toggle(enable: wakelock);
   }
+
+  void setOverrideCacheProvider(bool override) {
+    setData(PreferencesTableCompanion(overrideCacheProvider: Value(override)));
+  }
 }
