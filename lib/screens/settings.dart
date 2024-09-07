@@ -223,13 +223,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Obx(
                 () => CheckboxListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  secondary: const Icon(Icons.all_inclusive),
+                  secondary: const Icon(Icons.update),
                   title: const Text('Override Cache Provider'),
                   subtitle: const Text(
                       'Decide whether use original cached source or query a new one from current audio provider'),
-                  value: _preferences.state.value.endlessPlayback,
+                  value: _preferences.state.value.overrideCacheProvider,
                   onChanged: (value) =>
                       _preferences.setOverrideCacheProvider(value ?? false),
+                ),
+              ),
+              Obx(
+                () => Column(
+                  children: [
+                    const ListTile(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                      leading: Icon(Icons.cloud),
+                      title: Text('Netease Cloud Music API'),
+                      subtitle: Text(
+                          'Use your own endpoint to prevent IP throttling and more'),
+                    ),
+                    TextFormField(
+                      initialValue: _preferences.state.value.neteaseApiInstance,
+                      decoration: const InputDecoration(
+                        hintText: 'Endpoint URL',
+                        isDense: true,
+                      ),
+                      onChanged: (value) {
+                        _preferences.setNeteaseApiInstance(value);
+                      },
+                      onTapOutside: (_) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
+                    ).paddingOnly(left: 24, right: 24, bottom: 12),
+                  ],
                 ),
               ),
               const Divider(thickness: 0.3, height: 1),
