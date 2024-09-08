@@ -170,7 +170,7 @@ abstract class SourcedTrack extends Track {
 
       return switch (audioSource) {
         AudioSource.netease =>
-          await fetchFromTrack(track: track, fallbackTo: AudioSource.kugou),
+          await fetchFromTrack(track: track, fallbackTo: AudioSource.youtube),
         AudioSource.kugou =>
           await fetchFromTrack(track: track, fallbackTo: AudioSource.youtube),
         _ =>
