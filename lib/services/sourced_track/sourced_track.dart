@@ -5,6 +5,7 @@ import 'package:rhythm_box/providers/database.dart';
 import 'package:rhythm_box/providers/error_notifier.dart';
 import 'package:rhythm_box/providers/user_preferences.dart';
 import 'package:rhythm_box/services/database/database.dart';
+import 'package:rhythm_box/services/server/active_sourced_track.dart';
 import 'package:rhythm_box/services/sourced_track/sources/kugou.dart';
 import 'package:rhythm_box/services/sourced_track/sources/netease.dart';
 import 'package:rhythm_box/services/utils.dart';
@@ -81,14 +82,16 @@ abstract class SourcedTrack extends Track {
     };
   }
 
-  static Type getTrackBySourceInfo(SourceInfo info) {
+  Future<SourcedTrack?> reRoutineSwapSiblings(SourceInfo info) {
     final sourceInfoTrackMap = {
-      YoutubeSourceInfo: YoutubeSourcedTrack,
-      PipedSourceInfo: PipedSourcedTrack,
-      NeteaseSourceInfo: NeteaseSourcedTrack,
-      KugouSourceInfo: KugouSourcedTrack,
+      YoutubeSourceInfo: YoutubeSourcedTrack.fetchFromTrack,
+      PipedSourceInfo: PipedSourcedTrack.fetchFromTrack,
+      NeteaseSourceInfo: NeteaseSourcedTrack.fetchFromTrack,
+      KugouSourceInfo: KugouSourcedTrack.fetchFromTrack,
     };
-    return sourceInfoTrackMap[info.runtimeType]!;
+    return sourceInfoTrackMap[info.runtimeType]!(
+      track: Get.find<ActiveSourcedTrackProvider>().state.value!,
+    );
   }
 
   static String getSearchTerm(Track track) {

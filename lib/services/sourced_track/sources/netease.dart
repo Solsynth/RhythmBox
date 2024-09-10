@@ -105,6 +105,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
               sourceId: siblings.first.info.id,
               sourceType: const Value(SourceType.netease),
             ),
+            mode: InsertMode.insertOrReplace,
           );
 
       return NeteaseSourcedTrack(
@@ -202,8 +203,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
   @override
   Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
     if (sibling is! NeteaseSourceInfo) {
-      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
-          .swapWithSibling(sibling);
+      return reRoutineSwapSiblings(sibling);
     }
 
     if (sibling.id == sourceInfo.id) {

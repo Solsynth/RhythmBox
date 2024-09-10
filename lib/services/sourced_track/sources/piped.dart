@@ -73,6 +73,7 @@ class PipedSourcedTrack extends SourcedTrack {
                     : SourceType.youtubeMusic,
               ),
             ),
+            mode: InsertMode.insertOrReplace,
           );
 
       return PipedSourcedTrack(
@@ -256,8 +257,7 @@ class PipedSourcedTrack extends SourcedTrack {
   @override
   Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
     if (sibling is! PipedSourceInfo) {
-      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
-          .swapWithSibling(sibling);
+      return reRoutineSwapSiblings(sibling);
     }
 
     if (sibling.id == sourceInfo.id) {

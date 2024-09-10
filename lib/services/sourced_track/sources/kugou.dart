@@ -77,6 +77,7 @@ class KugouSourcedTrack extends SourcedTrack {
               sourceId: siblings.first.info.id,
               sourceType: const Value(SourceType.kugou),
             ),
+            mode: InsertMode.insertOrReplace,
           );
 
       return KugouSourcedTrack(
@@ -171,8 +172,7 @@ class KugouSourcedTrack extends SourcedTrack {
   @override
   Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
     if (sibling is! KugouSourceInfo) {
-      return (SourcedTrack.getTrackBySourceInfo(sibling) as SourcedTrack)
-          .swapWithSibling(sibling);
+      return reRoutineSwapSiblings(sibling);
     }
 
     if (sibling.id == sourceInfo.id) {
