@@ -82,6 +82,21 @@ abstract class SourcedTrack extends Track {
     };
   }
 
+  static Future<SourcedTrack?> reRoutineFetchFromTrack(
+      Track track, SourceMatchTableData cachedSource) {
+    final preferences = Get.find<UserPreferencesProvider>().state.value;
+    final ytOrPiped = preferences.audioSource == AudioSource.piped
+        ? PipedSourcedTrack.fetchFromTrack
+        : YoutubeSourcedTrack.fetchFromTrack;
+    final sourceInfoTrackMap = {
+      SourceType.youtube: ytOrPiped,
+      SourceType.youtubeMusic: ytOrPiped,
+      SourceType.netease: NeteaseSourcedTrack.fetchFromTrack,
+      SourceType.kugou: KugouSourcedTrack.fetchFromTrack,
+    };
+    return sourceInfoTrackMap[cachedSource.sourceType]!(track: track);
+  }
+
   Future<SourcedTrack?> reRoutineSwapSiblings(SourceInfo info) {
     final sourceInfoTrackMap = {
       YoutubeSourceInfo: YoutubeSourcedTrack.fetchFromTrack,

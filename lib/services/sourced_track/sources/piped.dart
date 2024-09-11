@@ -57,6 +57,14 @@ class PipedSourcedTrack extends SourcedTrack {
 
     final preferences = Get.find<UserPreferencesProvider>().state.value;
 
+    if (cachedSource?.sourceType != SourceType.youtube &&
+        cachedSource?.sourceType != SourceType.youtubeMusic) {
+      final out =
+          await SourcedTrack.reRoutineFetchFromTrack(track, cachedSource!);
+      if (out == null) throw TrackNotFoundError(track);
+      return out;
+    }
+
     if (cachedSource == null) {
       final siblings = await fetchSiblings(track: track);
       if (siblings.isEmpty) {

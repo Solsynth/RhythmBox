@@ -73,7 +73,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
     return _lookedUpRealIp!;
   }
 
-  static Future<NeteaseSourcedTrack> fetchFromTrack({
+  static Future<SourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
     final DatabaseProvider db = Get.find();
@@ -114,10 +114,16 @@ class NeteaseSourcedTrack extends SourcedTrack {
         sourceInfo: siblings.first.info,
         track: track,
       );
+    } else if (cachedSource.sourceType != SourceType.netease) {
+      final out =
+          await SourcedTrack.reRoutineFetchFromTrack(track, cachedSource);
+      if (out == null) throw TrackNotFoundError(track);
+      return out;
     }
 
     final client = getClient();
     final resp = await client.get('/song/detail?ids=${cachedSource.sourceId}');
+    if (resp.body?['songs'] == null) throw TrackNotFoundError(track);
     final item = (resp.body['songs'] as List<dynamic>).firstOrNull;
 
     if (item == null) throw TrackNotFoundError(track);

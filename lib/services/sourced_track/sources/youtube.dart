@@ -43,7 +43,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required super.track,
   });
 
-  static Future<YoutubeSourcedTrack> fetchFromTrack({
+  static Future<SourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
     final DatabaseProvider db = Get.find();
@@ -78,6 +78,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
         sourceInfo: siblings.first.info,
         track: track,
       );
+    } else if (cachedSource.sourceType != SourceType.youtube) {
+      final out =
+          await SourcedTrack.reRoutineFetchFromTrack(track, cachedSource);
+      if (out == null) throw TrackNotFoundError(track);
+      return out;
     }
 
     final item = await youtubeClient.videos.get(cachedSource.sourceId);

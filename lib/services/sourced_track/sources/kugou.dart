@@ -51,7 +51,7 @@ class KugouSourcedTrack extends SourcedTrack {
     return client;
   }
 
-  static Future<KugouSourcedTrack> fetchFromTrack({
+  static Future<SourcedTrack> fetchFromTrack({
     required Track track,
   }) async {
     final DatabaseProvider db = Get.find();
@@ -86,6 +86,11 @@ class KugouSourcedTrack extends SourcedTrack {
         sourceInfo: siblings.first.info,
         track: track,
       );
+    } else if (cachedSource.sourceType != SourceType.kugou) {
+      final out =
+          await SourcedTrack.reRoutineFetchFromTrack(track, cachedSource);
+      if (out == null) throw TrackNotFoundError(track);
+      return out;
     }
 
     return KugouSourcedTrack(
