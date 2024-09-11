@@ -120,7 +120,7 @@ class _SiblingTracksState extends State<SiblingTracks> {
       } else if (preferences.audioSource == AudioSource.netease) {
         final client = NeteaseSourcedTrack.getClient();
         final resp = await client.get(
-            '/search?keywords=${Uri.encodeComponent(searchTerm)}&realIP=${NeteaseSourcedTrack.lookupRealIp()}');
+            '/search?keywords=${Uri.encodeComponent(searchTerm)}&realIP=${await NeteaseSourcedTrack.lookupRealIp()}');
         final searchResults = resp.body['result']['songs']
             .map(NeteaseSourcedTrack.toSourceInfo)
             .toList();

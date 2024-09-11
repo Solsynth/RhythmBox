@@ -175,7 +175,7 @@ class NeteaseSourcedTrack extends SourcedTrack {
 
     final client = getClient();
     final resp = await client.get(
-      '/search?keywords=${Uri.encodeComponent(query)}&realIP=${NeteaseSourcedTrack.lookupRealIp()}',
+      '/search?keywords=${Uri.encodeComponent(query)}&realIP=${await NeteaseSourcedTrack.lookupRealIp()}',
     );
     if (resp.body?['code'] == 405) throw TrackNotFoundError(track);
     final results = resp.body['result']['songs'];
